@@ -24,7 +24,7 @@
                         <%--批量删除--%>
                     <%--</a>--%>
                     <sec:authorize url="/cdatype/SaveCdaType">
-                    <a id="btn_Update_relation" class="btn btn-primary J_add-btn f-fr f-mr10">
+                    <a id="btn_Update_relation" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10">
                         新增
                     </a>
                     </sec:authorize>

@@ -113,15 +113,16 @@
                                 <input type="text" id="ipt_select" data-type="select" data-attr-scan="select" class="required useTitle" required-title="不能为空">
                             </div>
                         </div>--%>
-                        <select id="datatype"  data-attr-scan="code" style="width: 227px;">
-                            <option value="VARCHAR">VARCHAR</option>
-                            <option value="INT">INT</option>
-                            <option value="FLOAT">FLOAT</option>
-                            <option value="DOUBLE">DOUBLE</option>
-                            <option value="CHAR">CHAR</option>
-                            <option value="TEXT">TEXT</option>
-                            <option value="DATE">DATE</option>
-                        </select>
+                        <input type="text" id="datatype"  data-attr-scan="code" />
+                        <%--<select id="datatype"  data-attr-scan="code" style="width: 227px;">--%>
+                            <%--<option value="VARCHAR">VARCHAR</option>--%>
+                            <%--<option value="INT">INT</option>--%>
+                            <%--<option value="FLOAT">FLOAT</option>--%>
+                            <%--<option value="DOUBLE">DOUBLE</option>--%>
+                            <%--<option value="CHAR">CHAR</option>--%>
+                            <%--<option value="TEXT">TEXT</option>--%>
+                            <%--<option value="DATE">DATE</option>--%>
+                        <%--</select>--%>
                     </td>
                     <th colspan="2" class="split-line">
                         <div class="f-fs12 f-ml5">

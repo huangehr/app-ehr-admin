@@ -29,7 +29,7 @@
 	}
 </style>
 <div id="div_app_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
-	<%--<input type="hidden" id="inp_source_type"  data-attr-scan="sourceType" value="0">--%>
+	<input type="hidden" id="inp_doctorManageType"  data-attr-scan="doctorManageType" >
 
 	<div class="m-form-group">
 		<label><spring:message code="lbl.designation"/><spring:message code="spe.colon"/></label>
@@ -56,7 +56,7 @@
 			</div>
 			<label>应用代码<spring:message code="spe.colon"/></label>
 			<div class="l-text-wrapper m-form-control essential">
-				<input type="text" id="inp_app_code" class="required max-length-50 validate-code-char ajax"  data-attr-scan="code"/>
+				<input type="text" id="inp_app_code" class="required max-length-30 validate-code-char ajax"  data-attr-scan="code" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"/>
 			</div>
 		</div>
 		</form>
@@ -104,10 +104,23 @@
 		</div>
 	</div>
 	<div class="m-form-group">
+		<label>公网回调URL:</label>
+		<!--<div class="m-form-control essential">-->
+		<div class="l-text-wrapper m-form-control essential" >
+			<input id="inp_out_url" class="required useTitle max-length-500 validate-special-char" placeholder="请输入公网回调URL"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="outUrl" maxlength="500"/>
+		</div>
+	</div>
+	<div class="m-form-group">
 		<label >角色组:</label>
 		<div id="roleDiv" class="l-text-wrapper m-form-control f-pr0">
 			<input type="text" id="jryycyc" class="f-h28" data-type="select" data-attr-scan="role">
 		</div>
+		<label>管理类型</label>
+		<div class="l-text-wrapper m-form-control f-pr0 essential">
+			<input type="text" id="inp_dialog_manageType" data-type="select" class="required" data-attr-scan="manageType">
+		</div>
+	</div>
+	<div class="m-form-group">
 		<label class=""><spring:message code="lbl.description"/><spring:message code="spe.colon"/></label>
 		<div class="m-form-control ">
 			<textarea id="inp_description" class="f-w240 max-length-500 validate-special-char" data-attr-scan="description" maxlength="500"></textarea>

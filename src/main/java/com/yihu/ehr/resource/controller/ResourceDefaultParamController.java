@@ -39,7 +39,7 @@ public class ResourceDefaultParamController extends BaseUIController {
         model.addAttribute("contentPage","/resource/rsdefaultparam/defaultParam");
         model.addAttribute("resourcesId",resourcesId);
         model.addAttribute("resourcesCode",resourcesCode);
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("/infoInitial")
@@ -55,7 +55,7 @@ public class ResourceDefaultParamController extends BaseUIController {
             en = objectMapper.writeValueAsString(envelop);
             if(StringUtils.equals(mode,"new")){
                 model.addAttribute("info", en);
-                return "simpleView";
+                return "emptyView";
             }
             String url = "/resources/param/"+id;
             String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
@@ -64,7 +64,7 @@ public class ResourceDefaultParamController extends BaseUIController {
             LogService.getLogger(ResourceDefaultParamModel.class).error(ex.getMessage());
             model.addAttribute("info", en);
         }
-        return "simpleView";
+        return "emptyView";
     }
 
     //新增、修改
@@ -101,8 +101,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
     //删除
@@ -119,8 +119,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
     //查看不分页
@@ -138,8 +138,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -156,8 +156,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

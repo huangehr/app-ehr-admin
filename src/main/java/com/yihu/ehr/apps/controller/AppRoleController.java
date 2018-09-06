@@ -8,11 +8,14 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
@@ -92,20 +95,21 @@ public class AppRoleController extends BaseUIController {
         }
         model.addAttribute("Dialogtype", type);
         model.addAttribute("contentPage", contentPage);
-        return "pageView";
+        return "emptyView";
     }
 
     @RequestMapping("/searchAppRole")
     @ResponseBody
-    public String searchAppRole(String searchNm, String gridType,String appRoleId, int page, int rows) {
+    public String searchAppRole(String searchNm, String gridType, String appRoleId, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
         String url = ServiceApi.Roles.Roles;
         String resultStr = "";
-
-        String filters = StringUtils.isEmpty(searchNm)?"type=0 g0;appId="+appRoleId+" g1":"type=0 g0;code?"+searchNm+" g1;name?"+searchNm+" g1;appId="+appRoleId+" g2";
-        if(gridType.equals("appRole")){
+        String filters = "type=0 g0;";
+        filters = StringUtils.isEmpty(appRoleId)? filters : filters + "appId=" + appRoleId + " g1;";
+        filters = StringUtils.isEmpty(searchNm)? filters : filters + "code?" + searchNm + " g2;name?" + searchNm + " g2;";
+        if (gridType.equals("appRole")){
             url = "/apps";
-            filters = StringUtils.isEmpty(searchNm)?"":"name?"+searchNm+" g1";
+            filters = StringUtils.isEmpty(searchNm) ? "" : "name?" + searchNm + " g1";
         }
         params.put("filters", filters);
         params.put("page", page);
@@ -199,6 +203,7 @@ public class AppRoleController extends BaseUIController {
         }else {
             url = ServiceApi.AppFeature.FilterFeatureNoPage;
             params.put("filters", filters);
+            params.put("sorts", "+sort");
             params.put("roleId", appRoleId);
         }
         String resultStr = "";
@@ -267,7 +272,14 @@ public class AppRoleController extends BaseUIController {
     @ResponseBody
     public String searchAppInsert(String searchNm,String gridType,String appRoleId,int page, int rows){
         Map<String, Object> params = new HashMap<>();
-        String url = gridType.equals("appInsertGrid")?"/apps":ServiceApi.Roles.RoleApps;
+        String url = "";
+        if (gridType.equals("appInsertGrid")) {
+            url = "/apps";
+            params.put("sort", "");
+        } else {
+            url = ServiceApi.Roles.RoleApps;
+            params.put("sorts", "");
+        }
         String resultStr = "";
         String filters = "";
         if (gridType.equals("appInsertGrid")){
@@ -277,7 +289,6 @@ public class AppRoleController extends BaseUIController {
         }
         params.put("filters", filters);
         params.put("fields", "");
-        params.put("sort", "");
         params.put("page", page);
         params.put("size", rows);
         try {
@@ -299,9 +310,9 @@ public class AppRoleController extends BaseUIController {
             String url = ServiceApi.Roles.RoleNameExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed("系统出错");
         }
     }
     @RequestMapping("/isCodeExistence")
@@ -314,9 +325,9 @@ public class AppRoleController extends BaseUIController {
             String url = ServiceApi.Roles.RoleCodeExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed("系统出错");
         }
     }
 
@@ -337,9 +348,47 @@ public class AppRoleController extends BaseUIController {
             String url = ServiceApi.Roles.RoleUser;
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed("系统出错");
+        }
+    }
+
+    //角色一键授权
+    @RequestMapping("/rolesGrantResourcesByCategoryId")
+    @ResponseBody
+    public Object rolesGrantResourcesByCategoryId(String rolesId,String appId, String categoryIds, String resourceIds) {
+        try {
+            String url = "/resource/api/v1.0" + ServiceApi.Resources.RolesGrantResourcesByCategoryId;
+            Map<String, Object> params = new HashMap<>();
+            params.put("rolesId", rolesId);
+            params.put("appId", appId);
+            params.put("categoryIds", categoryIds);
+            params.put("resourceIds", resourceIds);
+            String envelopStr = HttpClientUtil.doPost(adminInnerUrl + url, params, username, password);
+            return envelopStr;
+        } catch (Exception ex) {
+            LogService.getLogger(AppController.class).error(ex.getMessage());
+            return failed("内部服务请求失败");
+        }
+    }
+
+    //角色一键取消授权
+    @RequestMapping("/deleteRolesGrantResourcesByCategoryId")
+    @ResponseBody
+    public Object deleteRolesGrantResourcesByCategoryId(String rolesId,String appId, String categoryIds, String resourceIds) {
+        try {
+            String url = "/resource/api/v1.0" + ServiceApi.Resources.DeleteRolesGrantResourcesByCategoryId;
+            Map<String, Object> params = new HashMap<>();
+            params.put("rolesId", rolesId);
+            params.put("appId", appId);
+            params.put("categoryIds", categoryIds);
+            params.put("resourceIds", resourceIds);
+            String envelopStr = HttpClientUtil.doPost(adminInnerUrl + url, params, username, password);
+            return envelopStr;
+        } catch (Exception ex) {
+            LogService.getLogger(AppController.class).error(ex.getMessage());
+            return failed("内部服务请求失败");
         }
     }
 

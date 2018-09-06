@@ -36,7 +36,7 @@
 
     </div>
     <!--######通知公告信息表#结束######-->
-</div>
-<div id="div_portalNotice_info_dialog">
+    <div id="div_portalNotice_info_dialog">
 
+    </div>
 </div>

@@ -15,14 +15,10 @@
 
             // 页面表格条件部模块
             var retrieve = null;
-
             // 页面主模块，对应于日志信息表区域
             var master = null;
             var masterOperator = null;
-
-
             var logInfo = null;
-
             /* ************************** 变量定义结束 ******************************** */
             var isFirstPage = true;
             /* *************************** 函数定义 ******************************* */
@@ -65,10 +61,14 @@
                     this.$element.attrScan();
                     window.form = this.$element;
                     this.$searchlog.ligerTextBox({width: 240 });
-                    var typeData =  [{ id: 1, text: '网关日志' },{ id: 2, text: '业务日志'}];
-                    $("#inp_type").ligerComboBox({ data: typeData,value:'2'});
+                    $('#inp_caller').ligerTextBox({width: 240 });
+                    /*var typeData =  [{ id: 0, text: '业务日志'}];
+                    $("#inp_type").ligerComboBox({ data: typeData,value:'2'});*/
+                    var today = new Date();
                     this.$startTime.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
+                    this.$startTime.val(today.getFullYear() + "-"+(today.getMonth() +1)+ "-"+today.getDate()+ " 00:00:00");
                     this.$endTime.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
+                    this.$endTime.val(today.getFullYear() + "-"+(today.getMonth() +1)+ "-"+(today.getDate()+1)+" 00:00:00");
                     this.bindEvents();
                 },
                 bindEvents: function () {
@@ -78,8 +78,8 @@
 
             function openWin(id, type) {
                 var title = "日志详情";
-                var wait = $.Notice.waitting("请稍后...");
-                logInfo = $.ligerDialog.open({
+                var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                logInfo = parent._LIGERDIALOG.open({
                     height:550,
                     width:500,
                     title:title,
@@ -108,21 +108,22 @@
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            patient: '',
-                            type:$("#inp_type_val").val(),
-                            startTime: '',
-                            endTime: ''
+                            patient: $('#inp_caller').val(),
+                            type:'3', //写死业务日志
+                            startTime: $('#inp_start_time').val(),
+                            endTime: $('#inp_end_time').val()
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '系统名称', name: 'appKey', width: '15%'},
-                            {display: '菜单名称', name: 'function', width: '20%'},
-                            {display: '功能名称', name: 'operation', width: '15%'},
-                            {display: '操作者', name: 'patient', width: '10%'},
+                            {display: '系统名称', name: 'appKey', width: '10%'},
+                            {display: '菜单名称', name: 'function', width: '15%'},
+                            {display: '操作名称', name: 'operation', width: '15%'},
+                            {display: '操作者', name: 'caller', width: '10%'},
                             {display: '操作时间', name: 'time', width: '15%'},
-                            {display: '响应Code', name: 'responseCode', width: '15%'},
-                            {display: '操作', name: 'response', width: '10%',render: function (row) {
-                                var html = '<a class="label_a" title="查看详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "log:info:show", row.id, row.logType) + '">查看详情</a>';
+                            {display: '响应Code', name: 'responseCode', width: '10%'},
+                            {display: '日志编号', name: '_id', width: '15%'},
+                            {display: '操作', name: 'response', minWidth: 100,render: function (row) {
+                                var html = '<a class="label_a" title="查看详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "log:info:show", row._id, row.logType) + '">查看详情</a>';
                                 return html;
                             }}
                         ],
@@ -139,10 +140,10 @@
                 reloadGrid: function () {
                     var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
-                    var type = $("#inp_type_val").val();
+                   /* var type = $("#inp_type_val").val();*/
                     reloadGrid.call(this, '${contextRoot}/logManager/searchListLogs', {
                         patient: $('#inp_caller').val(),
-                        type:$("#inp_type_val").val(),
+                        type:'3', //写死业务日志
                         startTime: $('#inp_start_time').val(),
                         endTime: $('#inp_end_time').val()
                     },type);
@@ -169,19 +170,20 @@
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            patient: '',
-                            type: '',
-                            startTime: '',
-                            endTime: ''
+                            patient: $('#inp_caller').val(),
+                            type:'3', //写死业务日志
+                            startTime: $('#inp_start_time').val(),
+                            endTime: $('#inp_end_time').val()
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '系统名称', name: 'appKey', width: '15%'},
-                            {display: '菜单名称', name: 'function', width: '20%'},
-                            {display: '功能名称', name: 'operation', width: '15%'},
-                            {display: '操作者', name: 'patient', width: '10%'},
+                            {display: '系统名称', name: 'appKey', width: '10%'},
+                            {display: '菜单名称', name: 'function', width: '15%'},
+                            {display: '操作名称', name: 'operation', width: '15%'},
+                            {display: '操作者', name: 'caller', width: '10%'},
                             {display: '操作时间', name: 'time', width: '15%'},
-                            {display: '响应Code', name: 'responseCode', width: '15%'},
+                            {display: '响应Code', name: 'responseCode', width: '10%'},
+                            {display: '日志编号', name: '_id', width: '15%'},
                             {display: '操作', name: 'response', width: '10%',render: function (row) {
                                 var html = '<a class="label_a" title="查看详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "log:info:show", row.id, row.logType) + '">查看详情</a>';
                                 return html;
@@ -200,10 +202,10 @@
                 reloadGrid: function () {
                     var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
-                    var type = $("#inp_type_val").val();
+                    var type = 3;
                     reloadGrid.call(this, '${contextRoot}/logManager/searchListLogs',  {
                         patient: $('#inp_caller').val(),
-                        type:$("#inp_type_val").val(),
+                        type: type,
                         startTime: $('#inp_start_time').val(),
                         endTime: $('#inp_end_time').val()
                     },type);

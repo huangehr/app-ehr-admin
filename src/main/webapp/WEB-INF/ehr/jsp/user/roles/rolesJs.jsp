@@ -13,17 +13,11 @@
 			var isFirstPage = true;
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
-//				resizeContent();
 				retrieve.init();
 				appMaster.init();
 				rolesMaster.init();
 			}
-			function resizeContent() {
-				var contentW = $('#grid_content').width();
-				var leftW = $('#div_left').width();
-				var rightW = contentW-leftW - 20;
-				$('#div_right').width(rightW);
-			}
+
 			function reloadRolesGrid(params) {
 				if (isFirstPage){
 					rolesMaster.rolesGrid.options.newPage = 1;
@@ -32,6 +26,16 @@
 				rolesMaster.rolesGrid.loadData(true);
 				isFirstPage = true;
 			}
+
+            //添加碎片
+            function appendNav(str, url, data) {
+                sessionStorage.setItem("rolelevel1",JSON.stringify(data));
+                $('#navLink').append('<span class="applevel1"> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").css({
+                    'height': 'calc(100% - 40px)'
+                }).empty().load(url,data);
+            }
 			/* *************************** 标准字典模块初始化 ***************************** */
 			retrieve = {
 				$element: $('#std_roles'),
@@ -72,14 +76,6 @@
 						onAfterShowData:function(data){
 								appMaster.appGrid.select(0);
 						},
-//						onSuccess: function(data){
-//							if(data.detailModelList.length >0){
-//								appId = data.detailModelList[0].id;
-//							}else{
-//								appId = '-1';
-//							}
-//							rolesMaster.reloadRolesGrid();
-//						},
 						onSelectRow: function (row) {
 							appId = row.id;
 							rolesMaster.reloadRolesGrid();
@@ -110,29 +106,35 @@
 							appId: appId,
 						},
 						columns: [
-							{display: 'id', name: 'id', hide: true},
-							{display: '角色组编码', name: 'code', width: '20%', isAllowHide: false, align: 'center'},
-							{display: '角色组名称', name: 'name', width: '20%', isAllowHide: false, align: 'center'},
-							{display: '描述', name: 'description', width: '30%', isAllowHide: false, align: 'center'},
+							{display: 'id', name: 'id', width: '0.1%', hide: true},
+							{display: '角色组编码', name: 'code', width: '15%', isAllowHide: false, align: 'center'},
+							{display: '角色组名称', name: 'name', width: '15%', isAllowHide: false, align: 'center'},
+							{display: '机构名称', name: 'orgName', width: '15%', isAllowHide: false, align: 'center'},
+							{display: '描述', name: 'description', width: '10%', isAllowHide: false, align: 'center'},
 							{
-								display: '操作', name: 'operator', width: '30%', render: function (row) {
+								display: '操作', name: 'operator', minWidth: 405, render: function (row) {
 								var jsonStr = JSON.stringify(row);
 								var html = '';
 
 								<sec:authorize url="/appRole/updateFeatureConfig">
 									html = '<a class="label_a" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"limits") + '>权限配置</a>';
 								</sec:authorize>
+
 								<sec:authorize url="Role_User_Setting">
-									html += '<a class="label_a" style="margin-left:15px" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"users") + '>人员配置</a>';
+									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"users") + '>人员配置</a>';
 								</sec:authorize>
 
-								html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
+								<sec:authorize url="/userRoles/orgConfig">
+									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:orgConfig:open", jsonStr,"roles.org") + '>机构授权</a>';
+								</sec:authorize>
+
+								html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:resource:list", row.id,row.name,row.catalogName) + '">视图授权</a></sec:authorize>';
 
                                 html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "roles:resource:bbconfig", row.id) + '">资源报表配置</a></sec:authorize>';
 
 
 								<sec:authorize url="/userRoles/update">
-									html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:infoDialog:open", row.id, 'modify') + '"></a>';
+									html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "roles:infoDialog:open", row.id, 'modify', appId) + '"></a>';
 								</sec:authorize>
 								<sec:authorize url="/userRoles/delete">
 									html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:info:delete", row.id, 'delete') + '"></a>';
@@ -150,6 +152,7 @@
 							$.publish('roles:infoDialog:open',[data.id,'view']);
 						}
 					}));
+                    this.rolesGrid.adjustToWidth();
 					this.bindEvents();
 				},
 				reloadRolesGrid:function(){
@@ -180,10 +183,16 @@
 					$('#div_new_record').click(function () {
 						$.publish("roles:infoDialog:open",['','new',appId]);
 					});
+
+					//批量新增角色组
+					$('#div_new_batchAddRoles').click(function () {
+						$.publish("roles:div_new_batchAddRoles:open",[appId]);
+					});
+
 					$.subscribe("roles:infoDialog:open",function(events,id,mode,appId){
 						isFirstPage = false;
 						var title = '';
-						var wait = $.Notice.waitting("正在加载...");
+						var wait = parent._LIGERDIALOG.waitting("正在加载...");
 						if(mode == 'modify'){
 							title = '修改角色组';
 						}else if(mode == 'new'){
@@ -194,8 +203,8 @@
 						if(!appId){
 							appId = '';
 						}
-						rolesMaster.rolesInfoDialog = $.ligerDialog.open({
-							height: 360,
+						rolesMaster.rolesInfoDialog = parent._LIGERDIALOG.open({
+							height: 400,
 							width: 500,
 							title: title,
 							show:false,
@@ -215,11 +224,33 @@
 						rolesMaster.rolesInfoDialog.hide();
 					});
 
+					$.subscribe("roles:div_new_batchAddRoles:open",function(events,appId){
+						if(!appId){
+							appId = '';
+						}
+						rolesMaster.rolesBatchAddDialog = parent._LIGERDIALOG.open({
+							height: 400,
+							width: 500,
+							title: '批量添加角色组',
+							show:false,
+							urlParms:{
+								appId:appId
+							},
+							url: '${contextRoot}/userRoles/rolesBatchAddInitial',
+							isHidden: false,
+							load: true,
+							onLoaded:function() {
+								rolesMaster.rolesBatchAddDialog.show()
+							}
+						})
+						rolesMaster.rolesBatchAddDialog.hide();
+					});
+
 
                     $.subscribe("roles:resource:bbconfig",function(events,id){
                         var title = '资源报表配置';
-                        var wait = $.Notice.waitting("正在加载...");
-                        rolesMaster.bbConfigDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("正在加载...");
+                        rolesMaster.bbConfigDialog = parent._LIGERDIALOG.open({
                             height: 540,
                             width: 600,
                             title: title,
@@ -241,7 +272,7 @@
 
 					//删除角色组（删除判断）
 					$.subscribe("roles:info:delete",function(event,id){
-						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
+						parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
 							if(yes){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote("${contextRoot}/userRoles/delete",{
@@ -249,11 +280,11 @@
 									async:true,
 									success: function(data) {
 										if(data.successFlg){
-											$.Notice.success('删除成功。');
+											parent._LIGERDIALOG.success('删除成功。');
 											isFirstPage = false;
 											rolesMaster.reloadRolesGrid();
 										}else{
-											$.Notice.error(data.errorMsg);
+											parent._LIGERDIALOG.error(data.errorMsg);
 										}
 									}
 								});
@@ -261,11 +292,31 @@
 						});
 					});
 
+
+					//机构授权弹出页面
+					$.subscribe("roles:orgConfig:open",function(events,obj,type){
+						var model = JSON.parse(obj)
+						var title = '角色管理>机构数据授权';
+						rolesMaster.roleRelationDialog = parent._LIGERDIALOG.open({
+							height: 600,
+							width: 800,
+							title: title,
+							urlParms:{
+								obj:obj,
+								dialogType:type,
+							},
+							url: '${contextRoot}/userRoles/orgDialog',
+							isHidden: false,
+							load: true
+						})
+					});
+
+
 					//人员、权限配置弹出页面
 					$.subscribe("roles:config:open",function(events,obj,type){
 						var model = JSON.parse(obj)
 						var title = Util.isStrEquals(type,'users')?'角色管理>'+model.name+'人员配置':'角色管理>'+model.name+'权限配置';
-						rolesMaster.roleRelationDialog = $.ligerDialog.open({
+						rolesMaster.roleRelationDialog = parent._LIGERDIALOG.open({
 							height: 600,
 							width: 800,
 							title: title,
@@ -280,22 +331,23 @@
 					});
 					//资源授权页面跳转
 					$.subscribe('roles:resource:list', function (event, rolesId,name,code) {
-//					rolesMaster.savePageParamsToSession();
-						debugger;
 						var data = {
 							'rolesId':rolesId,
 							'rolesName':name,
 							'code':code,
 							'categoryIds':'',
 							'sourceFilter':'',
+                            'appId':appId
 						}
 						var url = '${contextRoot}/userRoles/resource/initial?';
-						$("#contentPage").empty();
-						$("#contentPage").load(url,{backParams:JSON.stringify(data)});
+                        appendNav('视图授权', url, {backParams:JSON.stringify(data)});
 					});
 
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
 					<%--$.subscribe("roles:users:open",function(events,id,rolesName){--%>
-						<%--rolesMaster.rolesInfoDialog = $.ligerDialog.open({--%>
+						<%--rolesMaster.rolesInfoDialog = parent._LIGERDIALOG.open({--%>
 							<%--height: 600,--%>
 							<%--width: 800,--%>
 							<%--title: '角色管理>'+rolesName+'人员配置',--%>
@@ -312,7 +364,7 @@
 					<%--//权限配置弹出页面--%>
 
 					<%--$.subscribe("roles:limits:open",function(events,id,rolesName){--%>
-						<%--rolesMaster.rolesInfoDialog = $.ligerDialog.open({--%>
+						<%--rolesMaster.rolesInfoDialog = parent._LIGERDIALOG.open({--%>
 							<%--height: 600,--%>
 							<%--width: 800,--%>
 							<%--title: '角色管理>'+rolesName+'权限配置',--%>
@@ -327,19 +379,23 @@
 				}
 			};
 			/* ******************Dialog页面回调接口****************************** */
-			win.reloadRolesGrid = function () {
+            win.parent.reloadRolesGrid = win.reloadRolesGrid = function () {
 				//角色组列表刷新
 				rolesMaster.reloadRolesGrid();
 			};
-			win.closeRolesInfoDialog = function () {
+			win.parent.closeRolesInfoDialog = function () {
 				//角色组新增、修改会话框关闭
 				rolesMaster.rolesInfoDialog.close();
 			};
-            win.closeBBConfigDialogDialog = function () {
+			win.parent.rolesBatchAddDialog = function () {
+				//角色组新增
+				rolesMaster.rolesBatchAddDialog.close();
+			};
+            win.parent.closeBBConfigDialogDialog = function () {
                 //关闭资源报表配置会话框
                 rolesMaster.bbConfigDialog.close();
             };
-			win.closeRoleRelationDialog = function () {
+			win.parent.closeRoleRelationDialog = function () {
 				//角色组人员配置、权限配置会话框关闭
 				rolesMaster.roleRelationDialog
 			};

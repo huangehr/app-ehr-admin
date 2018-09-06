@@ -30,13 +30,32 @@
                 this.grid.loadData(true);
             }
 
-            function onUploadSuccess(g, result){
-                if(result)
-                    openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
-                else
-                    $.Notice.success("导入成功！");
+            //添加碎片
+            function appendNav(str, url, data) {
+                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").css({
+                    'height': 'calc(100% - 40px)'
+                }).empty().load(url,data);
             }
-            $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess});
+            function onUploadSuccess(g, result){
+                if(result){
+                    <%--parent._OPENDIALOG("${contextRoot}/orgImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});--%>
+                    var defaultOpts = {
+                        height: 640,
+                        width: 1000,
+                        title: "导入错误信息",
+                        url: "${contextRoot}/orgImport/gotoImportLs",
+                        urlParms: {result: result},
+//                        load: true,
+                        isHidden: false
+                    };
+                    parent._ErrorDio = parent._LIGERDIALOG.open(defaultOpts)
+                } else {
+                    $.Notice.success("导入成功！");
+                }
+            }
+            $('#upOrg').uploadFile({url: "${contextRoot}/orgImport/importOrg", onUploadSuccess: onUploadSuccess, str: '导入机构'});
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
                 $element: $('.m-retrieve-area'),
@@ -99,11 +118,16 @@
                         master.reloadGrid();
                     });
                     self.$newRecordBtn.click(function () {
-                        self.addOrgInfoDialog = $.ligerDialog.open({
+                        self.addOrgInfoDialog = parent._LIGERDIALOG.open({
                             height: 580,
                             width: 1050,
                             title: '新增机构信息',
-                            url: '${contextRoot}/organization/dialog/create'
+                            url: '${contextRoot}/organization/dialog/create',
+                            isHidden: false,
+                            opener: true,
+                            load:true,
+                            isDrag:true,
+                            show:false,
                         })
                     });
                 }
@@ -132,43 +156,43 @@
                             {
                                 display: '是否生/失效',
                                 name: 'activityFlagName',
-                                width: '8%',
+                                width: 85,
                                 isAllowHide: false,
                                 render: function (row) {
                                     var html = '';
                                     if (row.activityFlag == 1) {
-                                        html += '<sec:authorize url="/organization/activity"><a class="grid_on" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:activityFlg", row.orgCode, '1','失效') + '"></a></sec:authorize>';
+                                        html += '<sec:authorize url="/organization/activity"><a class="grid_on" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:activityFlg", row.orgCode, '1','失效') + '">失效</a></sec:authorize>';
 
                                     } else {
-                                        html += '<sec:authorize url="/organization/activity"><a class="grid_off" title="未生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:activityFlg", row.orgCode, '0','生效') + '"></a></sec:authorize>';
+                                        html += '<sec:authorize url="/organization/activity"><a class="grid_off" title="未生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:activityFlg", row.orgCode, '0','生效') + '">生效</a></sec:authorize>';
 
                                     }
                                     return html;
                                 }
                             },
-                            {display: '入驻方式', name: 'settledWayName', width: '10%',hide: true, isAllowHide: false},
+                            {display: '入驻方式', name: 'settledWayName', width: '0.1%',hide: true, isAllowHide: false},
                             {
-                                display: '操作', name: 'operator', width: '30%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 286, render: function (row) {
                                 var html = '';
-                                html += '<sec:authorize url="/organization/resource/initial"><a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:resource:list", row.orgCode,row.id, row.fullName) + '">资源授权</a></sec:authorize>';
+                                <%--html += '<sec:authorize url="/organization/resource/initial"><a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:resource:list", row.orgCode,row.id, row.fullName) + '">视图授权</a></sec:authorize>';--%>
                                 html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a"  style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName,row.orgType) + '">部门管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/upAndDownMember"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:upAndDownMember", row.orgCode, row.id, row.fullName) + '">人员关系</a></sec:authorize>';
-                                html += '<sec:authorize url="/orgTemplate/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
+                                <%--html += '<sec:authorize url="/orgTemplate/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';--%>
                                 html += '<sec:authorize url="/organization/dialog/orgInfo"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:modify", row.orgCode, 'modify') + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/delete"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:del", row.orgCode, 'del') + '"></a></sec:authorize>';
                                 return html;
                             }
                             },
-                            {name: 'activityFlag', hide: true, align: "center"},
-                            {name: 'settledWay', hide: true, align: "center"}
+                            {name: 'activityFlag', hide: true, width: '0.1%', align: "center"},
+                            {name: 'settledWay', hide: true, width: '0.1%', align: "center"}
                         ],
                         enabledEdit: true,
                         validate: true,
                         unSetValidateAttr: false,
                         onDblClickRow: function (row) {
                             var mode = 'view';
-                            var wait = $.Notice.waitting("请稍后...");
-                            row.orgInfoDialog = $.ligerDialog.open({
+                            var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                            row.orgInfoDialog = parent._LIGERDIALOG.open({
                                 height: 600,
                                 width: 1050,
                                 title: '机构基本信息',
@@ -219,10 +243,10 @@
                         data: {orgCode: orgCode},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('操作成功。');
+                                parent._LIGERDIALOG.success('操作成功。');
                                 master.reloadGrid();
                             } else {
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG.error(data.errorMsg);
                             }
                         }
                     });
@@ -231,8 +255,8 @@
                     var self = this;
                     $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
                         var title = '修改机构信息';
-                        var wait = $.Notice.waitting("请稍后...");
-                        self.orgInfoDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        self.orgInfoDialog = parent._LIGERDIALOG.open({
                             isHidden: false,
                             height: 600,
                             width: 1050,
@@ -252,7 +276,7 @@
                         self.orgInfoDialog.hide();
                     });
                     $.subscribe('org:orgInfoDialog:activityFlg', function (event, orgCode, activityFlg,msg) {
-                        $.ligerDialog.confirm('是否对该机构进行'+msg+'操作', function (yes) {
+                        parent._LIGERDIALOG.confirm('是否对该机构进行'+msg+'操作', function (yes) {
                             if (yes) {
                                 self.activity(orgCode, activityFlg);
                             }
@@ -260,7 +284,7 @@
 
                     });
                     $.subscribe('org:orgInfoDialog:del', function (event, orgCode, activityFlg) {
-                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                        parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
                             if (yes) {
                                 self.delRecord(orgCode);
                             }
@@ -274,8 +298,7 @@
                             orgType: orgType,
                             orgName: orgName
                         }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, {'dataModel': JSON.stringify(orgData)});
+                        appendNav("模板配置", url, {'dataModel': JSON.stringify(orgData)});
                     });
                     $.subscribe('org:orgInfoDialog:deptMember', function (event, orgCode, orgId, orgName,orgType) {
                         var url = '${contextRoot}/deptMember/initialDeptMember';
@@ -286,10 +309,9 @@
                             orgName: orgName,
                             orgType:orgType
                         }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, orgData);
+                        appendNav("部门管理", url, orgData);
                     });
-                    //资源授权页面跳转
+                    //视图授权页面跳转
                     $.subscribe('org:resource:list', function (event, orgCode, orgId,orgName) {
 //					rolesMaster.savePageParamsToSession();
                         var data = {
@@ -304,6 +326,9 @@
                         $("#contentPage").load(url,{backParams:JSON.stringify(data)});
                     });
 
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
                     $.subscribe('org:orgInfoDialog:upAndDownMember', function (event, orgCode, orgId, orgName) {
                         var url = '${contextRoot}/upAndDownMember/initialUpAndDownMember';
                         var orgData = {
@@ -311,8 +336,7 @@
                             orgId: orgId,
                             orgName: orgName
                         }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, orgData);
+                        appendNav("人员关系", url, orgData);
                     });
                 }
             };
@@ -321,13 +345,13 @@
             win.reloadMasterGrid = function () {
                 master.reloadGrid();
             };
-            win.closeDialog = function () {
+            win.parent.closeDialog = function () {
                 master.orgInfoDialog.close();
             };
-            win.showAddOrgInfoDialogSuccPop = function () {
-                $.Notice.success('保存成功');
-            };
-            win.closeAddOrgInfoDialog = function (callback) {
+//            win.parent.showAddOrgInfoDialogSuccPop = function () {
+//                parent._LIGERDIALOG.success('保存成功');
+//            };
+            win.parent.closeAddOrgInfoDialog = function (callback) {
                 if (callback) {
                     callback.call(win);
                     master.reloadGrid();

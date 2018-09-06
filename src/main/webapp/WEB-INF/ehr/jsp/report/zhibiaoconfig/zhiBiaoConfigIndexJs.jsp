@@ -15,7 +15,7 @@
             var conditionArea = null;
             var entryMater = null;
             var versionStage = null;
-            var DimensionMainId =  72;//主维度字典id
+            var DimensionMainId =  72;//默认维度字典id
             var DimensionSlaveId = 73;//从维度字典id
             var DimensionStatusId =  74;//维度状态
             var DimensionMainData = null;
@@ -63,8 +63,8 @@
                     $("#div_weidu_info_grid").css("visibility","hidden");
                     this.loadDataSourceGrid();//加载数据源管理
                     this.loadDataStorageGrid();//加载数据存储管理
-                    this.loadTjDimensionMainGrid();//加载主维度管理
-                    this.loadTjDimensionSlaveGrid();//加载主维度管理
+                    this.loadTjDimensionMainGrid();//加载默认维度管理
+                    this.loadTjDimensionSlaveGrid();//加载默认维度管理
                 },
                 loadDataSourceGrid:function(){
                     if (this.DataSourceGrid)
@@ -75,8 +75,8 @@
                             name: ""
                         },
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: 'id', name: 'id', width: '0.1%', hide: true},
+                            {display: 'dictId', name: 'dictId', width: '0.1%', hide: true},
                             {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '类型', name: 'typeName', width: '10%', isAllowHide: false, align: 'left'},
@@ -87,7 +87,7 @@
                             {display: '修改人', name: 'updateUserName', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/tjDimensionMain/updateTjDimensionMain">
                                 html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a>';
@@ -120,8 +120,8 @@
                             name: ""
                         },
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: 'id', name: 'id', width: '0.1%', hide: true},
+                            {display: 'dictId', name: 'dictId', width: '0.1%', hide: true},
                             {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '类型', name: 'typeName', width: '10%', isAllowHide: false, align: 'left'},
@@ -132,7 +132,7 @@
                             {display: '修改人', name: 'updateUserName', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/tjDimensionMain/updateTjDimensionMain">
                                 html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a>';
@@ -165,8 +165,8 @@
                             name: ""
                         },
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: 'id', name: 'id', width: '0.1%', hide: true},
+                            {display: 'dictId', name: 'dictId', width: '0.1%', hide: true},
                             {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '类型', name: 'typeName', width: '10%', isAllowHide: false, align: 'left'},
@@ -177,7 +177,7 @@
                             {display: '修改人', name: 'updateUserName', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/tjDimensionMain/updateTjDimensionMain">
                                 html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a>';
@@ -210,8 +210,8 @@
                             name: ""
                         },
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: 'id', name: 'id', width: '0.1%', hide: true},
+                            {display: 'dictId', name: 'dictId', width: '0.1%', hide: true},
                             {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '类型', name: 'typeName', width: '10%', isAllowHide: false, align: 'left'},
@@ -222,7 +222,7 @@
                             {display: '修改人', name: 'updateUserName', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/tjDimensionMain/updateTjDimensionMain">
                                 html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a>';
@@ -260,11 +260,11 @@
                         grid = self.DataStorageGrid;
                         searchUrl = '${contextRoot}/tjDataSave/getTjDataSave';
                         value = this.$searchBox2.val();
-                    }else if(activeIndex==2){//主维度管理
+                    }else if(activeIndex==2){//默认维度管理
                         grid = self.TjDimensionMainGrid;
                         searchUrl = '${contextRoot}/tjDimensionMain/getTjDimensionMain';
                         value = this.$searchBox3.val();
-                    }else{//细维度管理
+                    }else{//可选维度管理
                         grid = self.TjDimensionSlaveGrid;
                         searchUrl = '${contextRoot}/tjDimensionSlave/getTjDimensionSlave';
                         value = this.$searchBox4.val();
@@ -303,7 +303,7 @@
                             $("#div_datastorage_info_grid").css("height","100%");
                             $("#div_weidu_info_grid").css("height","0px");
                             $("#div_slave_weidu_info_grid").css("height","0px");
-                        }else if(index==2){//主维度管理
+                        }else if(index==2){//默认维度管理
                             $(".div-datasource-search").hide();
                             $(".div-datastorage-search").hide();
                             $(".div-main-search").show();
@@ -316,7 +316,7 @@
                             $("#div_datastorage_info_grid").css("height","0px");
                             $("#div_weidu_info_grid").css("height","100%");
                             $("#div_slave_weidu_info_grid").css("height","0px");
-                        }else if(index==3){//细维度管理
+                        }else if(index==3){//可选维度管理
                             $(".div-datasource-search").hide();
                             $(".div-datastorage-search").hide();
                             $(".div-main-search").hide();
@@ -342,13 +342,13 @@
                             titleName = "数据源";
                             requestUrl = '${contextRoot}/zhibiaoconfig/dataSourceDialog';
                         }else if(activeIndex==1){//数据存储管理
-                            titleName = "数据源";
+                            titleName = "数据存储";
                             requestUrl = '${contextRoot}/zhibiaoconfig/dataStorageDialog';
-                        }else if(activeIndex==2){//主维度管理
-                            titleName = "主维度";
+                        }else if(activeIndex==2){//默认维度管理
+                            titleName = "默认维度";
                             requestUrl = '${contextRoot}/zhibiaoconfig/weiDuDialog';
-                        }else{//细维度管理
-                            titleName = "细维度";
+                        }else{//可选维度管理
+                            titleName = "可选维度";
                             requestUrl = '${contextRoot}/zhibiaoconfig/xiWeiDuDialog';
                         }
 
@@ -358,7 +358,7 @@
                         else {
                             title = '新增'+titleName;
                         }
-                        entryMater.entryInfoDialog = $.ligerDialog.open({
+                            entryMater.entryInfoDialog = parent._LIGERDIALOG.open({
                             height: 480,
                             width: 480,
                             title: title,
@@ -382,20 +382,20 @@
                         }else if(activeIndex==1){//数据存储管理
                             requestUrl = '${contextRoot}/tjDataSave/deleteTjDataSave';
                             reqParams = {tjDataSaveId:id};
-                        }else if(activeIndex==2){//主维度管理
+                        }else if(activeIndex==2){//默认维度管理
                             requestUrl = '${contextRoot}/tjDimensionMain/deleteTjDimensionMain';
                             reqParams = {tjDimensionMainId:id};
-                        }else{//细维度管理
+                        }else{//可选维度管理
                             requestUrl = '${contextRoot}/tjDimensionSlave/deleteTjDimensionSlave';
                             reqParams = {tjDimensionSlaveId:id};
                         }
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote(requestUrl, {
                                     data: reqParams,
                                     success: function (data) {
-                                        $.Notice.success('删除成功！');
+                                        parent._LIGERDIALOG.success('删除成功！');
                                         entryMater.reloadGrid();
                                     }
                                 });
@@ -408,23 +408,23 @@
                 }
             };
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadEntryMasterGrid = function () {
+            win.parent.reloadEntryMasterGrid = function () {
                 entryMater.reloadGrid();
             };
-            win.closeAddWeiduInfoDialog = function (callback) {
+            win.parent.closeAddWeiduInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     entryMater.reloadGrid();
                 }
                 entryMater.entryInfoDialog.close();
             };
-            win.closeDialog = function (type, msg) {
+            win.parent.closeDialog = function (type, msg) {
                 if (type == 'right')
                     entryMater.closeDl();
                 else
                     entryMater.entryInfoDialog.close();
                 if (msg)
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
             };
             /* *************************** 页面功能 **************************** */
             pageInit();

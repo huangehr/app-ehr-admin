@@ -20,16 +20,23 @@
     </div>
     <div class="m-form-group">
         <label>报表分类：</label>
-        <div class="l-text-wrapper m-form-control essential">
+        <div class="l-text-wrapper m-form-control essential" style="padding-right: 0;">
             <input type="text" data-type="select" class="required"
                    id="reportCategoryId" data-attr-scan="reportCategoryId">
         </div>
     </div>
     <div class="m-form-group">
         <label>报表状态：</label>
-        <div class="l-text-wrapper m-form-control essential">
+        <div class="l-text-wrapper m-form-control essential" style="padding-right: 0;">
             <input type="text" data-type="select" class="required"
                    id="status" data-attr-scan="status">
+        </div>
+    </div>
+    <div class="m-form-group">
+        <label>报表展示类型：</label>
+        <div class="l-text-wrapper m-form-control essential" style="padding-right: 0;">
+            <input type="text" data-type="select" class="required"
+                   id="showType" data-attr-scan="showType">
         </div>
     </div>
     <div class="m-form-group">
@@ -46,12 +53,10 @@
                    id="templatePath" data-attr-scan="templatePath">
         </div>
         <div class="m-form-control">
-            <form id ="uploadForm" enctype="multipart/form-data">
-                <div class="l-button u-btn u-btn-primary u-btn-small f-mt5 btn-file-container">
-                    <span>模版导入</span>
-                    <input type="file" name="file" id="templatePathBtn">
-                </div>
-            </form>
+            <div class="l-button u-btn u-btn-primary u-btn-small f-mt5">
+                <div id="templateBtn">模版导入</div>
+                <div id="filePickerBtnDetail" class="f-dn"></div>
+            </div>
         </div>
     </div>
 

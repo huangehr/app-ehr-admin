@@ -38,7 +38,7 @@
 
                 init: function () {
                     var self = this;
-                    self.$appBrowseMsg.width($(window).width()-630);
+//                    self.$appBrowseMsg.width($(window).width()-630);
                     self.$appRoleComSearch.ligerTextBox({
                         width: 200, isSearch: true, search: function () {
                             var inpEleType = this.find('input').attr('id');
@@ -120,17 +120,17 @@
                                 self.ligerDialogOpen(jsonStr, type, '应用角色>'+model.name+"应用接入", 600, 800);
                                 break;
                             case 'delete':
-                                $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                                parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
                                     if (yes) {
                                         dataModel.updateRemote(url+"deleteAppRoleGroup", {
                                             data: {appGroupId: jsonStr},
                                             async: true,
                                             success: function (data) {
                                                 if (data.successFlg) {
-                                                    $.Notice.success('删除成功。');
+                                                    parent._LIGERDIALOG.success('删除成功。');
                                                     master.reloadAppRoleGrid('appRoleGroup', appRoleId, self.$appRoleGroupSearch.val());
                                                 } else {
-                                                    $.Notice.error(data.errorMsg);
+                                                    parent._LIGERDIALOG.error(data.errorMsg);
                                                 }
                                             }
                                         });
@@ -150,8 +150,8 @@
                     });
                 },
                 ligerDialogOpen: function (jsonStr, type, title, width, height) {
-                    var wait = $.Notice.waitting("请稍后...");
-                    appRoleGroupInfoDialog = $.ligerDialog.open({
+                    var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                    appRoleGroupInfoDialog = parent._LIGERDIALOG.open({
                         title: title,
                         height: width,
                         width: height,
@@ -172,7 +172,7 @@
                 }
             };
 
-            win.closeAppRoleGroupInfoDialog = function (callback) {
+            win.parent.closeAppRoleGroupInfoDialog = function (callback) {
                 appRoleGroupInfoDialog.close();
                 master.reloadAppRoleGrid("appRoleGroup", appRoleId, "");
             };

@@ -59,7 +59,7 @@
 							{display: '创建者', name: 'author', width: '15%',align:'left'},
 							{display: '发布时间', name: 'commitTime', width: '15%', align: 'left'},
 							{display: '继承版本', name: 'baseVersion', width: '15%', align: 'left'},
-							{display: '状态码', name: 'inStage', align: 'left',hide: true},
+							{display: '状态码', name: 'inStage',  width: '0.1%',align: 'left',hide: true},
 							{display: '状态', name: 'inStage', width: '15%', align: 'center',
 								render:function(row){
 									var html = '未发布';
@@ -73,7 +73,7 @@
 								}
 							},
 							{
-								display: '操作', name: 'operator', width: '15%', align: 'center',render: function(row){
+								display: '操作', name: 'operator', minWidth: 120, align: 'center',render: function(row){
 								var _title = "";
 //								if(row.inStage == false){
 //									_title="重新发布";
@@ -129,7 +129,7 @@
 							async: false,
 							success: function (data) {
 								if (data.successFlg) {
-									window.top.$.Notice.error('已经有一个编辑状态的版本，不能再新增！');
+									parent._LIGERDIALOG.error('已经有一个编辑状态的版本，不能再新增！');
 								} else {
 									createNewVersion(data.obj);
 								}
@@ -138,9 +138,9 @@
 					});
 					// 判断数据库是否已有存在的处于编辑状态的版本
 					function createNewVersion(baseVersion){
-						$.ligerDialog.confirm('最新版本将继承'+baseVersion+'版本，确认新增？',function(yes){
+						parent._LIGERDIALOG.confirm('最新版本将继承'+baseVersion+'版本，确认新增？',function(yes){
 							if(yes){
-								var dialog = $.ligerDialog.waitting('正在新版本创建中,请稍候...');
+								var dialog = parent._LIGERDIALOG.waitting('正在新版本创建中,请稍候...');
 								var dataModel = $.DataModel.init();
 								//var baseVersion = cdaVersionInfo.$baseVersion.val();
 								dataModel.createRemote("${contextRoot}/cdaVersion/addVersion", {
@@ -149,9 +149,9 @@
 										dialog.close();
 										if (data.successFlg) {
 											masters.reloadGrid();
-											$.Notice.success('CDA版本新增成功');
+											parent._LIGERDIALOG.success('CDA版本新增成功');
 										} else {
-											window.top.$.Notice.error('CDA版本新增失败');
+											parent._LIGERDIALOG.error('CDA版本新增失败');
 										}
 									},
 								});
@@ -159,43 +159,43 @@
 						});
 					}
 
-					//编辑cda版本
-					$.subscribe('cdaVersion:modify', function (event, strVersion,stage,d) {
-						if(stage=='false'){
-							$.Notice.error('已经发布版本不能编辑！');
-							return
-						}else{
-							var mode = 'modify';
-							masters.cdaVersionInfoDialog = $.ligerDialog.open({
-								height:460,
-								width: 420,
-								isDrag:true,
-								title:'标准版本基本信息',
-								url: '${contextRoot}/cdaVersion/getVersionById',
-								load: true,
-								urlParms: {
-									strVersion: strVersion,
-									mode:mode,
-								}
-							});
-						}
-					});
+					<%--//编辑cda版本--%>
+					<%--$.subscribe('cdaVersion:modify', function (event, strVersion,stage,d) {--%>
+						<%--if(stage=='false'){--%>
+							<%--parent._LIGERDIALOG.error('已经发布版本不能编辑！');--%>
+							<%--return--%>
+						<%--}else{--%>
+							<%--var mode = 'modify';--%>
+							<%--masters.cdaVersionInfoDialog = parent._LIGERDIALOG.open({--%>
+								<%--height:460,--%>
+								<%--width: 420,--%>
+								<%--isDrag:true,--%>
+								<%--title:'标准版本基本信息',--%>
+								<%--url: '${contextRoot}/cdaVersion/getVersionById',--%>
+								<%--load: true,--%>
+								<%--urlParms: {--%>
+									<%--strVersion: strVersion,--%>
+									<%--mode:mode,--%>
+								<%--}--%>
+							<%--});--%>
+						<%--}--%>
+					<%--});--%>
 					//删除编辑状态的cda版本
 					$.subscribe('cdaVersion:del', function (event, strVersion,stage,d) {
 						if(stage=='false'){
-							$.Notice.error('已发布版本不能删除。');
+							parent._LIGERDIALOG.error('已发布版本不能删除。');
 						}else{
-							$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
+							parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
 								if(yes){
 									var dataModel = $.DataModel.init();
 									masters.reloadGrid();
 									dataModel.updateRemote("${contextRoot}/cdaVersion/deleteStageVersion",{data:{strVersion: strVersion},
 										success: function(data) {
 											if(data.successFlg){
-												$.Notice.success('删除成功。');
+												parent._LIGERDIALOG.success('删除成功。');
 												masters.reloadGrid();
 											}else{
-												$.Notice.error('删除失败。');
+												parent._LIGERDIALOG.error('删除失败。');
 											}
 										}
 									});
@@ -205,17 +205,17 @@
 					});
 					//cda版本发布
 					$.subscribe('cdaVersion:commitVersion', function (event, strVersion,stage,d) {
-						$.ligerDialog.confirm('发布后将不可更改，确认发布？',function(yes){
+						parent._LIGERDIALOG.confirm('发布后将不可更改，确认发布？',function(yes){
 							if(yes){
-								var _dialog = $.ligerDialog.waitting('正在发布中,请稍候...');
+								var _dialog = parent._LIGERDIALOG.waitting('正在发布中,请稍候...');
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote("${contextRoot}/cdaVersion/commitVersion",{data:{strVersion: strVersion},
 									success: function(data) {
 										if(data.successFlg){
-											$.Notice.success('发布成功。');
+											parent._LIGERDIALOG.success('发布成功。');
 											masters.reloadGrid();
 										}else{
-											$.Notice.error('发布失败！');
+											parent._LIGERDIALOG.error('发布失败！');
 										}
 									},
 									complete:function(){
@@ -233,21 +233,21 @@
 								if(data.successFlg){
 									rollback(strVersion);
 								}else{
-									$.Notice.error('非最新版本不能回滚为编辑状态！');
+									parent._LIGERDIALOG.error('非最新版本不能回滚为编辑状态！');
 								}
 							}
 						});
 						function rollback(strVersion){
-							$.ligerDialog.confirm('确认修改为编辑状态？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
+							parent._LIGERDIALOG.confirm('确认修改为编辑状态？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
 								if(yes){
 									var dataModel = $.DataModel.init();
 									dataModel.updateRemote("${contextRoot}/cdaVersion/rollbackToStage",{data:{strVersion: strVersion},
 										success: function(data) {
 											if(data.successFlg){
-												$.Notice.success('修改版本状态成功。');
+												parent._LIGERDIALOG.success('修改版本状态成功。');
 												masters.reloadGrid();
 											}else{
-												$.Notice.error('修改版本状态失败。');
+												parent._LIGERDIALOG.error('修改版本状态失败。');
 											}
 										}
 									});
@@ -259,16 +259,16 @@
 				}
 			};
 			/* ************************* Dialog页面回调接口 ************************** */
-			win.reloadMasterUpdateGrid = function () {
-				masters.reloadGrid();
-			};
-			win.closeCdaVersionInfoDialog = function (callback) {
-				if(callback){
-					callback.call(win);
-					masters.reloadGrid();
-				}
-				masters.cdaVersionInfoDialog.close();
-			};
+			<%--win.reloadMasterUpdateGrid = function () {--%>
+				<%--masters.reloadGrid();--%>
+			<%--};--%>
+			<%--win.closeCdaVersionInfoDialog = function (callback) {--%>
+				<%--if(callback){--%>
+					<%--callback.call(win);--%>
+					<%--masters.reloadGrid();--%>
+				<%--}--%>
+				<%--masters.cdaVersionInfoDialog.close();--%>
+			<%--};--%>
 			/* ************************* Dialog页面回调接口结束 ************************** */
 
 			/* ************************* 页面初始化 ************************** */

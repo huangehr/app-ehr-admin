@@ -7,6 +7,7 @@
         method: 'post',
         id: 'l_upd',
         field: 'file',
+        str: '导入',
         result: undefined,
         onUploadSuccess: function () {},
         onDlgClose: function () {},
@@ -20,10 +21,11 @@
                     'left: -100px; " accept="application/vnd.ms-excel" >' +
         '</form>';
 
-    var btnStyle =
-        '<div style="position: absolute; top: 0px" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">' +
-            '<span>导入</span>' +
+    var btnStyle = function (str) {
+        return '<div style="position: absolute; top: 0px;left: 0" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">' +
+        '<span>' + str + '</span>' +
         '</div>';
+    }
 
 
     function UploadFile(el, opts){
@@ -42,7 +44,7 @@
         g._el.css("overflow", "hidden");
         g._el.css("width", "84px");
         g._el.append($form);
-        g._el.append(btnStyle);
+        g._el.append(btnStyle(p.str));
 
         g._bindEvt();
 

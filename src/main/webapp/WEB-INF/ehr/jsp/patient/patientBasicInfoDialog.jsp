@@ -158,7 +158,8 @@
     </div>
     <div class="div-appRole-grid-scrollbar" id="div_checked_data" style="width: 260px;height: 470px;border:1px solid #dcdcdc;display: inline-block;background: #fff;">
         <div class="h-40 div-header-content">
-            <div class="div-header">角色</div>
+            <div class="div-header" style="width: 50%">应用</div>
+            <div class="div-header" style="width: 50%">角色</div>
             <%--<div class="div-opera-header">操作</div>--%>
         </div>
         <%--<div class="h-40 div-item">--%>

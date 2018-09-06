@@ -2,7 +2,7 @@ package com.yihu.ehr.std.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.standard.cdatype.CdaTypeDetailModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -12,7 +12,6 @@ import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,19 +38,6 @@ public class CdaTypeController extends BaseUIController {
     @Autowired
     ObjectMapper objectMapper;
 
-    @RequestMapping("index")
-    public String cdaTypeInitial(Model model) {
-        model.addAttribute("contentPage", "std/cdaType/index");
-        return "pageView";
-    }
-
-    @RequestMapping("typeupdate")
-    public String typeupdate(Model model,HttpServletRequest request) {
-        UserDetailModel user = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        model.addAttribute("UserId", user.getId());
-        model.addAttribute("contentPage", "std/cdaType/CdaTypeDetail");
-        return "generalView";
-    }
 
     @RequestMapping("getTreeGridData")
     @ResponseBody
@@ -63,16 +49,14 @@ public class CdaTypeController extends BaseUIController {
         if (StringUtils.isEmpty(codeName)){
             codeName = "";
         }
-        try{
+        try {
             Map<String,Object> params = new HashMap<>();
             params.put("code_name",codeName);
             strResult = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return strResult;
-        }catch(Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -90,12 +74,10 @@ public class CdaTypeController extends BaseUIController {
             params.put("filters",filters);
             String _rus = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return _rus;
-        }catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("getCdaTypeById")
@@ -106,12 +88,10 @@ public class CdaTypeController extends BaseUIController {
         try{
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("delteCdaTypeInfo")
@@ -140,10 +120,9 @@ public class CdaTypeController extends BaseUIController {
                 result.setSuccessFlg(false);
                 result.setErrorMsg("cda类别删除失败");
             }
-        }catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -153,11 +132,11 @@ public class CdaTypeController extends BaseUIController {
     //新增、修改的保存合二为一
     public Object SaveCdaType(String dataJson,HttpServletRequest request) {
         Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
-        String url = "/cda_types";
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String createUserId = userDetailModel.getId();
         try {
+            envelop.setSuccessFlg(false);
+            String url = "/cda_types";
+            UsersModel userDetailModel = getCurrentUserRedis(request);
+            String createUserId = userDetailModel.getId();
             CdaTypeDetailModel detailModel = objectMapper.readValue(dataJson,CdaTypeDetailModel.class);
             if(StringUtils.isEmpty(detailModel.getCode())){
                 envelop.setErrorMsg("cda类别编码不能为空！");
@@ -197,11 +176,9 @@ public class CdaTypeController extends BaseUIController {
             String envelopStrUpdate = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return envelopStrUpdate;
         } catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     /**
@@ -234,11 +211,9 @@ public class CdaTypeController extends BaseUIController {
             args.put("id",strId);
             String envelopStrOthers = HttpClientUtil.doGet(comUrl+urlGetOthers,args,username,password);
             return envelopStrOthers;
-        }catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -259,11 +234,9 @@ public class CdaTypeController extends BaseUIController {
 
             return envelop.getDetailModelList();
         } catch (Exception ex) {
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
 
@@ -282,11 +255,9 @@ public class CdaTypeController extends BaseUIController {
             params.put("ids",ids);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

@@ -60,12 +60,12 @@
 							searchNm: ''
 						},
 						columns: [
-							{display:'id',name:'id',hide:true},
+							{display:'id',name:'id', width: '0.1%',hide:true},
 							{display: '疾病编码', name: 'code', width: '20%', align: 'left'},
 							{display: '疾病名称', name: 'name', width: '25%',align:'left'},
 							{display: '关联诊断', name: 'icd10Name', width: '35%',align:'left'},
 							{
-								display: '操作', name: 'operator', width: '20%', align: 'center',render: function(row){
+								display: '操作', name: 'operator', minWidth: 170, align: 'center',render: function(row){
 								var html = '';
 								html += '<sec:authorize url="/specialdict/hp/hpIcd10Relation/initial"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hpIcd10:relation:info:open", row.id) + '">关联诊断</a></sec:authorize>';
 								html += '<sec:authorize url="/specialdict/hp/dialog/hp"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "hp:info:open", row.id,'modify') + '"></a></sec:authorize>';
@@ -108,7 +108,7 @@
 						}else{
 							title = '新增字典项'
 						};
-						self.infoDialog = $.ligerDialog.open({
+						self.infoDialog = parent._LIGERDIALOG.open({
 							height:400,
 							width:500,
 							title:title,
@@ -131,7 +131,7 @@
 						if(!ids){
 							var rows = infoGrid.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn('请选择要删除的数据行！');
+                                parent._LIGERDIALOG.warn('请选择要删除的数据行！');
 								return;
 							}
 							for(var i=0;i<rows.length;i++){
@@ -139,17 +139,17 @@
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
 						}
-						$.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
 							if(r){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/specialdict/hp/deletes',{
 									data:{ids:ids},
 									success:function(data){
 										if(data.successFlg){
-											$.Notice.success( '删除成功！');
+                                            parent._LIGERDIALOG.success( '删除成功！');
 											masters.reloadGrid();
 										}else{
-											$.Notice.error('删除失败！');
+                                            parent._LIGERDIALOG.error('删除失败！');
 										}
 									}
 								});
@@ -160,7 +160,7 @@
 					//管理ICD10事件
 					$.subscribe('hpIcd10:relation:info:open',function(event,id){
 						var title = '关联诊断';
-						self.relationInfoDialog = $.ligerDialog.open({
+						self.relationInfoDialog = parent._LIGERDIALOG.open({
 							height:500,
 							width:700,
 							title:title,
@@ -169,20 +169,20 @@
 								hpId:id
 							},
 							isHidden: false,
-							opener: true,
-							load:true
+//							opener: true,
+//							load:true
 						});
 					});
 				},
 			};
 			/* ************************* Dialog页面回调接口 ************************** */
-			win.reloadHpInfoGrid = function () {
+			win.parent.reloadHpInfoGrid = function () {
 				masters.reloadGrid();
 			};
-			win.closeHpInfoDialog = function () {
+			win.parent.closeHpInfoDialog = function () {
 				masters.infoDialog.close();
 			};
-			win.closeHpRelationInfoDialog = function () {
+			win.parent.closeHpRelationInfoDialog = function () {
 				masters.relationInfoDialog.close();
 			};
 			/* ************************* Dialog页面回调接口结束 ************************** */

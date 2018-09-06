@@ -151,9 +151,13 @@ public class ExtendService<T> {
                 if(e2 != 200) {
                     throw new Exception("请求出错: " + postMethod.getStatusLine());
                 }
-
-                byte[] responseBody1 = postMethod.getResponseBody();
-                response = new String(responseBody1, "UTF-8");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(postMethod.getResponseBodyAsStream(), "UTF-8"));
+                StringBuffer stringBuffer = new StringBuffer();
+                String str = "";
+                while((str = reader.readLine()) != null){
+                    stringBuffer.append(str);
+                }
+                response = stringBuffer.toString();
             } catch (HttpException var16) {
                 var16.printStackTrace();
             } catch (IOException var17) {

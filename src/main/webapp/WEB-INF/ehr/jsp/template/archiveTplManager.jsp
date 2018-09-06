@@ -14,29 +14,26 @@
     <!-- ####### 查询条件部分 ####### -->
     <div id="headerArea" class="m-retrieve-area f-dn f-pr m-form-inline" data-role-form>
 
-        <div class="f-fr version" >
-            <input type="text" data-type="select" id="inp_searchVersion" data-attr-scan="version">
-        </div>
+        <%--<div class="f-fr version" >--%>
+            <%--<input type="text" data-type="select" id="inp_searchVersion" data-attr-scan="version">--%>
+        <%--</div>--%>
 
         <div style="height: 40px" >
 
-            <div id="conditionArea" class="f-mr10" align="right" style="display: none">
+            <div id="conditionArea" align="right" style="display: none">
                 <div class="body-head f-h40" align="left">
-                   <%-- <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/organization/initial');"  class="f-fwb">返回上一层 </a>--%>
-                    <a href="javascript:;" onclick="getUrl();">返回上一层</a>
                     <input id="adapter_plan_id" value='${adapterPlanId}' hidden="none" />
-                    <span class="f-ml20">机构类型：</span><input class="f-fwb f-mt10" readonly id="h_org_type"/>
+                    <span class="">机构类型：</span><input class="f-fwb f-mt10" readonly id="h_org_type"/>
                     <span class="f-ml20">机构代码：</span><input class="f-mt10" readonly id="h_org_code"/>
                     <span class="f-ml20">机构全称：</span><input class="f-mt10" readonly id="h_org_name"/>
                 </div>
             </div>
 
             <div class="m-form-control" id="div-searchNm" style="float: left">
-                <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/organization/initial');"  class="f-fwb hidden" id="a-back">返回上一层 </a>
+                <%--<a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/organization/initial');"  class="f-fwb hidden" id="a-back">返回上一层 </a>--%>
                 <!--输入框带查询-->
-                <input type="text" id="inp_searchOrgName" placeholder="请输入模板或医疗机构" class="f-ml10 " data-attr-scan="orgName"/>
+                <input type="text" id="inp_searchOrgName" placeholder="请输入模板名称" class="f-ml10 " data-attr-scan="orgName"/>
             </div>
-
             <sec:authorize url="/template/update">
             <div class="m-form-control m-form-control-fr f-ml10" style="float: right;">
                 <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" onclick="javascript:$.publish('tpl:tplInfo:open',['','new'])" >
@@ -44,6 +41,9 @@
                 </div>
             </div>
             </sec:authorize>
+            <div class="f-fr version" >
+                <input type="text" data-type="select" id="inp_searchVersion" data-attr-scan="version">
+            </div>
 
         </div>
     </div>

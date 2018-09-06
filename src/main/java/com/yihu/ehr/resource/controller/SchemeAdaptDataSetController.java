@@ -58,7 +58,7 @@ public class SchemeAdaptDataSetController extends BaseUIController {
         Map<String, Object> params = new HashMap<String, Object>();
         StringBuffer stringBuffer = new StringBuffer();
         if(StringUtils.isNotBlank(adapterSchemeId)){
-            stringBuffer.append("schemaId=").append(adapterSchemeId).append(";");
+            stringBuffer.append("schemeId=").append(adapterSchemeId).append(";");
         }else{
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("请选择资源适配方案");
@@ -82,10 +82,9 @@ public class SchemeAdaptDataSetController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
 
@@ -107,10 +106,8 @@ public class SchemeAdaptDataSetController extends BaseUIController {
             resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return resultStr;
         }catch(Exception ex){
-            LogService.getLogger(SchemeAdaptController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
       }
     }

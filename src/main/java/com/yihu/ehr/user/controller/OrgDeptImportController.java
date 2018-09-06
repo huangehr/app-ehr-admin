@@ -2,9 +2,8 @@ package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.adapter.controller.ExtendController;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
-import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.user.controller.model.OrgDeptMsgModel;
 import com.yihu.ehr.user.controller.service.OrgDeptService;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -49,7 +48,7 @@ public class OrgDeptImportController extends ExtendController<OrgDeptService> {
     @ResponseBody
     public void importOrgDeptMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel user = getCurrentUserRedis(request);
         try {
             writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
@@ -63,18 +62,15 @@ public class OrgDeptImportController extends ExtendController<OrgDeptService> {
             Set<String> codes = findExistCodeInOrgDept(toJson(excelReader.getRepeat().get("code")));
             //获取机构表的机构编码
             Set<String> orgCodes = findExistOrgCodeInOrganization(toJson(excelReader.getRepeat().get("orgCode")));
-//            Set<String> orgNames = findExistOrgNameInOrgDept(toJson(excelReader.getRepeat().get("name")));
-
-
             writerResponse(response, 35+"", "l_upd_progress");
             OrgDeptMsgModel model;
-            for(int i=0; i<correctLs.size(); i++){
+            for(int i=0; i<correctLs.size(); i++) {
                 model = correctLs.get(i);
-                //, Set<String> emails, Set<String> userEmails
-                if(validate(model, codes, orgCodes)==0)
+                if (validate(model, codes, orgCodes) == 0) {
                     errorLs.add(model);
-                else
+                }else{
                     saveLs.add(model);
+                }
             }
             for(int i=0; i<errorLs.size(); i++){
                 model = errorLs.get(i);
@@ -88,13 +84,14 @@ public class OrgDeptImportController extends ExtendController<OrgDeptService> {
                 rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
                 writerResponse(response, 75 + "", "l_upd_progress");
             }
-            if(saveLs.size()>0)
+            if(saveLs.size()>0) {
                 saveMeta(toJson(saveLs));
-
-            if(rs.size()>0)
+            }
+            if(rs.size()>0) {
                 writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
-            else
+            }else{
                 writerResponse(response, 100 + "", "l_upd_progress");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             if(e.getMessage().equals("模板不正确，请下载新的模板，并按照示例正确填写后上传！")) {
@@ -158,8 +155,9 @@ public class OrgDeptImportController extends ExtendController<OrgDeptService> {
         Map map = new HashMap<>();
         map.put("orgDepts", orgDepts);
         EnvelopExt<OrgDeptMsgModel> envelop = getEnvelopExt(service.doPost(service.comUrl + "/orgDept/batch", map), OrgDeptMsgModel.class);
-        if(envelop.isSuccessFlg())
+        if(envelop.isSuccessFlg()){
             return envelop.getDetailModelList();
+        }
         throw new Exception("保存失败！");
     }
 
@@ -180,17 +178,14 @@ public class OrgDeptImportController extends ExtendController<OrgDeptService> {
         try{
             File file = new File( TemPath.getFullPath(datePath + TemPath.separator + filenName, parentFile) );
             List ls = (List) ObjectFileRW.read(file);
-
             int start = (page-1) * rows;
             int total = ls.size();
             int end = start + rows;
             end = end > total ? total : end;
-
             List g = new ArrayList<>();
             for(int i=start; i<end; i++){
                 g.add( ls.get(i) );
             }
-
             Envelop envelop = new Envelop();
             envelop.setDetailModelList(g);
             envelop.setTotalCount(total);

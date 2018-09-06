@@ -41,15 +41,15 @@
                                 name: ""
                             },
                             columns: [
-                                {display: 'id', name: 'id', hide: true},
+                                {display: 'id', name: 'id', width: '0.1%', hide: true},
                                 {display: '编码', name: 'code', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '父级ID', name: 'parentName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '备注', name: 'note', width: '25%', isAllowHide: false, align: 'left'},
                                 {
-                                    display: '操作', name: 'operator', width: '25%', align: 'center',render: function (row) {
+                                    display: '操作', name: 'operator', minWidth: 120, align: 'center',render: function (row) {
                                         var html = '';
-                                        html += '<sec:authorize url="/"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "health:healthBusinessInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
+                                        html += '<sec:authorize url="/health/editHealthBusiness"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "health:healthBusinessInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
                                         html += '<sec:authorize url="/health/deleteHealthBusiness"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "health:healthBusinessInfo:delete", row.id) + '"></a></sec:authorize>';
                                         return html;
                                     }
@@ -93,7 +93,7 @@
                         else {
                             title = '新增指标分类';
                         }
-                        dictMaster.dictInfoDialog = $.ligerDialog.open({
+                        dictMaster.dictInfoDialog = parent._LIGERDIALOG.open({
                             height: 400,
                             width: 480,
                             title: title,
@@ -109,18 +109,17 @@
 
                     $.subscribe('health:healthBusinessInfo:delete', function (event, id) {
 
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote('${contextRoot}/quota/deleteQuotaCategory', {
                                     data: {id: parseInt(id)},
                                     success: function (data) {
-                                        debugger
                                         if(data.successFlg){
-                                            $.Notice.success('删除成功！');
+                                            parent._LIGERDIALOG.success('删除成功！');
                                             dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
                                         }else{
-                                            $.Notice.error(data.errorMsg);
+                                            parent._LIGERDIALOG.error(data.errorMsg);
                                         }
                                     }
                                 });
@@ -132,15 +131,15 @@
             };
 
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadMasterGrid = function () {
+            win.parent.reloadMasterGrid = function () {
                 dictMaster.reloadGrid();
             };
-            win.closeDialog = function (type, msg) {
+            win.parent.closeDialog = function (type, msg) {
                 dictMaster.dictInfoDialog.close();
                 if (msg)
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
             };
-            win.closeZhiBiaoInfoDialog = function (callback) {
+            win.parent.closeZhiBiaoInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     dictMaster.reloadGrid();

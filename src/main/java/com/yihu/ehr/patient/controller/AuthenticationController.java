@@ -1,7 +1,7 @@
 package com.yihu.ehr.patient.controller;
 
 import com.yihu.ehr.agModel.patient.AuthenticationModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -100,19 +100,17 @@ public class AuthenticationController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(AuthenticationController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
     //认证状态修改
     @RequestMapping("/updateStatus")
     @ResponseBody
     public Object updateStatus(String id,String status,HttpServletRequest request){
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         Envelop envelop = new Envelop();
         try{
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             String urlGet = "/patient/Authentication/"+id;
             String envelopStrGet = HttpClientUtil.doGet(comUrl+urlGet,username,password);
             envelop = getEnvelop(envelopStrGet);
@@ -128,8 +126,8 @@ public class AuthenticationController extends BaseUIController {
                 return HttpClientUtil.doPut(comUrl + url, params,username,password);
             }
         }catch (Exception ex){
-            LogService.getLogger(AuthenticationController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         envelop.setSuccessFlg(false);
         return envelop;
@@ -152,8 +150,9 @@ public class AuthenticationController extends BaseUIController {
         } catch (IOException e) {
             LogService.getLogger(PatientController.class).error(e.getMessage());
         } finally {
-            if (outputStream != null)
+            if (outputStream != null) {
                 outputStream.close();
+            }
         }
     }
 

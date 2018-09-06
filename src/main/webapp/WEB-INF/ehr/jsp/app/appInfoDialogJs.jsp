@@ -12,6 +12,7 @@
 		var catalogDictId = 1;
 		var statusDictId = 2;
         var sourceTypeDictId = 38;
+        var manageTypeDictId = 94;
         var app = {};
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -31,6 +32,9 @@
 			$appId: $("#inp_app_id"),
 			$secret: $("#inp_app_secret"),
 			$url: $("#inp_url"),
+			$outUrl: $("#inp_out_url"),
+			$manageType: $("#inp_dialog_manageType"),
+            $doctorManageType: $("#inp_doctorManageType"),
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
@@ -48,6 +52,7 @@
 				this.initDDL(catalogDictId, this.$catalog);
 				this.initDDL(statusDictId, this.$status);
                 this.initDDL(sourceTypeDictId, this.$sourceType);
+                this.initDDL(manageTypeDictId, this.$manageType);
 
 				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{filters: "activityFlag=1;"})
                 this.$tags.ligerTextBox({width:240});
@@ -58,6 +63,7 @@
 				this.$appId.ligerTextBox({width:240});
 				this.$secret.ligerTextBox({width:240});
 				this.$url.ligerTextBox({width:240});
+				this.$outUrl.ligerTextBox({width:240});
                 this.$description.ligerTextBox({width:240, height: 50 });
                 var mode = '${mode}';
 				if(mode != 'view'){
@@ -72,6 +78,7 @@
                  //$("input,select", this.$form).prop('disabled', false);
 				}
                 this.$form.attrScan();
+                debugger
                 if(mode !='new'){
                     app = ${model};
                     this.$form.Fields.fillValues({
@@ -85,8 +92,11 @@
                         id:app.id,
                         secret:app.secret,
                         url:app.url,
+                        outUrl:app.outUrl,
                         description:app.description,
-                        code: app.code
+                        code: app.code,
+                        manageType: app.manageType,
+                        doctorManageType:app.doctorManageType
                     });
 					$("#inp_org_code").ligerGetComboBoxManager().setValue(app.org);
 					$("#inp_org_code").ligerGetComboBoxManager().setText(app.orgName);
@@ -139,6 +149,7 @@
                     }
                 });
                 this.$btnSave.click(function () {
+                    debugger
                     if(validator.validate()){
                         var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                         var role = '';
@@ -150,17 +161,15 @@
                         if('${mode}' == 'new'){
                             var values = self.$form.Fields.getValues();
                             values.role = role;
-//                            debugger;
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote("${contextRoot}/app/createApp",{data: $.extend({}, values),
                                 success: function(data) {
                                     wait.close();
                                     if (data.successFlg) {
                                         $.Notice.success('新增成功！');
-                                        closeDialog(function () {
-                                        });
+                                        closeDialog();
                                     } else {
-                                        window.top.$.Notice.error(data.errorMsg);
+                                        $.Notice.error(data.errorMsg);
                                     }
                                 }});
                         }else{
@@ -175,7 +184,7 @@
                                        closeDialog(function () {
                                         });
                                     } else {
-                                        window.top.$.Notice.error(data.errorMsg);
+                                        $.Notice.error(data.errorMsg);
                                     }
                                 }});
                         }
@@ -212,12 +221,12 @@
                                 fileUrl = returndata;
                             }else{
 //                                alert("上传失败");
-                                $.Notice.success('上传失败');
+                                $.Notice.error('上传失败');
                             }
                         },
                         error: function (returndata) {
 //                            alert("上传失败");
-                            $.Notice.success('上传失败');
+                            $.Notice.error('上传失败');
                         }
                     });
                     return fileUrl;

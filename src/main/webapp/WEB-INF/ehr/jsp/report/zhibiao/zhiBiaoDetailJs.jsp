@@ -43,12 +43,11 @@
                             self.reloadGrid();
                         }
                     });
-                    debugger
                     $("#div_relation_grid").show()
                     $("#div_slave_grid").hide();
                     $(".div-slave-search").hide();
-                    this.loadMainGrid();//加载主维度值
-                    this.loadSlaveGrid();//加载细维度值
+                    this.loadMainGrid();//加载默认维度值
+                    this.loadSlaveGrid();//加载可选维度值
                     this.bindEvents();
                 },
                 loadMainGrid:function(){
@@ -217,7 +216,7 @@
                     var searchNmEntry = this.$searchNm.val();
                     var curGrid = this.grid;
                     var reqUrl = '${contextRoot}/tjDimensionMain/getTjDimensionMainInfo';
-                    if($(".pop_tab li.cur").index()==1){//细维度
+                    if($(".pop_tab li.cur").index()==1){//可选维度
                         searchNmEntry = this.$slaSearchNm.val();
                         curGrid = this.slaveGrid;
                         reqUrl = '${contextRoot}/tjDimensionSlave/getTjDimensionSlaveInfo';
@@ -317,7 +316,7 @@
 
                     $("#div_slave_relation").on("click",".grid_delete",function(){
                         var itemCode = $(this).closest(".div-item").attr("data-code");
-                        var selectedData = self.grid.getSelectedRows();
+                        var selectedData = self.slaveGrid.getSelectedRows();
                         var rowdata = null;
                         for(var i=0;i<selectedData.length;i++){
                             if(selectedData[i].code==itemCode){
@@ -325,7 +324,7 @@
                                 break;
                             }
                         }
-                        if(rowdata) self.grid.unselect(rowdata);//取消选中行
+                        if(rowdata) self.slaveGrid.unselect(rowdata);//取消选中行
                         $("#div_slave_relation").find(".div-item[data-code="+itemCode+"]").remove();
                     })
                 },

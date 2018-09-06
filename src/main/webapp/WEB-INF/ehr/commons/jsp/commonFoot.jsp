@@ -11,6 +11,7 @@
     })
 </script>
 <%--<script src="${staticRoot}/common/base.js"></script>--%>
+<script src="${staticRoot}/Scripts/bluebird.core.js" ></script>
 <script src="${staticRoot}/module/cookie.js"></script>
 <script src="${staticRoot}/module/util.js"></script>
 <script src="${staticRoot}/module/juicer.js"></script>
@@ -55,12 +56,14 @@
 <script src="${staticRoot}/lib/plugin/scrollbar/jquery.mCustomScrollbar.js"></script>
 <script src="${staticRoot}/lib/plugin/upload/webuploader.js"></script>
 <script src="${staticRoot}/lib/plugin/upload/upload.js"></script>
+<script src="${staticRoot}/lib/plugin/underscore/underscore.js"></script>
 
 <script src="${staticRoot}/lib/ligerui/custom/ligerGridEx.js"></script>
 <script src="${staticRoot}/lib/ligerui/custom/customCombo.js"></script>
 <script src="${staticRoot}/lib/ligerui/custom/cyc-menu.js"></script>
 <script src="${staticRoot}/lib/ligerui/custom/cyc-linkage.js"></script>
 <script src="${staticRoot}/lib/ligerui/custom/cyc-big.js"></script>
+<script src="${staticRoot}/source/vue.js"></script>
 
 <script src="${staticRoot}/lib/ligerui/custom/jquery.mousewheel.js"></script>
 <script src="${staticRoot}/lib/plugin/echarts/2.2.7/js/echarts-all.js"></script>

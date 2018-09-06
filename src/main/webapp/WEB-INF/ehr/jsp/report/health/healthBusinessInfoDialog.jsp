@@ -36,7 +36,7 @@
         </div>
     </div>
 
-    <div class="m-form-control pane-attribute-toolbar" style="text-align: center;">
+    <div class="m-form-control pane-attribute-toolbar" style="text-align: right;">
         <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" id="div_update_btn">
             <span>保存</span>
         </div>

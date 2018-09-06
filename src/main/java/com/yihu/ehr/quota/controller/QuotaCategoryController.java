@@ -79,36 +79,23 @@ public class QuotaCategoryController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(QuotaCategoryController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     @RequestMapping("deleteQuotaCategory")
     @ResponseBody
     public Object deleteQuotaCategory(Integer id) {
-        String url = "/quotaCategory/delete";
-        String resultStr = "";
-        Envelop result = new Envelop();
+        String url = "/basic/api/v1.0/quotaCategory/delete";
         Map<String, Object> params = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-
         params.put("id", id);
         try {
-            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
-            if ("true".equals(resultStr)) {
-                result.setSuccessFlg(true);
-            } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
-            }
-            return result;
+            String resultStr = HttpClientUtil.doDelete(adminInnerUrl + url, params, username, password);
+            return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(e.getMessage());
         }
     }
 
@@ -172,8 +159,8 @@ public class QuotaCategoryController extends BaseUIController {
                 return envelopStr;
             }
         }catch (Exception ex){
-            LogService.getLogger(QuotaCategoryController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -229,10 +216,8 @@ public class QuotaCategoryController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(QuotaCategoryController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -252,10 +237,8 @@ public class QuotaCategoryController extends BaseUIController {
             }
             return list;
         } catch (Exception ex) {
-            LogService.getLogger(QuotaCategoryController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return list;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

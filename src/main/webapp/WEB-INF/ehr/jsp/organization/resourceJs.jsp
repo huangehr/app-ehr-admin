@@ -158,12 +158,12 @@
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
-							{display: '资源名称', name: 'name', width: '15%', align: 'left'},
-							{display: '资源代码', name: 'code', width: '15%', align: 'left'},
+							{display: '视图名称', name: 'name', width: '15%', align: 'left'},
+							{display: '视图代码', name: 'code', width: '15%', align: 'left'},
 							{display: '数据源', name: 'rsInterfaceName', width: '15%', align: 'left'},
-							{display: '资源分类', name: 'categoryName', width: '15%', align: 'left'},
-							{display: '资源分类Id', name: 'categoryId',hide:true},
-							{display: '资源说明', name: 'description', width: '20%', align: 'left'},
+							{display: '视图分类', name: 'categoryName', width: '15%', align: 'left'},
+							{display: '视图分类Id', name: 'categoryId',hide:true},
+							{display: '视图说明', name: 'description', width: '20%', align: 'left'},
 							{display: '是否授权', name: 'status', width: '10%', render: function (row) {
 								if(orgRsIds.indexOf(row.id)<0){
 									return '否'
@@ -225,7 +225,7 @@
 						if(!ids){
 							var rows = master.resourceInfoGrid.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn('请选择要授权给应用的资源！');
+								$.Notice.warn('请选择要授权给应用的视图！');
 								return;
 							}
 							for(var i=0;i<rows.length;i++){
@@ -236,11 +236,11 @@
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
 							if(Util.isStrEmpty(ids)){
-								$.Notice.warn( '所选资源都已授权！');
+								$.Notice.warn( '所选视图都已授权！');
 								return;
 							}
 						}
-						$.Notice.confirm('确认要授权所选资源？', function (r) {
+						$.Notice.confirm('确认要授权所选视图？', function (r) {
 							if(r){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/organization/resource/OrgGrants',{
@@ -269,7 +269,7 @@
 						if(!ids){
 							var rows = master.resourceInfoGrid.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn('请选择要删除的授权资源！');
+								$.Notice.warn('请选择要删除的授权视图！');
 								return;
 							}
 							for(var i=0;i<rows.length;i++){
@@ -280,11 +280,11 @@
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
 							if(Util.isStrEmpty(ids)){
-								$.Notice.warn('所选资源都未授权！');
+								$.Notice.warn('所选视图都未授权！');
 								return;
 							}
 						}
-						$.Notice.confirm('确认要取消授权所选资源？', function (r) {
+						$.Notice.confirm('确认要取消授权所选视图？', function (r) {
 							if(r){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/organization/resource/cancel',{

@@ -25,10 +25,17 @@
 			$code: $("#inp_code"),
 			$interface: $("#inp_interface"),
 			$grantType: $('input[name="grantType"]', this.$form),
-			$dataSource: $('input[name="dataSource"]', this.$form),
+//			$dataSource: $('input[name="dataSource"]', this.$form),
+            $dataSource: $('#dataSource'),
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
+            $echartType: $("#echartType"),
+			$dimension: $("#dimension"),
+			$dataMeasurement: $("#dataMeasurement"),
+			$dataUnit: $("#dataUnit"),
+			$dataPosition: $("#dataPosition"),
+
 
 			init: function () {
 				this.initForm();
@@ -40,7 +47,30 @@
 				this.$code.ligerTextBox({width:240});
 				this.$description.ligerTextBox({width:240, height: 120 });
 				this.$grantType.ligerRadio();
-				this.$dataSource.ligerRadio();
+                this.$dataSource.ligerTextBox({width:240});
+                this.$echartType.ligerComboBox({
+                    data: [
+                        {text:"混合图形", id:"mixed"},
+                        {text:"数值", id:"data"},
+                        {text:"柱状图", id:"bar"},
+                        {text:"线形图", id:"line"},
+                        {text:"饼图", id:"pie"},
+                        {text:"二维表", id:"twoDimensional"},
+                        {text:"雷达图", id:"radar"},
+                        {text:"旭日图", id:"nestedPie"}
+                    ]
+                });
+				this.$dimension.ligerTextBox({width:240});
+				this.$dataMeasurement.ligerTextBox({width:240});
+				this.$dataUnit.ligerTextBox({width:240});
+				this.$dataPosition.ligerComboBox({
+				    data: [
+                        {text:"X轴", id:"x"},
+                        {text:"Y轴", id:"y"}
+                    ]
+                });
+//				this.$dataSource.ligerRadio();
+//                this.$dataSource.ligerGetRadioManager().setDisabled();
 				var mode = '${mode}';
 				if(mode == 'view'){
 					rsInfoForm.$form.addClass('m-form-readonly');
@@ -48,9 +78,16 @@
 					$("#btn_cancel").hide();
 				}
 				this.$form.attrScan();
+				if ('${dataSource}' == 2) {
+				    $("#dataShowType").show();
+                }
 				if(mode == 'new'){
-					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
-					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
+                    $("#inp_category").attr('data-id', '${categoryId}');
+                    $("#inp_category").ligerGetTextBoxManager().setValue('${name}');
+                    this.$dataSource.attr('data-source', '${dataSource}');
+                    this.$dataSource.ligerGetTextBoxManager().setValue('${dataSource}' == '1' ? '档案数据' : '指标统计');
+					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
+					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
 				}
 				if(mode !='new'){
 					var info = ${envelop}.obj;
@@ -61,21 +98,32 @@
 						id:info.id,
 						code:info.code,
 						name:info.name,
-						categoryId:info.categoryId,
+						dimension:info.dimension,
+						categoryId:'${name}',
 						rsInterface:info.rsInterface,
 						grantType:info.grantType,
-						dataSource:info.dataSource.toString(),
-						description:info.description
+						dataSource:info.dataSource.toString() == '1' ? '档案数据' : '指标统计',
+                        echartType:info.echartType,
+						description:info.description,
+                        dataMeasurement: info.dataMeasurement,
+                        dataUnit: info.dataUnit,
+                        dataPosition: info.dataPosition,
 					});
-					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
-					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
+
+                    this.$echartType.ligerGetComboBoxManager().setValue(info.echartType);
+                    this.$dataPosition.ligerGetComboBoxManager().setValue(info.dataPosition);
+                    $("#inp_category").attr('data-id', info.categoryId);
+                    this.$dataSource.attr('data-source', info.dataSource);
+					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
+					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
 				}
 				this.$form.show();
 			},
 			initDDL: function () {
 				this.$grantType.eq(1).attr("checked", 'true')
 				this.$dataSource.eq(0).attr("checked", 'true')
-				this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{});
+                this.$category.ligerTextBox({width:240})
+				<%--this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{});--%>
 				this.$interface.ligerComboBox({
 					url: "${contextRoot}/resource/resourceInterface/searchRsInterfaces",
 					dataParmName: 'detailModelList',
@@ -132,6 +180,16 @@
 						return
 					}
 					var values = self.$form.Fields.getValues();
+                    values.dataSource = self.$dataSource.attr('data-source');
+                    values.categoryId = self.$category.attr('data-id');
+                    values.echartType = $("#echartType_val").val().trim();
+                    if (values.echartType == 'bar' || values.echartType == 'line') {
+                        values.dataPosition = $("#dataPosition_val").val().trim();
+                    } else {
+                        values.dataPosition = null;
+                        values.dataUnit = null;
+                        values.dataMeasurement = null;
+                    }
 					var categoryId = values.categoryId;
 					if(Util.isStrEquals(categoryIdOld,categoryId)){
 						update(values)
@@ -152,9 +210,8 @@
 						success: function(data) {
                             waittingDialog.close();
 							if (data.successFlg) {
-								reloadMasterUpdateGrid(categoryIdNew);
 								$.Notice.success('操作成功');
-								win.closeRsInfoDialog();
+								win._closeRsInfoDialog(data.obj);
 							} else {
 								$.Notice.error('操作失败！');
 							}
@@ -163,10 +220,26 @@
 				}
 
 				this.$btnCancel.click(function () {
-					win.closeRsInfoDialog();
+					win._closeRsInfoDialog();
 				});
 			}
 		};
+		$(document).on('change','#echartType',function(){
+                switch ($(this).val()){
+                    case '柱状图' :
+                    case '线形图' :
+                        $("#dataMeasurementDiv").show();
+                        $("#dataUnitDiv").show();
+                        $("#dataPositionDiv").show();
+                        $('.l-dialog-body').height(780);
+                        break;
+                    default:
+                        $("#dataMeasurementDiv").hide();
+                        $("#dataUnitDiv").hide();
+                        $("#dataPositionDiv").hide();
+                        $('.l-dialog-body').height(630);
+                }
+        })
 		/* *************************** 页面初始化 **************************** */
 		pageInit();
 	})(jQuery, window);

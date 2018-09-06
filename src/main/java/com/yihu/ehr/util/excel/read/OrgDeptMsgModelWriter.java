@@ -5,6 +5,7 @@ import com.yihu.ehr.util.excel.AExcelWriter;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class OrgDeptMsgModelWriter extends AExcelWriter {
 
     public void addHeader(WritableSheet ws) throws WriteException {
-        String[] header = {"部门编号", "部门名称", "父级部门编号", "父级部门名称", "科室电话", "科室荣誉(国家重点科室,省级重点科室,医院特色专科)", "机构代码", "所属机构", "科室介绍", "科室位置", "科室类型"};
+        String[] header = {"部门编号", "部门名称", "父级部门编号", "父级部门名称", "科室电话", "科室荣誉(国家重点科室,省级重点科室,医院特色专科)", "机构代码", "所属机构", "科室介绍", "科室位置", "科室类型", "错误信息"};
         if (!"".equals(header)) {
             int i = 0;
             for (String h : header) {
@@ -23,6 +24,22 @@ public class OrgDeptMsgModelWriter extends AExcelWriter {
                 i++;
             }
         }
+    }
+
+    private String getErrorInfo(OrgDeptMsgModel m) {
+        String errorInfo = "";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("code")) ? "" : m.findErrorMsg("code") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("name")) ? "" : m.findErrorMsg("name") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("parentDeptId")) ? "" : m.findErrorMsg("parentDeptId") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("parentDeptName")) ? "" : m.findErrorMsg("parentDeptName") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("phone")) ? "" : m.findErrorMsg("phone") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("gloryId")) ? "" : m.findErrorMsg("gloryId") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("orgCode")) ? "" : m.findErrorMsg("orgCode") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("orgName")) ? "" : m.findErrorMsg("orgName") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("introduction")) ? "" : m.findErrorMsg("introduction") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("place")) ? "" : m.findErrorMsg("place") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("pyCode")) ? "" : m.findErrorMsg("pyCode") + "；";
+        return StringUtils.isEmpty(errorInfo) ? errorInfo : errorInfo.substring(0,errorInfo.length()-1);
     }
 
     @Override
@@ -43,6 +60,7 @@ public class OrgDeptMsgModelWriter extends AExcelWriter {
                 addCell(ws, i, 8, m.getIntroduction(), m.findErrorMsg("introduction"));
                 addCell(ws, i, 9, m.getPlace(), m.findErrorMsg("place"));
                 addCell(ws, i, 10, m.getPyCode(), m.findErrorMsg("pyCode"));
+                addCell(ws, i, 11, getErrorInfo(m), "");
                 i++;
             }
             wwb.write();

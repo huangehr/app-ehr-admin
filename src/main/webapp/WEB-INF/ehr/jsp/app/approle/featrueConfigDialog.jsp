@@ -9,10 +9,10 @@
                  id="div_fun_featrue_btn">
                 <span>功能权限</span>
             </div>--%>
-            <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar div-roleGroup-btn"
-                 id="div_api_featrue_btn">
-                <span>API权限</span>
-            </div>
+            <%--<div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar div-roleGroup-btn"--%>
+                 <%--id="div_api_featrue_btn">--%>
+                <%--<span>API权限</span>--%>
+            <%--</div>--%>
             <div class="f-fr f-mr10 l-button u-btn u-btn-primary u-btn-large f-ib f-vam close-toolbar div-roleGroup-btn"
                  id="div_featrue_save_btn">
                 <span>保存</span>

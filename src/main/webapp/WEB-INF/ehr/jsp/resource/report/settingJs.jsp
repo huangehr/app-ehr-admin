@@ -45,7 +45,7 @@
                 {display: '视图ID', name: 'resourceId', hide: true}, // getGridRowid() 会用到[视图ID]grid行顺序
                 {display: '视图名称', name: 'resourceName', width: '100%', isAllowHide: false, align: 'left'}
             ],
-            height: '510',
+            height: '530',
             allowHideColumn: false,
             usePager: false
         }));
@@ -56,6 +56,7 @@
         // 保存
         $('#btnSave').click(function () {
             var loading = $.ligerDialog.waitting("正在保存数据...");
+            debugger
             dataModel.fetchRemote("${contextRoot}/resource/report/saveSetting", {
                 type: 'post',
                 data: {

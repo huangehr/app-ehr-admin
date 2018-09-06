@@ -1,7 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
+<style>
+	.go-backa {
+		float: right;
+		margin-top: 4px;
+		margin-right: 11px;
+	}
+</style>
 <!-- ####### Title设置 ####### -->
 <div class="f-dn" data-head-title="true">维度授权</div>
 
@@ -12,11 +18,11 @@
 
 		<div id="conditionArea" class="f-mb10 f-mr10" align="right">
 			<div class="body-head f-h30" align="left">
-				<a id="btn_back" class="f-fwb">返回上一层 </a>
+				<%--<a id="btn_back" class="f-fwb">返回上一层 </a>--%>
 				<input id="adapter_plan_id" value='${adapterPlanId}' hidden="none" />
-				<span class="f-ml20">资源名称：</span><input class="f-fwb f-mt10" readonly id="resource_name"/>
-				<span class="f-ml20">资源代码：</span><input class="f-fwb f-mt10" readonly id="resource_code"/>
-				<span class="f-ml20">资源主题：</span><input class="f-mt10" readonly id="resource_sub"/>
+				<span class="f-fwb">视图名称：</span><input class=" f-mt10" readonly id="resource_name"/>
+				<span class="f-ml20 f-fwb">视图代码：</span><input class=" f-mt10" readonly id="resource_code"/>
+				<span class="f-ml20 f-fwb">视图主题：</span><input class="f-mt10" readonly id="resource_sub"/>
 			</div>
 		</div>
 

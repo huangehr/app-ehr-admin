@@ -56,13 +56,13 @@
 							searchNm: '',
 						},
 						columns: [
-							{name: 'id', hide: true, isAllowHide: false},
+							{name: 'id', hide: true, width: '0.1%', isAllowHide: false},
 							{display: '接口名称',name: 'name', width:'35%', isAllowHide: false,align:'left'},
 							{display: '接口编码', name: 'resourceInterface', width: '55%',align:'left'},
-							{display: '请求参数', name: 'paramDescription', width: '25%', resizable: true,align:'left',hide:true},
-							{display: '响应结果格式', name: 'resultDescription', width: '25%', resizable: true,align:'left',hide:true},
+							{display: '请求参数', name: 'paramDescription', width: '0.1%', resizable: true,align:'left',hide:true},
+							{display: '响应结果格式', name: 'resultDescription', width: '0.1%', resizable: true,align:'left',hide:true},
 							{
-								display: '操作', name: 'operator', width: '10%', render: function (row) {
+								display: '操作', name: 'operator', minWidth: 120, render: function (row) {
 								var html = '<sec:authorize url="/resource/resourceInterface/infoInitial"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:infoDialog:open", row.id, 'modify') + '"></a></sec:authorize>';
 								html+= '<sec:authorize url="/resource/resourceInterface/delete"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:confirmDialog:del", row.id) + '"></a></sec:authorize>';
 								return html;
@@ -94,15 +94,15 @@
 					});
 					$.subscribe("interface:infoDialog:open",function(events,id,mode){
 						var title = '';
-						var wait = $.Notice.waitting("请稍后...");
+						var wait = parent._LIGERDIALOG.waitting("请稍后...");
 						if(mode == 'modify'){
-							title = '修改资源接口';
+							title = '修改视图接口';
 						}else if(mode == 'new'){
-							title = '新增资源接口'
+							title = '新增视图接口'
 						}else{
-							title = '查看资源接口';
+							title = '查看视图接口';
 						};
-						master.infoDialog = $.ligerDialog.open({
+						master.infoDialog = parent._LIGERDIALOG.open({
 							height: 660,
 							width: 600,
 							title: title,
@@ -123,7 +123,7 @@
 					});
 
 					$.subscribe('interface:confirmDialog:del', function (event, id) {
-						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
+						parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
 							if(yes){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote("${contextRoot}/resource/resourceInterface/delete",{
@@ -131,11 +131,11 @@
 									async:true,
 									success: function(data) {
 										if(data.successFlg){
-											$.Notice.success('删除成功。');
+											parent._LIGERDIALOG.success('删除成功。');
 											isFirstPage = false;
 											master.reloadGrid();
 										}else{
-											$.Notice.error('删除失败。');
+											parent._LIGERDIALOG.error('删除失败。');
 										}
 									}
 								});
@@ -146,10 +146,10 @@
 			};
 			/* ************************* 模块初始化结束 ************************** */
 			/* ************************* Dialog页面回调接口 ************************** */
-			win.reloadMasterUpdateGrid = function () {
+			win.parent.reloadMasterUpdateGrid = function () {
 				master.reloadGrid();
 			};
-			win.closeInterfaceInfoDialog = function () {
+			win.parent.closeInterfaceInfoDialog = function () {
 				master.infoDialog.close();
 			};
 			/* ************************* Dialog页面回调接口结束 ************************** */

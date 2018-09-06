@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NumberUtil {
 
@@ -633,5 +635,20 @@ public class NumberUtil {
             }
         }
         return true;
+    }
+
+    public static String changeIdCardNo(String idCard) {
+        String newIdCard = "";
+        if (!org.springframework.util.StringUtils.isEmpty(idCard)) {
+            int length = idCard.length();
+            if(length == 18 || length == 15) {
+                String prefix = idCard.substring(0,6);
+                String suffix = idCard.substring(length - 4);
+                newIdCard = prefix + "********" + suffix;
+            } else {
+                newIdCard = idCard;
+            }
+        }
+        return newIdCard;
     }
 }

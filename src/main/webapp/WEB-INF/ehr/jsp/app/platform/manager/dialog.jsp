@@ -7,6 +7,7 @@
   <input id="id" name="id" data-attr-scan="id"  hidden >
   <input id="appId" name="appId" data-attr-scan="appId"  hidden >
   <input id="parentId" name="parentId" data-attr-scan="parentId"  hidden >
+  <input id="level" name="level" data-attr-scan="level"  hidden >
 
   <div class="m-form-group">
     <label>名称<spring:message code="spe.colon"/></label>
@@ -26,6 +27,13 @@
     <label>类型<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential f-pr0">
       <input type="text" id="ipt_af_type" data-type="select" class="required" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
+    </div>
+  </div>
+
+  <div class="m-form-group">
+    <label>排序<spring:message code="spe.colon"/></label>
+    <div class="l-text-wrapper m-form-control f-pr0">
+      <input type="text" id="ipt_af_sort" class="validate-positive-integer" required-title="请输入正整数" data-attr-scan="sort">
     </div>
   </div>
 
@@ -53,7 +61,16 @@
   <div class="m-form-group">
     <label>URL<spring:message code="spe.colon"/></label>
     <div class="m-form-control ">
-      <textarea id="ipt_af_url" class="ajax f-w240 max-length-200" data-attr-scan="url" maxlength="500"></textarea>
+      <textarea id="ipt_af_url" class="ajax f-w240 max-length-250" data-attr-scan="url" maxlength="250"
+                placeholder="菜单相对访问路径，模块时没有值，菜单时有值，功能时不一定有值"></textarea>
+    </div>
+  </div>
+
+  <div class="m-form-group">
+    <label>URL前缀<spring:message code="spe.colon"/></label>
+    <div class="m-form-control ">
+      <textarea id="ipt_af_prefixUrl" class="ajax f-w240 max-length-50" data-attr-scan="prefixUrl" maxlength="50"
+                placeholder="应用的JavaWeb上下文路径或站点+上下文路径"></textarea>
     </div>
   </div>
 

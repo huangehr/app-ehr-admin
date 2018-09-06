@@ -12,10 +12,11 @@
         border: 1px solid #D6D6D6;
     }
     #treeWrapper {
-        float: left;
         width: 240px;
-        height: 100%;
-        box-sizing: border-box;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
         padding: 0 10px 5px 10px;
     }
     #treeWrapper .l-tree li .l-body {
@@ -29,9 +30,11 @@
         padding-bottom: 10px;
     }
     #gridWrapper {
-        float: right;
-        width: 700px;
-        margin-left: 10px;
+        position: absolute;
+        left: 250px;
+        top: 0;
+        bottom: 0;
+        right: 0;
     }
     #gridWrapper .m-form-group {
         height: 40px;
@@ -43,23 +46,5 @@
     }
     .m-form-group .m-form-control.m-form-control-fr {
         float: right;
-    }
-    .btn-file-container {
-        display: inline-block;
-        position: relative;
-        overflow-x: hidden;
-    }
-    .btn-file-container form {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        z-index: 999;
-    }
-    .btn-file-container input[type="file"] {
-        width: 100%;
-        height: 100%;
     }
 </style>

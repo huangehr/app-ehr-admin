@@ -3,7 +3,7 @@ package com.yihu.ehr.resource.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.adapter.service.PageParms;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.resource.model.RsDictionaryMsg;
 import com.yihu.ehr.resource.service.DictService;
@@ -14,6 +14,7 @@ import com.yihu.ehr.util.excel.read.RsDictionaryMsgWriter;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,6 +65,12 @@ public class DictController extends ExtendController<DictService> {
         headerMap.put(2, "说明");
     }
 
+    @RequestMapping("dctInitial")
+    public String gridInitial(Model model) {
+        model.addAttribute("contentPage","/resource/dict/grid");
+        return "pageView";
+    }
+
     @Override
     public Map beforeGotoModify(Map params) {
         try {
@@ -106,7 +113,7 @@ public class DictController extends ExtendController<DictService> {
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel user = getCurrentUserRedis(request);
         try {
             writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");

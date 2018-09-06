@@ -2,7 +2,7 @@ package com.yihu.ehr.std.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.standard.standardversion.StdVersionModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -65,10 +65,8 @@ public class StdVersionController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
         } catch (Exception ex) {
-            LogService.getLogger(StdVersionController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -115,10 +113,8 @@ public class StdVersionController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(StdVersionController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -155,16 +151,15 @@ public class StdVersionController extends BaseUIController {
                 }
             }
         }catch (Exception ex){
-            LogService.getLogger(StdVersionController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
 
     @RequestMapping("addVersion")
     @ResponseBody
-    public Object addVersion(@ModelAttribute(SessionAttributeKeys.CurrentUser) UserDetailModel user){
+    public Object addVersion(@ModelAttribute(SessionAttributeKeys.CurrentUser) UsersModel user){
         Envelop envelop = new Envelop();
         String url = "/version";
         Map<String,Object> params = new HashMap<>();
@@ -173,10 +168,8 @@ public class StdVersionController extends BaseUIController {
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(StdVersionController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -197,11 +190,9 @@ public class StdVersionController extends BaseUIController {
                 envelop.setSuccessFlg(false);
                 envelop.setErrorMsg("标准版本删除失败！");
             }
-        }
-        catch (Exception ex) {
-            LogService.getLogger(StdVersionController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -224,9 +215,8 @@ public class StdVersionController extends BaseUIController {
             }
         }
         catch (Exception ex) {
-            LogService.getLogger(StdVersionController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -247,9 +237,8 @@ public class StdVersionController extends BaseUIController {
             }
 
         }catch (Exception ex){
-            LogService.getLogger(StdVersionController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -265,12 +254,10 @@ public class StdVersionController extends BaseUIController {
         try{
             String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(StdVersionController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     //将最新的已发布版本回滚为编辑状态
@@ -291,9 +278,8 @@ public class StdVersionController extends BaseUIController {
                 envelop.setErrorMsg("标准版本返回编辑状态失败！");
             }
         }catch (Exception ex){
-            LogService.getLogger(StdVersionController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -315,9 +301,8 @@ public class StdVersionController extends BaseUIController {
                 envelop.setErrorMsg("该版本名称不存在！");
             }
         }catch (Exception ex){
-            LogService.getLogger(StdVersionController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }

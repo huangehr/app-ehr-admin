@@ -24,3 +24,19 @@ a,a:hover{color:#333;}
 article,aside,dialog,footer,header,section,footer,nav,figure,menu{ display:block }
 /* 在IE10以上版本中，页面上的文本框控件在输入文字时候会被自动加上一个X,下面设置将其去除 */
 input[type=text]::-ms-clear { display: none; }
+a:active,a:visited,a:focus{
+    /*color: #333!important;*/
+}
+.grid_edit{
+    height: 30px!important;
+}
+.grid_delete{
+    height: 30px!important;
+}
+.image-create{
+    margin: 0!important;
+    background-position: center!important;
+}
+.row-icon{
+    margin-top: 8px!important;
+}

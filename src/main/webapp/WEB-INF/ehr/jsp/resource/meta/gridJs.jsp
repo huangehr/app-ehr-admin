@@ -23,7 +23,7 @@
             var gotoModify = function (event, id, mode) {
                 mode = mode || 'new';
                 id = id || '';
-                editDialog = openDialog(urls.gotoModify, mode=='new'?'新增':'修改', 440, 620, {id: id, mode: mode});
+                editDialog = parent._OPENDIALOG(urls.gotoModify, mode=='new'?'新增':'修改', 440, 620, {id: id, mode: mode});
             }
 
 
@@ -37,7 +37,7 @@
 
             var uploadDialog;
             //初始化工具栏
-            var barTools = function(){
+//            var barTools = function(){
 
                 var btn = [
 					<sec:authorize url="/resource/meta/gotoModify">
@@ -45,17 +45,36 @@
 					</sec:authorize>
                 ];
                 initBarBtn($('.m-retrieve-inner'), btn)
-
                 function onUploadSuccess(g, result){
-                    if(result)
-                        openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
-                    else
-                        $.Notice.success("导入成功！");
+                    if(result) {
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        var rowDialog = parent._LIGERDIALOG.open({
+                            height: 640,
+                            width: 1000,
+                            isDrag: true,
+                            //isResize:true,
+                            title: '导入错误信息',
+                            url: urls.gotoImportLs,
+//                        load: true
+                            urlParms: {
+                                result: result
+                            },
+                            isHidden: false,
+                            show: false,
+                            onLoaded: function () {
+                                wait.close(),
+                                    rowDialog.show()
+                            }
+                        });
+                        rowDialog.hide();
+                    } else {
+                        parent._LIGERDIALOG.success("导入成功！");
+                    }
                 }
 
                 $('#upd').uploadFile({url: "${contextRoot}/resource/meta/import", onUploadSuccess: onUploadSuccess});
 
-            };
+//            };
 
 
             function opratorRender(row){
@@ -86,7 +105,7 @@
                     {display: '是否可为空', name: 'nullAble', width: '10%', align: 'left', render: function (row) {
                         return row.nullAble ==1 ? '是' : '否';
                     }},
-                    {display: '操作', name: 'operator', width: '15%', render: opratorRender}];
+                    {display: '操作', name: 'operator', minWidth: 120, render: opratorRender}];
 
                 grid = initGrid($('#gtGrid'), urls.list, {}, columns, {delayLoad: true, checkbox: false});
                 searchFun();
@@ -104,6 +123,8 @@
                     {type: 'select', id: 'ipt_search_null_able', opts:{width: 140}, dictId: 18},
                     {type: 'select', id: 'ipt_search_is_valid', opts:{width: 140, cancelable: false,
                         data:[{value: '有效', code: '1'}, {value: '无效', code: '0'}]}},
+                    {type: 'select', id: 'ipt_search_data_source', opts:{width: 140, cancelable: true,
+                        data:[{value: '档案数据', code: '1'}, {value: '统计数据', code: '2'}]}},
                     {type: 'searchBtn', id: 'search_btn', searchFun: searchFun}
                 ];
                 initFormFields(vo, $('.m-retrieve-inner'));
@@ -120,7 +141,8 @@
                             return 1;
                         return 0;
                     }},
-                    {name: 'valid', logic: '='}
+                    {name: 'valid', logic: '='},
+                    {name: 'dataSource', logic: '='}
                 ];
 
                 var params = {filters: covertFilters(vo, $('#searchForm'))};
@@ -133,20 +155,19 @@
                 $.subscribe('meta:active', active);
             };
 
-            win.closeDialog = function(msg){
+            win.parent.closeDialog = function(msg){
                 if(editDialog){
                     editDialog.close();
                     if(msg){
-                        $.Notice.success(msg);
+                        parent._LIGERDIALOG.success(msg);
                         find();
                     }
                 }
             }
-
             var pageInit = function(){
                 publishFunc();
                 filters();
-                barTools();
+//                barTools();
                 rendGrid();
             }();
         });

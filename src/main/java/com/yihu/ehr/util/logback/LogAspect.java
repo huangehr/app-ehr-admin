@@ -1,12 +1,12 @@
 package com.yihu.ehr.util.logback;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang3.StringUtils;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -41,8 +41,8 @@ public class LogAspect {
     private String requestPath; // 请求地址
     private String operationPath;//操作地址(去掉项目部署名称的地址)
     private String userName; // 用户名
-    private String function; // 操作页面名称
-    private String operation;// 操作内容（增、删、改、查、导入）
+    private String function = " "; // 操作页面名称
+    private String operation = "";// 操作内容（增、删、改、查、导入）
     private Map<?, ?> inputParamMap = null; // 传入参数
     private Map<String, Object> outputParamMap = null; // 存放输出结果
     private long startTimeMillis = 0; // 开始时间
@@ -106,32 +106,33 @@ public class LogAspect {
         requestPath = request.getRequestURL().toString();
         //获取操作地址
         operationPath = request.getServletPath();
-        /*if (StringUtils.isNotBlank(operationPath)) {
+
+        if (StringUtils.isNotBlank(operationPath)) {
             //调用接口查询url对应的菜单
             Object obj = appFeatureFindUrl(operationPath);
-
             Gson gson = new Gson();
             Envelop envelop = gson.fromJson(obj.toString(), Envelop.class);
-            List<Object> appFeatureList = envelop.getDetailModelList();
-            if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(appFeatureList)) {
-                Map<Object, Object> objectMap = (Map<Object, Object>) appFeatureList.get(0);
-                String type = (String) objectMap.get("type");
-                if ("3".equals(type)) {
-                    operation = (String) objectMap.get("name");
-                    String parentId = Double.valueOf((Double) objectMap.get("parentId")).intValue() + "";
-                    //调用接口查询parentId对应的菜单
-                    Object obj2 = appFeatureFindParentId(parentId);
-                    Envelop envelop2 = gson.fromJson(obj2.toString(), Envelop.class);
-                    Map<Object, Object> objectMap2 = (Map<Object, Object>) envelop2.getObj();
-                    function = (String) objectMap2.get("name");
-                } else {
-                    function = (String) objectMap.get("name");
+            if(envelop.isSuccessFlg() && envelop.getDetailModelList() != null){
+                List<Object> appFeatureList = envelop.getDetailModelList();
+                if (appFeatureList.size() != 0) {
+                    Map<Object, Object> objectMap = (Map<Object, Object>) appFeatureList.get(0);
+                    String type = (String) objectMap.get("type");
+                    if ("3".equals(type)) {
+                        operation = (String) objectMap.get("name");
+                        String parentId = Double.valueOf((Double) objectMap.get("parentId")).intValue() + "";
+                        //调用接口查询parentId对应的菜单
+                        Object obj2 = appFeatureFindParentId(parentId);
+                        if(!StringUtils.isEmpty(obj2.toString())){
+                            Envelop envelop2 = gson.fromJson(obj2.toString(), Envelop.class);
+                            Map<Object, Object> objectMap2 = (Map<Object, Object>) envelop2.getObj();
+                            function = (String) objectMap2.get("name");
+                        }
+                    } else {
+                        function = (String) objectMap.get("name");
+                    }
                 }
-            } else {
-                function = "";
-                operation = "";
             }
-        }*/
+        }
 
         // 执行完方法的返回值：调用proceed()方法，就会触发切入点方法执行
         outputParamMap = new HashMap<String, Object>();
@@ -153,12 +154,15 @@ public class LogAspect {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         HttpSession session = request.getSession();
-        String userName = (String) session.getAttribute("loginCode");
-
+        String userName = (String) session.getAttribute("loginName");
         JSONObject data = new JSONObject();
-        UserDetailModel userModel=(UserDetailModel) session.getAttribute("current_user");
-        if(null!=userModel){
-            data.put("patient", userModel.getRealName());// 总支撑
+        try {
+            UsersModel userModel = (UsersModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+            if(null!=userModel){
+                data.put("patient", userModel.getRealName());// 总支撑
+            }
+        }catch (Exception e){
+            e.getMessage();
         }
         data.put("url", operationPath);// 调用的控制器路径
         data.put("responseTime", endTimeMillis - startTimeMillis);// 操作响应时间长
@@ -199,8 +203,9 @@ public class LogAspect {
             resultStr = HttpClientUtil.doGet(comUrl + rqUrl, params, username, password);
             return resultStr;
         } catch (Exception e) {
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg("系统错误");
             return envelop;
         }
 
@@ -220,8 +225,9 @@ public class LogAspect {
             resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
             return resultStr;
         } catch (Exception e) {
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg("系统错误");
             return envelop;
         }
 

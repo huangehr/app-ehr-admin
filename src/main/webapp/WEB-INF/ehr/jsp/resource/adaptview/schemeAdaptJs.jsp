@@ -20,7 +20,7 @@
             }
             function getSchemeAdapt(target, id, mode) {
                 var title = '';
-                var wait = $.ligerDialog.waitting("请稍后...");
+                var wait = parent._LIGERDIALOG.waitting("请稍后...");
                 var height = null;
                 //只有new 跟 modify两种模式会到这个函数
                 if (mode == 'modify') {
@@ -30,7 +30,7 @@
                     title = '新增适配方案';
                     height = 520;
                 }
-                target.adapterInfoDialog = $.ligerDialog.open({
+                target.adapterInfoDialog = parent._LIGERDIALOG.open({
                     height: height,
                     width: 440,
                     title: title,
@@ -52,19 +52,19 @@
             }
 
             function delSchemeAdapt(id) {
-                var dialog = $.ligerDialog.waitting('正在删除中,请稍候...');
+                var dialog = parent._LIGERDIALOG.waitting('正在删除中,请稍候...');
                 var dataModel = $.DataModel.init();
                 dataModel.updateRemote('${contextRoot}/schemeAdapt/delete', {
                     data: {schemeId: id},
                     success: function (data) {
                         if (data.successFlg) {
-                            $.Notice.success('删除成功！');
+                            parent._LIGERDIALOG.success('删除成功！');
                             master.reloadGrid(Util.checkCurPage.call(adapterGrid, id.split(',').length));
                         } else {
                             if (data.errorMsg)
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG.error(data.errorMsg);
                             else
-                                $.Notice.error('删除失败！');
+                                parent._LIGERDIALOG.error('删除失败！');
                         }
                     },
                     complete: function () {
@@ -120,15 +120,15 @@
                             type:""
                         },
                         columns: [
-                            {display: 'ID', name: 'id', hide: true},
-                            {display: 'adapterVersion', name: 'adapterVersion', hide: true},
+                            {display: 'ID', name: 'id', width: '0.1%', hide: true},
+                            {display: 'adapterVersion', name: 'adapterVersion', width: '0.1%', hide: true},
                             {display: '方案类别', name: 'typeName', width: '15%', align: 'left'},
                             {display: '方案名称', name: 'name',  width: '15%', align: 'left'},
                             {display: '方案编码', name: 'code', width: '15%', minColumnWidth: 60, align: 'left'},
                             {display: '标准名称/版本号', name: 'adapterVersionName', width: '15%', align: 'left'},
                             {display: '说明', name: 'description', width: '25%', align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '15%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 125, render: function (row) {
                                 var html = '<sec:authorize url="/schemeAdaptDataSet/initial"><a class="label_a" title="适配" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterScheme:adapter", row.id, row.adapterVersion) + '">适配</a></sec:authorize>';
 								html += '<sec:authorize url="/schemeAdapt/gotoModify"><a class="grid_edit" title="编辑" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}',])", "adapter:adapterScheme:open", row.id, 'modify') + '"></a></sec:authorize>' +
 								'<sec:authorize url="/schemeAdapt/delete"><a class="grid_delete" title="删除" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterScheme:delete",row.id,row.status) + '"></a></sec:authorize>';
@@ -164,7 +164,7 @@
                     });
                     //删除适配方案
                     $.subscribe('adapter:adapterScheme:delete', function (event, id,status) {
-                        $.ligerDialog.confirm('确定删除该方案信息?', function (yes) {
+                        parent._LIGERDIALOG.confirm('确定删除该方案信息?', function (yes) {
                             if (yes) {
                                 delSchemeAdapt(id);
                             }
@@ -180,10 +180,10 @@
             };
 
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadAdapterMasterGrid = function () {
+            win.parent.reloadAdapterMasterGrid = function () {
                 master.reloadGrid();
             };
-            win.closeSchemeDialog = function (msg) {
+            win.parent.closeSchemeDialog = function (msg) {
                 master.reloadGrid();
                 master.adapterInfoDialog.close();
                 if (msg)

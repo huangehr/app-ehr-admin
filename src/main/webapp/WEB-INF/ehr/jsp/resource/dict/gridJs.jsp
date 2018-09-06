@@ -99,13 +99,13 @@
                     mode = mode || 'new';
                     id = id || '';
                     isSaveSelectStatus = true;
-                    master.dialog = openDialog(master.urls.gotoModify, mode=='new'?'新增':'修改', 440, 360, {id: id, mode: mode});
+                    master.dialog = parent._OPENDIALOG(master.urls.gotoModify, mode=='new'?'新增':'修改', 440, 360, {id: id, mode: mode});
                     curOprator = master;
                 },
                 //删除事件
                 del : function (event, id) {
                     var m = master;
-                    uniqDel(m.grid, m.find, m.urls.del, id, undefined, 'id');
+                    parent._UNIQDEL(m.grid, m.find, m.urls.del, id, undefined, 'id');
                 },
                 //查询列表方法
                 find : function (curPage) {
@@ -149,11 +149,11 @@
 
                     function onUploadSuccess(g, result){
                         if(result=='suc')
-                            $.Notice.success("导入成功");
+                            parent._LIGERDIALOG.success("导入成功");
                         else{
                             result = eval('(' + result + ')')
                             var url = "${contextRoot}/resource/dict/downLoadErrInfo?f="+ result.eFile[1] + "&datePath=" + result.eFile[0];
-                            $.ligerDialog.open({
+                            parent._LIGERDIALOG.open({
                                 height: 80,
                                 content: "请下载&nbsp;<a target='diframe' href='"+ url +"'>导入失败信息</a><iframe id='diframe' name='diframe'> </iframe>",
                             });
@@ -173,10 +173,10 @@
                 rendGrid : function(){
                     var m = em;
                     var columns = [
-                        {display: 'ID', name: 'id', hide: true},
+                        {display: 'ID', name: 'id', width: '0.1%', hide: true},
                         {display: '值域编码', name: 'code', width: '40%', align: 'left'},
                         {display: '值域名称', name: 'name', width: '30%', align: 'left'},
-                        {display: '操作', name: 'operator', width: '30%', render: m.opratorRender}];
+                        {display: '操作', name: 'operator', minWidth: 120, render: m.opratorRender}];
 
                     m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true, checkbox: false});
                 },
@@ -194,19 +194,20 @@
                 },
                 //修改、新增点击事件
                 gotoModify : function (event, id, mode) {
+                    debugger
                     if(!getSelected() || getSelected().length==0){
-                        $.Notice.warn("请先添加字典！");
+                        parent._LIGERDIALOG.warn("请先添加字典！");
                         return;
                     }
                     mode = mode || 'new';
                     id = id || '';
-                    em.dialog = openDialog(em.urls.gotoModify, mode=='new'?'新增':'修改', 440, 360, {id: id, mode: mode});
+                    em.dialog = parent._OPENDIALOG(em.urls.gotoModify, mode=='new'?'新增':'修改', 440, 360, {id: id, mode: mode});
                     curOprator = em;
                 },
                 //删除事件
                 del : function (event, id) {
                     var m = em;
-                    uniqDel(m.grid, m.find, m.urls.del, id, undefined, "id");
+                    parent._UNIQDEL(m.grid, m.find, m.urls.del, id, undefined, "id");
                 },
                 //查询点击事件
                 searchFun : function () {
@@ -228,26 +229,17 @@
                 }
             }
 
-            var resizeContent = function(){
-                var contentW = $('#grid_content').width();
-                var leftW = $('#div_left').width();
-                $('#div_right').width(contentW-leftW-20);
-            }();
-            $(window).bind('resize', function() {
-                resizeContent();
-            });
-
             em.init();
             master.init();
 
-            win.getSelected = function () {
+            win.parent.getSelected = win.getSelected = function () {
                 return master.grid.getSelectedRow();
             }
 
-            win.closeDialog = function(msg){
+            win.parent.closeDialog = function(msg){
                 curOprator.dialog.close();
                 if(msg){
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
                     curOprator.find();
                 }
             }

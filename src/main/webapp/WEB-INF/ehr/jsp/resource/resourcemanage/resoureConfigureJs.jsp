@@ -61,7 +61,7 @@
                             self.reloadGrid();
                         }
                     });
-                    this.loadMainGrid();//加载主维度值
+                    this.loadMainGrid();//加载默认维度值
                     this.bindEvents();
                 },
                 loadMainGrid:function(){
@@ -72,7 +72,7 @@
                         height:"450px",
                         parms: {
                             resourceId: resourceId,
-                            name:""
+                            nameOrCode:""
                         },
                         columns: [
                             {display: '指标分类', name: 'quotaTypeName', width: '25%', isAllowHide: false, align: 'left'},
@@ -87,7 +87,6 @@
                                     if (chartTypeArr[i] == row.quotaChart) {
                                         c = 'selected';
                                     }
-//                                    debugger
                                     switch (chartTypeArr[i]) {
                                         case '1':
                                             html.push('<option value="1" ' + c + '>柱状图</option>');
@@ -97,6 +96,9 @@
                                             break;
                                         case '3':
                                             html.push('<option value="3" ' + c + '>饼状图</option>');
+                                            break;
+                                        case '4':
+                                            html.push('<option value="4" ' + c + '>二维表</option>');
                                             break;
                                     }
                                 }
@@ -205,6 +207,9 @@
                                     case 3:
                                         cName = '饼状图';
                                         break;
+                                    case 4:
+                                        cName = '二维表';
+                                        break;
                                 }
                                 resultHtml+='<div class="h-40 div-item" data-id="'+item.quotaId+'" data-code="'+mainCode+'"  data-name="' + item.quotaTypeName +'"  data-quotaCode="' + item.quotaCode + '" data-qchart="' + item.quotaChart + '" >'+
                                             '<div class="div-main-content" style="width: 22%;" title="' + item.quotaTypeName + '">'+ item.quotaTypeName +'</div>'+
@@ -226,7 +231,7 @@
                     var reqUrl = '${contextRoot}/resource/resourceManage/getResourceQuotaInfo';
                     var values = {
                         resourceId: resourceId,
-                        name:searchNmEntry
+                        nameOrCode:searchNmEntry
                     };
                     Util.reloadGrid.call(curGrid,reqUrl, values, 1);
                 },
@@ -242,7 +247,17 @@
                         var thisResourceId = '';
                         var reqUrl = '${contextRoot}/resource/resourceManage/addResourceQuota';
                         var divItem = $("#div_main_relation").find(".div-item");
+                        var lineOrbar = 0;
+                        var pie = 0;
+                        var lineOrBarFlag = true;
+                        var pieFlag = true;
                         $.each(divItem,function(key,value){
+                            var qchart = $(value).attr("data-qchart");
+                            if(lineOrBarFlag && (qchart == 1 || qchart == 2)){
+                                lineOrbar = 1;
+                            }else if(pieFlag && qchart == 3){
+                                pie = 1;
+                            }
                             var ob = {
                                 quotaId:$(value).attr("data-id"),
                                 resourceId: resourceId,
@@ -252,6 +267,11 @@
                             }
                             saveData.push(ob);
                         });
+                        if(lineOrbar + pie >1){
+                            wait.close();
+                            $.Notice.error('所选的指标展示图表类型不一致，目前支持同一种图表类型组合以及柱状+线型组合，其他组合暂不支持');
+                            return;
+                        }
                         if (saveData.length == 0) {
                             thisResourceId = resourceId;
                         }

@@ -1,5 +1,6 @@
 var cateType = {};
 
+var parentDilog = frameElement.dialog;
 cateType.list = {
     _url: $("#hd_url").val(),
     top: null,
@@ -8,7 +9,7 @@ cateType.list = {
     TypeSearch: null,
     init: function () {
         this.top = $.Util.getTopWindowDOM();
-        //资源分类 列名
+        //视图分类 列名
         this.columns = [
             {display: '名称', name: 'name',width: "43%", align: 'left', id: 'tree_id'},
             {display: '说明', name: 'description',width: "43%", align: 'left'},
@@ -95,27 +96,6 @@ cateType.list = {
         this.expandcateType();
         window.grid = u.grid;
     },
-
-    // expandcateType: function () {
-    //
-    //     var cateTypePid = sessionStorage.getItem('cateTypePid');
-    //     if ($.Util.isStrEmpty(cateTypePid)){
-    //         return;
-    //     }
-    //     var Pid = $("#" + cateTypePid).attr('pid');
-    //     var clickEle = $($($("#" + cateTypePid).parents('tr').children('td')[0]).find('.l-grid-tree-space'));
-    //     if (!$.Util.isStrEquals($(clickEle[clickEle.length-1]).attr('class').indexOf('l-grid-tree-link-close'), -1)) {
-    //         clickEle[clickEle.length-1].click();
-    //     }
-    //     while (Pid) {
-    //         clickEle = $($($("#" + Pid).parents('tr').children('td')[0]).find('.l-grid-tree-space'));
-    //         if (!$.Util.isStrEquals($(clickEle[clickEle.length-1]).attr('class').indexOf('l-grid-tree-link-close'), -1)) {
-    //             clickEle[clickEle.length-1].click();
-    //         }
-    //         Pid = $("#" + Pid).attr('pid');
-    //     }
-    //     sessionStorage.removeItem('cateTypePid');
-    // },
     expandcateType: function () {
         var Pid = sessionStorage.getItem('cateTypePid');
         if ($.Util.isStrEmpty(Pid)) return;
@@ -140,7 +120,7 @@ cateType.list = {
         });
     },
     add: function (id, type) {
-        var _tital = type == "modify" ? "修改资源分类" : "新增资源分类";
+        var _tital = type == "modify" ? "修改视图分类" : "新增视图分类";
         var _url = cateType.list._url + "/rscategory/typeupdate?id=" + id;
         var callback = function () {
             cateType.list.getTypeList();
@@ -232,9 +212,25 @@ cateType.list = {
 cateType.attr = {
     cateTypePid: "",
     type_form: $("#div_catetype_info_form"),
+    $ipt_view: $('#ipt_view'),
     validator: null,
     parent_select: null,
+    ipt_view: null,
+    iptViewData: [
+        {id: 'standard', name: '标准分类'},
+        {id: 'business', name: '业务分类'},
+        {id: 'derived', name: '派生分类'}
+    ],
     init: function () {
+        this.ipt_view = this.$ipt_view.ligerComboBox({
+            data: this.iptViewData,
+            valueField: 'id',
+            textField: 'name',
+            width: 240,
+            selectBoxWidth: 240,
+        });
+
+
         this.getCateTypeInfo();
         this.event();
         this.validator = new $.jValidation.Validation(this.type_form, {
@@ -259,6 +255,7 @@ cateType.attr = {
         cateType.attr.parent_select.setText(initText);
     },
     getCateTypeInfo: function () {
+        var me = this;
         var u = cateType.list;
         var id = $("#hdId").val();
         if (id == "") {
@@ -280,6 +277,12 @@ cateType.attr = {
                     var initValue = info.pid;
                     var initText = info.pname;
                     cateType.attr.getParentType(initValue, initText);
+                    $.each(cateType.attr.iptViewData, function (k, o) {
+                        if (o.id == info.code) {
+                            me.ipt_view.setValue(info.code);
+                            me.ipt_view.setText(o.name);
+                        }
+                    });
                 }
                 else {
                     $.Notice.error(result.errorMsg);
@@ -298,6 +301,7 @@ cateType.attr = {
         saveJson.id = id;
         saveJson.pid = dataJson.pid.getValue();
         saveJson.name = dataJson.name.getValue();
+        saveJson.code = dataJson.code.getValue();
         saveJson.description = dataJson.description.getValue();
         var _url = cateType.list._url + "/rscategory/saveCateType";
         var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
@@ -314,7 +318,7 @@ cateType.attr = {
                         var cateTypePid = dataJson.pid.getValue();
                         sessionStorage.setItem("cateTypePid", cateTypePid);
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                            parent.cateType.list.dialog_cateType_detail.close();
+                            parentDilog.close();
                         }, null);
                     }
                     else {
@@ -332,7 +336,7 @@ cateType.attr = {
             cateType.attr.save();
         });
         $("#btn_close").click(function () {
-            parent.cateType.list.dialog_cateType_detail.close();
+            parentDilog.close();
         });
     }
 }

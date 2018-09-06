@@ -308,7 +308,7 @@
             columnCfg = [
               { display: 'id', name: 'id', hide:true },
               { display: 'metadataId', name: 'metadataId', hide:true },
-              { display: 'schemaId', name: 'schemaId', hide:true },
+              { display: 'schemeId', name: 'schemeId', hide:true },
               { display: 'srcDatasetCode', name: 'srcDatasetCode', hide:true },
               { display: '内部标识符', name: 'srcMetadataCode',width: '19%', isAllowHide: false ,align:'left' },
               { display: '数据元名称',name: 'srcMetadataName', width: '19%',isAllowHide: false  ,align:'left'},
@@ -408,7 +408,7 @@
               saveData.metadataDomain =$("#metadataDomain"+selected.id).html();
               saveData.metadataId = id;
               saveData.id = selected.id;
-              saveData.schemaId= selected.schemaId;
+              saveData.schemeId= selected.schemeId;
               saveData.srcDatasetCode = selected.srcDatasetCode;
               saveData.srcMetadataCode = selected.srcMetadataCode;
               saveData.srcMetadataName = selected.srcMetadataName;

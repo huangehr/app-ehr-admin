@@ -10,20 +10,44 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${title}</title>
+    <title>基础信息平台</title>
     <tiles:insertAttribute name="header" />
     <tiles:insertAttribute name="layoutCss" ignore="true"/>
     <tiles:insertAttribute name="pageCss" ignore="true"/>
+    <link rel="stylesheet" href="${staticRoot}/common/font-awesome.css">
+    <link rel="stylesheet" href="${staticRoot}/common/style.min.css">
+        <style>
+            .menucyc >li>ul>li>ul>li ul{
+                border: none;
+            }
+
+            .page-tabs a.active i{
+                display: none;
+            }
+            .J_tabCloseOther:hover{
+                color: #777;
+                background: #f2f2f2;
+                cursor: pointer
+            }
+
+            .J_tabCloseOther a{
+                background-color: #fafafa;
+                height:40px;
+            }
+        </style>
 </head>
 <body>
-
+<%--top--%>
 <div id="div_top" class="l-page-top m-logo">
     <div class="f-fr usr_msg">
         欢迎登录：${current_user.realName}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/user/initialChangePassword"
                                                                  class="f-color-0">修改密码</a><br>
-        上次登录：${last_login_time}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/logout" class="f-color-0">退出</a>
+        上次登录：${last_login_time}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/logout/reLogin" class="f-color-0">退出</a>
     </div>
 </div>
+<%--<div class="m-index-nav" style="display: none;">--%>
+    <%--当前位置：<span id="n_indexNav"></span>--%>
+<%--</div>--%>
 <div id="div_main_content" class="l-layout">
     <div position="left" class="l-layout-content f-hh" hidetitle="false">
         <!--菜单导航栏-->
@@ -38,27 +62,30 @@
         </div>
     </div>
     <div position="center" title="" class="l-layout-content">
-        <%--<div id="div_notice_container" class="f-pa">--%>
-        <%--<div class="oni-notice-flow">--%>
-        <%--<div class="u-notice success" style="height: 9px;">--%>
-        <%--<div class="msgContent f-dn">--%>
-        <%--<div class="noty_bar">--%>
-        <%--<div class="noty_message f-tac f-pr" style="padding: 8px 10px 9px; width: auto;">--%>
-        <%--<span class="noty_text"></span>--%>
-        <%--</div>--%>
-        <%--</div>--%>
-        <%--</div>--%>
-        <%--<div class="messageControlBar"></div>--%>
-        <%--</div>--%>
-        <%--</div>--%>
-        <%--</div>--%>
-        <div id="div_nav_breadcrumb_bar" class="u-nav-breadcrumb f-pl10 s-bc5 f-fwb f-dn">位置：<span id="span_nav_breadcrumb_content"></span></div>
-        <div data-content-page class="f-p10 f-pr" id="contentPage">
-            <%--<tiles:insertAttribute name="contentPage" ignore="true"/>--%>
+        <%--tab-content--%>
+        <div class="content-tabs">
+            <button class="roll-nav roll-left J_tabLeft"><i class="glyphicon glyphicon-chevron-left"></i></button>
+            <nav class="page-tabs J_menuTabs">
+                <div class="page-tabs-content">
+                </div>
+            </nav>
+            <button class="roll-nav roll-right J_tabRight"><i class="glyphicon glyphicon-chevron-right"></i></button>
+            <div class="btn-group roll-nav roll-right">
+                <div  class="J_tabCloseOther"><a style="color:#323232;">关闭其他</a></div>
+                <%--<button class="dropdown J_tabClose" data-toggle="dropdown">关闭操作<span class="caret"></span></button>--%>
+                <%--<ul role="menu" class="dropdown-menu dropdown-menu-right">--%>
+                    <%--<li class="J_tabCloseAll"><a>关闭全部选项卡</a>--%>
+                    <%--</li>--%>
+                    <%--<li class="J_tabCloseOther"><a>关闭其他选项卡</a>--%>
+                    <%--</li>--%>
+                <%--</ul>--%>
+            </div>
+        </div>
+        <div class="J_mainContent" id="content-main">
+
         </div>
     </div>
 </div>
-
 <tiles:insertAttribute name="footer" />
 <tiles:insertAttribute name="layoutJs" ignore="true"/>
 <tiles:insertAttribute name="pageJs" ignore="true"/>

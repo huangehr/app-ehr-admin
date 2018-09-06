@@ -38,6 +38,7 @@
         height: calc(100% - 40px);
         border:1px solid #ccc;
         padding: 10px;
+        position: relative;
     }
     .charts-main .mCSB_scrollTools.mCSB_scrollTools_horizontal{
         height: 8px !important;
@@ -96,9 +97,10 @@
         height: 30px;
         line-height: 30px;
         position: relative;
-        text-align: right;
+        /*text-align: right;*/
         border-bottom:1px solid #ccc;
         margin-bottom: 10px;
+        margin-top: 30px;
     }
     .un-show{
         display: none;
@@ -121,5 +123,115 @@
     }
     .up-con{
         position: absolute;
+    }
+    .drill-list{
+        position: absolute;
+        top: 6px;
+        transform: translateX(-50%);
+        left: 50%;
+        z-index: 10;
+        font-size: 0;
+        border: 1px solid #bebebe;
+        cursor: pointer;
+    }
+    .dirll-item{
+        /* width: 85px; */
+        height: 25px;
+        text-align: center;
+        line-height: 25px;
+        display: inline-block;
+        position: relative;
+        font-size: 14px;
+        vertical-align: middle;
+        user-select: none;
+        padding: 0 11px;
+    }
+    .dimension-list{
+        position: absolute;
+        left: 0;
+        top: 25px;
+        font-size: 0;
+        border: 1px solid #bebebe;
+    }
+    .dimension-item{
+        min-width: 84px;
+        height: 25px;
+        line-height: 25px;
+        background: #fff;
+        font-size: 12px;
+        color: #333;
+        text-align: left;
+        padding: 0 10px;
+        overflow: hidden;
+        word-break: keep-all;
+    }
+    .dimension-item:hover{
+        background: #f5f5f5;
+    }
+    .triangle{
+        width: 0;
+        height: 0;
+        display: inline-block;
+        margin-right: 5px;
+    }
+    #dirllUp,#dirllDown{
+        background: #ccc;
+        color: #fff;
+    }
+    #dimensionName{
+        min-width: 85px;
+        background: #fff;
+        color: #ccc;
+        /*padding: 0 10px;*/
+        /*overflow: hidden;*/
+        word-break: keep-all;
+    }
+    .up-triangle{
+        border-right: 6px solid transparent;
+        border-bottom: 7px solid #fff;
+        border-left: 6px solid transparent;
+    }
+    .down-triangle{
+        border-top: 7px solid #fff;
+        border-right: 6px solid transparent;
+        border-left: 6px solid transparent;
+    }
+    .hover-show{
+        width: max-content;
+        color: #fff;
+        background-color: #f0ad4e;
+        border-color: #eea236;
+        padding: 0 10px;
+        position: absolute;
+        left: 50%;
+        top: 30px;
+        font-size: 12px;
+        display: none;
+    }
+    #dirllUp .hover-show,#dirllDown .hover-show{
+        color: #d9534f;
+        background-color: #f2dede;
+    }
+    .dirll-item.active .hover-show{
+        color: #fff !important;
+        background-color: #f0ad4e !important;
+    }
+    .dirll-item.active .hover-show.active{
+        display: none;
+    }
+    .dirll-item:hover .hover-show{
+        display: block;
+    }
+    #chart{
+        margin-top: 45px;
+    }
+    .dirll-item.active{
+        background: #2D9BD2 !important;
+    }
+    .nav,.nav ul li{
+        display: inline-block;
+    }
+    .nav ul li a{
+        padding: 0 10px;
     }
 </style>

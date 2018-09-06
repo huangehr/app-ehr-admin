@@ -1,7 +1,7 @@
 /**
  * Created by AndyCai on 2015/12/14.
  */
-
+var parentDilog = frameElement.dialog;
 var cdaType = {};
 
 cdaType.list = {
@@ -47,7 +47,7 @@ cdaType.list = {
             url: u._url + "/cdatype/getTreeGridData",
             type: "get",
             dataType: "json",
-            data:{codeName:codeName},
+            data: {codeName: codeName},
             success: function (data) {
                 var envelop = eval(data);
                 var result = envelop.detailModelList;
@@ -76,7 +76,7 @@ cdaType.list = {
             u.grid = $("#div_cda_type_grid").ligerGrid({
                 record: 'totalCount',
                 root: 'detailModelList',
-                pageSize:15,
+                pageSize: 15,
                 pagesizeParmName: 'rows',
                 heightDiff: -10,
                 headerRowHeight: 40,
@@ -93,7 +93,7 @@ cdaType.list = {
                 rownumbers: false,
                 checkbox: false,
                 root: 'Rows',
-                tree: {columnId: 'tree_id',height:'100%'},
+                tree: {columnId: 'tree_id', height: '100%'},
                 onError: function (a, b) {
                 },
                 onGroupExtend: function () {
@@ -122,7 +122,7 @@ cdaType.list = {
     },
     add: function (id, type) {
 
-        var _tital = type=="modify"?"修改CDA分类":"新增CDA分类";
+        var _tital = type == "modify" ? "修改CDA分类" : "新增CDA分类";
         var _url = cdaType.list._url + "/cdatype/typeupdate?id=" + id;
         var callback = function () {
             cdaType.list.getTypeList();
@@ -249,8 +249,9 @@ cdaType.attr = {
         this.getCdaTypeInfo();
         this.event();
 
-        this.validator =  new $.jValidation.Validation(this.type_form, {immediate: true, onSubmit: false,
-            onElementValidateForAjax:function(elm){
+        this.validator = new $.jValidation.Validation(this.type_form, {
+            immediate: true, onSubmit: false,
+            onElementValidateForAjax: function (elm) {
 
             }
         });
@@ -311,7 +312,7 @@ cdaType.attr = {
         })
     },
     save: function () {
-        if(!this.validator.validate()){
+        if (!this.validator.validate()) {
             return;
         }
         var id = $("#hdId").val();
@@ -331,7 +332,7 @@ cdaType.attr = {
             url: _url,
             type: "POST",
             dataType: "json",
-            data: {dataJson:JSON.stringify(dataJson[0])},
+            data: {dataJson: JSON.stringify(dataJson[0])},
             success: function (data) {
                 waittingDialog.close();
                 if (data != null) {
@@ -340,7 +341,7 @@ cdaType.attr = {
                     if (_res.successFlg) {
                         //alert($.i18n.prop('message.save.success'));
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                            parent.cdaType.list.dialog_cdatype_detail.close();
+                            parentDilog.close();
                         }, null);
                     }
                     else {
@@ -358,7 +359,7 @@ cdaType.attr = {
             cdaType.attr.save();
         });
         $("#btn_close").click(function () {
-            parent.cdaType.list.top.dialog_cdatype_detail.close();
+            parentDilog.close();
         });
     }
 }

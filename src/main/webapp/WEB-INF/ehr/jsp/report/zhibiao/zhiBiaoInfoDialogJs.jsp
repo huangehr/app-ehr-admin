@@ -17,9 +17,11 @@
         var dataSourceSelectedVal = "";
         var dataStorageSelectedVal = "";
         var quotaTypeSelectedVal = "";
+        var objClassCode = "";
         var id = ${id};
         var validator = null;
         var txtCronExpression = "";
+        var jobStatus = 0;
 
 
         /* ************************** 变量定义结束 ******************************** */
@@ -45,6 +47,7 @@
             $inpDataStorage: $("#inp_data_storage"),
             $introduction:$("#inp_introduction"),
             $dataLevel: $('input[name="dataLevel"]', this.$form),
+            $resultGetType: $('input[name="resultGetType"]', this.$form),
             $status: $('input[name="status"]', this.$form),
             $jobType: $('input[name="jobType"]', this.$form),
             $intervalType: $('input[name="interval_type"]', this.$form),
@@ -65,20 +68,10 @@
                     $("#inp_code").closest(".m-form-group").addClass("m-form-readonly");
                 }
             },
-            dataSourceSelected:function(code, name){
-                dataSourceSelectedVal = code;
-            },
-            dataStorageSelected:function(code, name){
-                dataStorageSelectedVal = code;
-            },
-            quotaTypeSelectedVal:function(id, name){
-                quotaTypeSelectedVal = id;
-            },
             setZBInfo: function ( res, me) {
-                me.dataSourceSelected(res.tjQuotaDataSourceModel);
-                me.dataStorageSelected(res.tjQuotaDataSaveModel);
                 initCode = res.code;
                 initName = res.name;
+                jobStatus = res.jobStatus;
                 me.$inpCode.val(res.code);
                 me.$inpName.val(res.name);
                 txtCronExpression = res.cron;
@@ -92,7 +85,6 @@
                     me.initInterval();
                 }
                 me.$inpCycle.val(res.cron);
-                me.$inpObjectClass.val(res.jobClazz);
                 me.$inpDataSourceJson.val(res.tjQuotaDataSourceModel.configJson);
                 me.$inpDataStorageJson.val(res.tjQuotaDataSaveModel.configJson);
                 if (res.dataLevel == '1') {
@@ -107,6 +99,15 @@
                     me.$dataLevel.eq(0).ligerRadio("setValue",'');
                     me.$dataLevel.eq(1).ligerRadio("setValue",'');
                     me.$dataLevel.eq(2).ligerRadio("setValue",'3');
+                }
+                if (res.resultGetType == '1') {
+                    me.$resultGetType.eq(0).ligerRadio("setValue",'1');
+                    me.$resultGetType.eq(1).ligerRadio("setValue",'');
+                    me.$resultGetType.eq(2).ligerRadio("setValue",'');
+                }else if (res.resultGetType == '2') {
+                    me.$resultGetType.eq(0).ligerRadio("setValue",'');
+                    me.$resultGetType.eq(1).ligerRadio("setValue",'2');
+                    me.$resultGetType.eq(2).ligerRadio("setValue",'');
                 }
 
                 if (res.status == '1') {
@@ -124,6 +125,8 @@
                 }
                 me.$execTime.val(res.execTime);
                 me.$zhixingDate.val(res.execTime);
+                me.$inpObjectClass.ligerGetComboBoxManager().setValue(res.jobClazz);
+                me.$inpObjectClass.ligerGetComboBoxManager().setText(res.jobClazzName);
                 me.$inpQuotaType.ligerGetComboBoxManager().setValue(res.quotaType);
                 me.$inpQuotaType.ligerGetComboBoxManager().setText(res.quotaTypeName);
                 me.$inpDataSource.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.sourceCode);
@@ -156,37 +159,58 @@
             initForm: function () {
                 var self = this;
                 self.$dataLevel.eq(0).attr("checked",'true');
+                self.$resultGetType.eq(0).attr("checked",'true');
                 self.$status.eq(0).attr("checked",'true');
                 self.$jobType.eq(0).attr("checked","true");
                 self.$monthDay.eq(0).attr("checked",'true');
                 self.$inpCode.ligerTextBox({width: 240});
                 self.$inpName.ligerTextBox({width: 240});
                 self.$inpCycle.ligerTextBox({width: 240});
-                self.$inpObjectClass.ligerTextBox({width: 240});
-                var combo1 = self.$inpDataSource.customCombo('${contextRoot}/tjDataSource/getTjDataSource',{},self.dataSourceSelected,null,null,{valueField: 'code',
-                    textField: 'name'});
-                self.$inpDataSource.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
-                });
-                var combo2 = self.$inpDataStorage.customCombo('${contextRoot}/tjDataSave/getTjDataSave',{},self.dataStorageSelected,null,null,{valueField: 'code',
-                    textField: 'name'});
-                self.$inpDataStorage.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
+
+                this.initDDL(93,this.$inpObjectClass);
+
+                self.$inpDataSource.ligerComboBox({
+                    url: "${contextRoot}/tjDataSource/getTjDataSource",
+                    dataParmName: 'detailModelList',
+                    ajaxType: 'post',
+                    urlParms: {
+                        page: 1,
+                        rows: 999
+                    },
+                    valueField: 'code',
+                    textField: 'name',
+                    absolute:false,
+                    onSelected: function (id) {
+                        dataSourceSelectedVal = id;
+                    }
                 });
 
-                var combo3 = self.$inpQuotaType.customCombo('${contextRoot}/quota/getAllQuotaCategoryList',null,self.quotaTypeSelectedVal,null,null,{valueField: 'id',
-                    textField: 'name'});
-                self.$inpQuotaType.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
+                self.$inpDataStorage.ligerComboBox({
+                    url: "${contextRoot}/tjDataSave/getTjDataSave",
+                    dataParmName: 'detailModelList',
+                    ajaxType: 'post',
+                    urlParms: {
+                        page: 1,
+                        rows: 999
+                    },
+                    valueField: 'code',
+                    textField: 'name',
+                    absolute:false,
+                    onSelected: function (id) {
+                        dataStorageSelectedVal = id;
+                    }
+                });
+
+                self.$inpQuotaType.ligerComboBox({
+                    url: "${contextRoot}/quota/getAllQuotaCategoryList",
+                    dataParmName: 'detailModelList',
+                    ajaxType: 'post',
+                    valueField: 'id',
+                    textField: 'name',
+                    absolute:false,
+                    onSelected: function (id) {
+                        quotaTypeSelectedVal = id;
+                    }
                 });
 
                 this.$inpDataSourceJson.ligerTextBox({width:240,height:100 });
@@ -195,6 +219,7 @@
                 self.$dataLevel.ligerRadio();
                 self.$status.ligerRadio();
                 self.$jobType.ligerRadio();
+                self.$resultGetType.ligerRadio();
                 self.$intervalType.ligerRadio();
                 self.$zhixingDate.ligerDateEditor({width:240,showTime: true,onChangeDate:function(val){
                     self.$zhixingDate.val(val+":00");
@@ -208,6 +233,26 @@
                 self.$monthDay.ligerRadio();
                 self.$form.attrScan();
             },
+
+            initDDL: function (dictId, target) {
+                var self = this;
+                target.customCombo('${contextRoot}/dict/searchDictEntryList',{dictId: dictId},function (cbData) {
+                    objClassCode = cbData;
+                },null,null,{
+                    valueField: 'value',
+                    textField: 'code',
+                    condition: null,
+                    absolute:false,
+                    selectBoxHeight: 'auto'
+                },{
+                    columns: [
+                        { header: 'code', name: 'code', width: '40%' },
+                        { header: 'value', name: 'value', width: '60%'}
+                    ],
+                    usePager: false
+                });
+            },
+
             //根据周期类型显示周期面板
             showInterval:function(tab){
                 $('input[name="interval_type"]').eq(0).ligerRadio("setValue",'');
@@ -412,7 +457,7 @@
                             }
                             var dataModel = $.DataModel.init();
                             dataModel.fetchRemote("${contextRoot}/tjQuota/hasExistsCode", {
-                                data: {code:code},
+                                data: {code:code.trim()},
                                 async: false,
                                 success: function (data) {
                                     if (!data) {
@@ -434,7 +479,7 @@
                             }
                             var dataModel = $.DataModel.init();
                             dataModel.fetchRemote("${contextRoot}/tjQuota/hasExistsName", {
-                                data: {name:name},
+                                data: {name:name.trim()},
                                 async: false,
                                 success: function (data) {
                                     if (!data) {
@@ -455,9 +500,9 @@
                 self.$form.on('click','input[name="jobType"]',function(){
                     var value = $(this).val();
                     if(value=="1"){
-                        $("#divTimeInterval").hide();
+                        $(".divTimeInterval").hide();
                     }else{
-                        $("#divTimeInterval").show();
+                        $(".divTimeInterval").show();
                     }
                 });
 
@@ -487,13 +532,18 @@
                         var values = self.$form.Fields.getValues();
                         values.cron = txtCronExpression;
                         values.execType = $('input[name=jobType]:checked').val();
+                        values.jobStatus = jobStatus;
 //                        values.execTime = $('#execTime').val();
                         values.execTime = $('#inp_zhixing_date').val();
+                        values.jobClazz = objClassCode;
+//                        values.jobStatus = ;
                         values.tjQuotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
                         values.tjQuotaDataSaveModel = {saveCode:dataStorageSelectedVal,configJson:self.$inpDataStorageJson.val()};
                         if (id != '-1') {
                             values.id = id.toString();
                         }
+                        values.name = values.name.trim();
+                        values.code = values.code.trim();
                         var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/tjQuota/updateTjDataSource", {
                             data: {tjQuotaModelJsonData:JSON.stringify(values)},

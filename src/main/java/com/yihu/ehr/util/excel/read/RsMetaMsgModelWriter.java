@@ -10,6 +10,7 @@ import jxl.Workbook;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class RsMetaMsgModelWriter extends AExcelWriter {
     public void addHeader(WritableSheet ws) throws WriteException {
-        String[] header = {"资源标准编码", "数据元名称", "业务领域", "内部标识符", "类型", "关联字典", "是否允空", "说明"};
+        String[] header = {"资源标准编码", "数据元名称", "业务领域", "内部标识符", "类型", "关联字典", "是否允空", "说明", "错误信息"};
         if (!"".equals(header)) {
             int i = 0;
             for (String h : header) {
@@ -25,6 +26,19 @@ public class RsMetaMsgModelWriter extends AExcelWriter {
                 i++;
             }
         }
+    }
+
+    private String getErrorInfo(RsMetaMsgModel m) {
+        String errorInfo = "";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("id")) ? "" : m.findErrorMsg("id") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("name")) ? "" : m.findErrorMsg("name") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("domain")) ? "" : m.findErrorMsg("domain") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("stdCode")) ? "" : m.findErrorMsg("stdCode") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("columnType")) ? "" : m.findErrorMsg("columnType") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("dictCode")) ? "" : m.findErrorMsg("dictCode") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("nullAble")) ? "" : m.findErrorMsg("nullAble") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("description")) ? "" : m.findErrorMsg("description") + "；";
+        return StringUtils.isEmpty(errorInfo) ? errorInfo : errorInfo.substring(0,errorInfo.length()-1);
     }
 
     public void write(WritableWorkbook wwb, List ls) throws Exception {
@@ -41,6 +55,7 @@ public class RsMetaMsgModelWriter extends AExcelWriter {
                 addCell(ws, i, 5, m.getDictCode(), m.findErrorMsg("dictCode"));
                 addCell(ws, i, 6, m.getNullAble(), m.findErrorMsg("nullAble"));
                 addCell(ws, i, 7, m.getDescription(), m.findErrorMsg("description"));
+                addCell(ws, i, 8, getErrorInfo(m), "");
                 i++;
             }
             wwb.write();

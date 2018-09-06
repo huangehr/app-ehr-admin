@@ -2,7 +2,7 @@ package com.yihu.ehr.specialdict.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.DrugDictModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -61,7 +61,7 @@ public class DrugDictController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(DrugDictController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("/drugs")
@@ -83,10 +83,8 @@ public class DrugDictController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch(Exception ex){
-            LogService.getLogger(DrugDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -114,7 +112,7 @@ public class DrugDictController extends BaseUIController {
             Map<String,Object> params = new HashMap<>();
             params.put("ids",ids);
             envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(DrugDictController.class).error(ex.getMessage());
         }
         return envelopStr;
@@ -126,9 +124,9 @@ public class DrugDictController extends BaseUIController {
         //新增、修改
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/drug";
         try{
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             DrugDictModel model = objectMapper.readValue(dictJson,DrugDictModel.class);
             if("new".equals(mode)){
                 model.setCreateUser(userDetailModel.getId());
@@ -161,9 +159,8 @@ public class DrugDictController extends BaseUIController {
             String envelopStrUpdate = HttpClientUtil.doPut(comUrl+url,params,username,password);
             return envelopStrUpdate;
         }catch(Exception ex){
-            LogService.getLogger(DrugDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -176,10 +173,8 @@ public class DrugDictController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex) {
-            LogService.getLogger(DrugDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -193,9 +188,8 @@ public class DrugDictController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(DrugDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -209,9 +203,8 @@ public class DrugDictController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(DrugDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -221,15 +214,14 @@ public class DrugDictController extends BaseUIController {
     public Object isNameExist(String name){
         Envelop envelop = new Envelop();
         String url = "/dict/drug/existence/name";
-        try{
+        try {
             Map<String,Object> params = new HashMap<>();
             params.put("name",name);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(DrugDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

@@ -56,7 +56,7 @@
                 {display: '列类型', name: 'columnType', align: 'left', width: '10%'},
                 {display: '检验字典', name: 'dictName', align: 'left', width: '20%'},
                 {
-                    display: '操作', width: '15%', isSort: false, render: function (rowdata, rowindex, value) {
+                    display: '操作', minWidth: 120, isSort: false, render: function (rowdata, rowindex, value) {
                     var html = '';
                     <sec:authorize url="/std/dataset/elementupdate">
                     html += "<a class='grid_edit' href='#' onclick='set.list.updateElement(\"" + rowdata.id + "\")'></a>";
@@ -98,14 +98,6 @@
                 }
             });
 
-            $("#div_left .l-text").css({
-                "margin-left": 50, "margin-top": -20
-            });
-
-            $("#div_right .l-text").css({
-                "margin-left": 100, "margin-top": -20
-            });
-            this.setCss();
             this.event();
             this.getVersionList();
             this.bindEvents();
@@ -128,17 +120,6 @@
             $(window).bind('resize', function () {
                 var contentW = $('#grid_content').width();
                 var leftW = $('#div_left').width();
-                $('#div_right').width(contentW - leftW - 20);
-            });
-        },
-        setCss: function () {
-            $("#div_right").css({
-                "width": $("#div_wrapper").width() - $("#div_left").width() - 10,
-                "margin-left": 10
-            });
-
-            $("#div_left .l-text").css({
-                "margin-left": 70
             });
         },
         getVersionList: function () {
@@ -181,7 +162,7 @@
             $.ajax({
                 type: "get",
                 url: u._url + "/std/dataset/searchDataSets",
-                data: {codename: u.setSearch.getValue(), version: versionCode, page: 1, rows: 100},// 你的formid
+                data: {codename: u.setSearch.getValue(), version: versionCode, page: 1, rows: 999999},// 你的formid
                 async: true,
                 dataType: "json",
                 error: function (request) {
@@ -257,9 +238,7 @@
                 u.grid.loadData(gridData); //刷新数据
             }
             window.grid = u.grid;
-
         },
-
         getElementList: function (versionCode, setid, curPage) {
             var u = set.list;
             //平台标准-若为已发布，则不能多选删除。将复选框隐藏。
@@ -304,7 +283,7 @@
 //            if (set.list.top == null) {
 //                set.list.top = $.Util.getTopWindowDOM();
 //            }
-            set.list.dialog_set_detail = $.ligerDialog.open({
+            set.list.dialog_set_detail = parent._LIGERDIALOG.open({
                 title: _tital,
                 url: _url,
                 height: _height,
@@ -344,16 +323,16 @@
             console.log(set.list.versionStage)
             if(!set.list.versionStage)
             {
-                $.Notice.error("已发布版本不可删除，请确认!");
+                parent._LIGERDIALOG.error("已发布版本不可删除，请确认!");
                 return;
             }
 
             if (ids == null || ids == "") {
-                $.Notice.error("请先选择需要删除的数据集!");
+                parent._LIGERDIALOG.error("请先选择需要删除的数据集!");
                 return;
             }
             var strVersionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
-            $.Notice.confirm('删除数据集将连同一起删除关联的数据元,是否确定删除该数据集?', function (confirm) {
+            parent._LIGERDIALOG.confirm('删除数据集将连同一起删除关联的数据元,是否确定删除该数据集?', function (confirm) {
                 if (confirm) {
                     $.ajax({
                         url: set.list._url + "/std/dataset/deleteDataSet",
@@ -365,15 +344,15 @@
 
                                 var _res = eval(data);
                                 if (_res.successFlg) {
-                                    $.Notice.success("删除成功!");
+                                    parent._LIGERDIALOG.success("删除成功!");
                                     set.list.getSetList(strVersionCode, Util.checkCurPage.call(set.list.grid, 1));
                                 }
                                 else {
-                                    $.Notice.error(_res.errorMsg);
+                                    parent._LIGERDIALOG.error(_res.errorMsg);
                                 }
                             }
                             else {
-                                $.Notice.error('删除失败!');
+                                parent._LIGERDIALOG.error('删除失败!');
                             }
                         }
                     })
@@ -392,7 +371,7 @@
                     set.list.getElementList(versionCode, setid);
                 }
             };
-            set.list.showDialog(_tital, _url, 560, 730, callback);
+            set.list.showDialog(_tital, _url, 520, 730, callback);
         },
         updateElement: function (id) {
             var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
@@ -405,22 +384,22 @@
                     set.list.getElementList(versionCode, setid);
                 }
             };
-            set.list.showDialog(_tital, _url, 560, 730, callback);
+            set.list.showDialog(_tital, _url, 520, 730, callback);
         },
         deleteElement: function (ids) {
 
             if(!set.list.versionStage)
             {
-                $.Notice.error("已发布版本不可删除，请确认!");
+                parent._LIGERDIALOG.error("已发布版本不可删除，请确认!");
                 return;
             }
 
             if (ids == null || ids == "") {
-                $.Notice.error("请先选择需要删除的数据集!");
+                parent._LIGERDIALOG.error("请先选择需要删除的数据集!");
                 return;
             }
             var strVersionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
-            $.Notice.confirm('是否确定删除该数据元?', function (confirm) {
+            parent._LIGERDIALOG.confirm('是否确定删除该数据元?', function (confirm) {
                 if (confirm) {
                     $.ajax({
                         url: set.list._url + "/std/dataset/deleteMetaData",
@@ -432,16 +411,16 @@
 
                                 var _res = eval(data);
                                 if (_res.successFlg) {
-                                    $.Notice.success("删除成功!");
+                                    parent._LIGERDIALOG.success("删除成功!");
                                     var setid = $("#hdId").val();
                                     set.list.getElementList(strVersionCode, setid, Util.checkCurPage.call(set.list.elementGrid, ids.split(',').length));
                                 }
                                 else {
-                                    $.Notice.error(_res.errorMsg);
+                                    parent._LIGERDIALOG.error(_res.errorMsg);
                                 }
                             }
                             else {
-                                $.Notice.error('删除失败!');
+                                parent._LIGERDIALOG.error('删除失败!');
                             }
                         }
                     })
@@ -452,7 +431,7 @@
             $("#btn_create").click(function () {
                 if(!set.list.versionStage)
                 {
-                    $.Notice.error("已发布版本不可新增，请确认!");
+                    parent._LIGERDIALOG.error("已发布版本不可新增，请确认!");
                     return;
                 }
                 set.list.addSet();
@@ -460,7 +439,7 @@
             $("#btn_add_element").click(function () {
                 if(!set.list.versionStage)
                 {
-                    $.Notice.error("已发布版本不可新增，请确认!");
+                    parent._LIGERDIALOG.error("已发布版本不可新增，请确认!");
                     return;
                 }
                 set.list.addElement();
@@ -469,13 +448,13 @@
 
                 //if(!set.list.versionStage)
                 //{
-                //    $.Notice.error("已发布版本不可删除，请确认!");
+                //    parent._LIGERDIALOG.error("已发布版本不可删除，请确认!");
                 //    return;
                 //}
 
                 var rows = set.list.elementGrid.getSelecteds();
                 if (rows.length == 0) {
-                    $.Notice.error("请选择要删除的内容！");
+                    parent._LIGERDIALOG.error("请选择要删除的内容！");
                     return;
                 }
                 else {
@@ -500,7 +479,7 @@
             });
             uploader.on('beforeSend',function( file, data ) {
                 if(!set.list.versionStage) {
-                    $.Notice.error("已发布版本不可导入，请确认!");
+                    parent._LIGERDIALOG.error("已发布版本不可导入，请确认!");
                     return;
                 }else{
                     var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
@@ -514,7 +493,7 @@
                 }
                 if (!resp.successFlg) {
 
-                    $.Notice.error(resp.errorMsg);
+                    parent._LIGERDIALOG.error(resp.errorMsg);
                 }else{
                     //导入成功，展示
                     //resp.obj;
@@ -620,7 +599,7 @@
                         // cda.attr.cda_form.Fields.source_id.setValue("0dae0006561b759649f63220dcacfd00");
                     }
                     else {
-                        $.Notice.error(result.errorMsg);
+                        parent._LIGERDIALOG.error(result.errorMsg);
                     }
                 }
             })
@@ -637,7 +616,7 @@
             dataJson[0]["versionCode"] = versionCode;
 
             var _url = set.list._url + "/std/dataset/saveDataSet";
-            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+            var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
             $.ajax({
                 url: _url,
                 type: "POST",
@@ -650,13 +629,13 @@
                         var _res = eval(data);
                         if (_res.successFlg) {
                             //alert($.i18n.prop('message.save.success'));
-                            $.ligerDialog.alert("保存成功", "提示", "success", function () {
+                            parent._LIGERDIALOG.alert("保存成功", "提示", "success", function () {
                                 set.list.isReload = true;
                                 set.list.dialog_set_detail.close();
                             }, null);
                         }
                         else {
-                            $.Notice.error(_res.errorMsg);
+                            parent._LIGERDIALOG.error(_res.errorMsg);
                         }
                     }
                     else {
@@ -860,7 +839,7 @@
             }
             var _url = set.list._url + "/std/dataset/updataMetaSet";
 
-            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+            var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
             $.ajax({
                 url: _url,
                 type: "POST",
@@ -871,13 +850,13 @@
                     if (data != null) {
                         var _res = eval(data);
                         if (_res.successFlg) {
-                            $.ligerDialog.alert("保存成功!", "提示", "success", function () {
+                            parent._LIGERDIALOG.alert("保存成功!", "提示", "success", function () {
                                 set.list.isReload = true;
                                 set.list.dialog_set_detail.close();
                             }, null);
                         }
                         else {
-                            $.Notice.error(_res.errorMsg);
+                            parent._LIGERDIALOG.error(_res.errorMsg);
                         }
                     }
                 }
@@ -933,7 +912,7 @@
             });
             $('#whetherNull').click(function () {
                 if ($(this).prop('checked') && $('#primaryKey').prop('checked')) {
-                    $.Notice.error("主键不能为空！");
+                    parent._LIGERDIALOG.error("主键不能为空！");
                     $(this).prop('checked', false);
                 }
             });
@@ -964,11 +943,11 @@
 
         function onUploadSuccess(g, result) {
             if (result == 'suc')
-                $.Notice.success("导入成功");
+                parent._LIGERDIALOG.success("导入成功");
             else {
                 result = eval('(' + result + ')')
                 var url = "${contextRoot}/std/dataset/downLoadErrInfo?f=" + result.eFile[1] + "&datePath=" + result.eFile[0];
-                $.ligerDialog.open({
+                parent._LIGERDIALOG.open({
                     height: 80,
                     content: "请下载&nbsp;<a target='diframe' href='" + url + "'>导入失败信息</a><iframe id='diframe' name='diframe'> </iframe>",
                 });
@@ -986,7 +965,7 @@
             onDlgClose: onDlgClose,
             onBeforeUpload: function () {
                 if(!set.list.versionStage) {
-                    $.Notice.error("已发布版本不可导入数据!");
+                    parent._LIGERDIALOG.error("已发布版本不可导入数据!");
                     return false;
                 }
             }

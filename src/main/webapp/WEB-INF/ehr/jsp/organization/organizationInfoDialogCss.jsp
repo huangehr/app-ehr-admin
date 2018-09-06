@@ -86,4 +86,19 @@
     #uploader .statusBar{border: none !important; position: absolute !important; top: -58px; right: 50px; width: 121px; height: 40px;}
     .list-title{padding: 0 0 10px 30px; font-size: 16px; font-weight: 600; border-bottom: 1px solid #ccc; color: #777;height: 50px;line-height: 50px;margin: 10px 10px 0 10px;}
     .u-select-title{width:146px;}
+    #uploader .statusBar .btns{
+        line-height: 30px !important;
+    }
+    #uploader .statusBar .btns .webuploader-pick{
+        background: #D0EEFF !important;
+        border: 1px solid #99D3F5 !important;
+        color: #1E88C7 !important;
+    }
+    .is-null{
+        width: 100%;
+        line-height: 80px;
+        display: block;
+        position: absolute;
+        text-align: center;
+    }
 </style>

@@ -80,7 +80,7 @@ $(function () {
                     $.Notice.error(resp.errorMsg);
                 else
                    $.Notice.success('新增成功');
-                   closeAddPortalResourcesInfoDialog(function () {
+                   parent.closeAddPortalResourcesInfoDialog(function () {
                 });
             });
         },
@@ -165,11 +165,11 @@ $(function () {
                         success: function (data) {
                             waittingDialog.close();
                             if (data.successFlg) {
-                                closeAddPortalResourcesInfoDialog(function () {
+                                parent.closeAddPortalResourcesInfoDialog(function () {
                                     $.Notice.success('新增成功');
                                 });
                             } else {
-                                window.top.$.Notice.error(data.errorMsg);
+                                $.Notice.error(data.errorMsg);
                             }
                         }
                     })
@@ -179,15 +179,15 @@ $(function () {
                 //change事件
                 this.$inpFileApk.on( 'change', function () {
                     var url = '${contextRoot}/portalResources/portalResourcesFileUpload';
-                    self.$apkUrl.val(doUpload(url));
+                    self.$apkUrl.val(doUpload(url, this));
                 });
                 this.$inpFileAndroid.on( 'change', function () {
                     var url = '${contextRoot}/portalResources/portalResourcesFileUploadAndriod';
-                    self.$androidUrl.val(doUpload(url));
+                    self.$androidUrl.val(doUpload(url, this));
                 });
                 this.$inpFileIosUrl.on( 'change',function () {
                     var url = '${contextRoot}/portalResources/portalResourcesFileUploadIos';
-                    self.$iosUrl.val( doUpload(url));
+                    self.$iosUrl.val( doUpload(url, this));
                 });
 
 
@@ -209,33 +209,40 @@ $(function () {
                     <%--self.$iosUrl.val( doUpload(url));--%>
                 <%--});--%>
 
-                function doUpload(url) {
-                    var formData = new FormData($( "#uploadForm" )[0]);
-                    var fileUrl;
-                    $.ajax({
-                        url: url ,
-                        type: 'POST',
-                        data: formData,
-                        async: false,
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        success: function (returndata) {
-                            if(returndata != "fail"){
-//                                alert("上传成功");
-                                $.Notice.success('上传成功');
-                                fileUrl = returndata;
-                            }else{
-//                                alert("上传失败");
-                                $.Notice.success('上传失败');
+                function doUpload(url, that) {
+                    debugger
+                    var fileType = $(that)[0].files[0].type;
+                    if (fileType == 'image/png' || fileType == 'image/jpeg' || fileType == 'image/jpg' || fileType == 'image/x-png' || fileType == 'image/bmp') {
+                        var formData = new FormData($( "#uploadForm" )[0]);
+                        var fileUrl;
+                        $.ajax({
+                            url: url ,
+                            type: 'POST',
+                            data: formData,
+                            async: false,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (returndata) {
+                                if(returndata != "fail"){
+    //                                alert("上传成功");
+                                    $.Notice.success('上传成功');
+                                    fileUrl = returndata;
+                                }else{
+    //                                alert("上传失败");
+                                    $.Notice.error('上传失败');
+                                }
+                            },
+                            error: function (returndata) {
+    //                            alert("上传失败");
+                                $.Notice.error('上传失败');
                             }
-                        },
-                        error: function (returndata) {
-//                            alert("上传失败");
-                            $.Notice.success('上传失败');
-                        }
-                    });
-                    return fileUrl;
+                        });
+                        return fileUrl;
+                    } else {
+                        $.Notice.error('上传的图片文件格式不正确');
+                        return '';
+                    }
                 }
 
                 self.$cancelBtn.click(function () {

@@ -2,7 +2,7 @@ package com.yihu.ehr.specialdict.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.IndicatorsDictModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -61,7 +61,7 @@ public class IndicatorDictController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(IndicatorDictController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
 
@@ -139,10 +139,10 @@ public class IndicatorDictController extends BaseUIController {
     @ResponseBody
     public Object updateIndicatorDict(String dictJson,String mode,HttpServletRequest request){
         Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String url = "/dict/indicator";
         try{
+            envelop.setSuccessFlg(false);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
+            String url = "/dict/indicator";
             IndicatorsDictModel model = objectMapper.readValue(dictJson, IndicatorsDictModel.class);
             if(StringUtils.isEmpty(model.getCode())){
                 envelop.setErrorMsg("字典项编码不能为空！");
@@ -180,9 +180,9 @@ public class IndicatorDictController extends BaseUIController {
                 String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
                 return envelopStr;
             }
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(IndicatorDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -195,11 +195,9 @@ public class IndicatorDictController extends BaseUIController {
             String url = "dict/indicator/icd10/"+id;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(IndicatorDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -214,11 +212,9 @@ public class IndicatorDictController extends BaseUIController {
             params.put("name",name);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(IndicatorDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -232,10 +228,8 @@ public class IndicatorDictController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(IndicatorDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

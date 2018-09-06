@@ -1,10 +1,9 @@
 package com.yihu.ehr.log.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.operator.DateUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,8 +30,8 @@ public class LogController extends BaseUIController {
     private String username;
     @Value("${service-gateway.password}")
     private String password;
-    @Value("${service-gateway.url}")
-    private String comUrl;
+    @Value("${service-gateway.adminInnerUrl}")
+    private String adminInnerUrl;
 
 
     /**
@@ -45,44 +44,6 @@ public class LogController extends BaseUIController {
         model.addAttribute("contentPage", "/log/log");
         return "pageView";
     }
-    /**
-     * 查找日志
-     * @param
-     * @param page
-     * @param rows
-     * @return
-     */
-    @RequestMapping("searchLogs")
-    @ResponseBody
-    public Object searchLogs(String type,String startTime ,String endTime ,String caller, int page, int rows) {
-        String url = "/getLogList";
-        String resultStr = "";
-        Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        if (!StringUtils.isEmpty(type)) {
-            params.put("logType", type);
-        }
-        if (!StringUtils.isEmpty(startTime)) {
-            params.put("startDate", startTime);
-        }
-        if (!StringUtils.isEmpty(endTime)) {
-            params.put("endDate", endTime);
-        }
-        if (!StringUtils.isEmpty(caller)) {
-            params.put("caller", caller);
-        }
-        params.put("page", page);
-        params.put("size", rows);
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
-        } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
-        }
-    }
-
 
     /**
      * 根据id获取log
@@ -94,23 +55,30 @@ public class LogController extends BaseUIController {
      */
     @RequestMapping("getLogByIdAndType")
     public Object getDoctor(Model model,String type, String logId, String mode) throws IOException {
-        String url = "/getLogByIdAndType";
+        String url = "/dfs/api/v1.0/elasticSearch/" + logId ;
+        String index = "";
+        if("3".equals(type)){
+            //总支撑业务日志
+            index = "businesslog";
+        }else if("2".equals(type)){
+            //eip网关日志
+            index = "operatorlog";
+        }
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("logId", logId);
-        params.put("logType", type);
+        params.put("index", index);
+        params.put("type", index);
         try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doGet( adminInnerUrl + url, params, username, password);
             Envelop ep = getEnvelop(resultStr);
             model.addAttribute("logData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "log/logInfo");
-            return "simpleView";
+            return "emptyView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -124,34 +92,49 @@ public class LogController extends BaseUIController {
     @RequestMapping("searchListLogs")
     @ResponseBody
     public Object searchListLogs(String patient,String type,String startTime ,String endTime ,String caller, int page, int rows) {
-        String url = "/searchListLogs";
+        String url = "/dfs/api/v1.0/elasticSearch/page";
+        String index = "";
+        String sorts = "-time";
+        if("3".equals(type)){
+            //总支撑业务日志
+
+            index = "businesslog";
+        }else if("2".equals(type)){
+            //eip网关日志
+            index = "operatorlog";
+        }
+        String filter = "";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        if (!StringUtils.isEmpty(patient)) {
-            params.put("patient", patient);
+        if (!StringUtils.isEmpty(index)) {
+            params.put("index", index);
+            params.put("type", index);
         }
-        if (!StringUtils.isEmpty(type)) {
-            params.put("logType", type);
-        }
-        if (!StringUtils.isEmpty(startTime)) {
-            params.put("startDate", startTime);
+        filter =  "logType=" + type ;
+
+       if (!StringUtils.isEmpty(startTime)) {
+           Date startDate = DateUtil.formatCharDateYMDHMS(startTime);
+           filter =  filter + ";time>=" + DateUtil.formatDate(startDate,DateUtil.DEFAULT_YMDHMSDATE_FORMAT);;
         }
         if (!StringUtils.isEmpty(endTime)) {
-            params.put("endDate", endTime);
+            Date enddate = DateUtil.formatCharDateYMDHMS(endTime);
+            //enddate = DateUtil.addDate(1,enddate);
+            filter =  filter + ";time<" + DateUtil.formatDate(enddate,DateUtil.DEFAULT_YMDHMSDATE_FORMAT);
         }
-        if (!StringUtils.isEmpty(caller)) {
-            params.put("caller", caller);
+        if (!StringUtils.isEmpty(patient)) {
+            filter =  filter + ";caller=" + patient;
         }
+        params.put("filter", filter);
+        params.put("sorts", sorts);
         params.put("page", page);
         params.put("size", rows);
         try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

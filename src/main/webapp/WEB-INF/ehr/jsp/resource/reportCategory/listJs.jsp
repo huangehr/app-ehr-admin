@@ -26,14 +26,15 @@
         grid = $("#grid").ligerGrid($.LigerGridEx.config({
             url: '${contextRoot}/resource/reportCategory/getTreeData',
             columns: [
-                {display: 'ID', name: 'id', hide: true},
+                {display: 'ID', name: 'id', width: '0.1%', hide: true},
                 {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
                 {display: '编码', name: 'code', width: '20%', isAllowHide: false, align: 'left'},
                 {display: '备注', name: 'remark', width: '25%', isAllowHide: false, align: 'left'},
-                {display: '操作', name: 'operator', width: '35%', align: 'center',
+                {display: '操作', name: 'operator', minWidth: 120, align: 'center',
                     render: function (row) {
                         var html = '';
-                        html += '<sec:authorize url="/resource/reportCategory/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportCategory:open", row.id, 'modify') + '"></a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/reportCategory/appCongig"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportCategoryAppConfig:open", row.id,"modify") + '">应用配置</a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/reportCategory/edit"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportCategory:open", row.id, 'modify') + '"></a></sec:authorize>';
                         html += '<sec:authorize url="/resource/reportCategory/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:reportCategory:delete", row.id) + '"></a></sec:authorize>';
                         return html;
                     }
@@ -41,20 +42,50 @@
             ],
             allowHideColumn: false,
             tree: {columnName: 'name'},
-            usePager: false
+            usePager: false,
+            onAfterShowData:function () {
+                $(".l-grid-tree-link").click(function () {
+                    setTimeout(function () {
+                        $(".l-grid-body.l-grid-body1").css("height",$(".l-panel-body").height()-40+"px");
+                        $(".m-custom-scroll").css("height",$(".l-panel-body").height()-40+"px");
+                        setTimeout(function () {
+                            if($(".m-custom-scroll").height()=="115"){
+                                $(".l-grid-body.l-grid-body1").css("height",$(".l-panel-body").height()-40+"px");
+                                $(".m-custom-scroll").css("height",$(".l-panel-body").height()-40+"px");
+                            }
+                        },1000)
+                    },1000)
+                })
+            }
         }));
         grid.collapseAll();
         grid.adjustToWidth();
     }
 
     function bindEvents() {
+        $.subscribe('resource:reportCategoryAppConfig:open', function (event, id, mode) {
+            var title = '报表分类>应用授权';
+            detailDialog = parent._LIGERDIALOG.open({
+                height: 600,
+                width: 800,
+                title: title,
+                urlParms:{
+                    id:id,
+                    dialogType:mode,
+                },
+                url: '${contextRoot}/resource/reportCategory/appConfig',
+                isHidden: false,
+                load: true
+            })
+        });
+
         $.subscribe('resource:reportCategory:open', function (event, id, mode) {
             var title = '新增资源报表分类';
             if (mode == 'modify') {
                 title = '修改资源报表分类';
             }
-            detailDialog = $.ligerDialog.open({
-                height: 450,
+            detailDialog = parent._LIGERDIALOG.open({
+                height: 500,
                 width: 480,
                 title: title,
                 url: '${contextRoot}/resource/reportCategory/detail',
@@ -68,21 +99,21 @@
         });
 
         $.subscribe('resource:reportCategory:delete', function (event, id) {
-            $.Notice.confirm('确认要删除所选数据及其子数据吗？', function (r) {
+            parent._LIGERDIALOG.confirm('确认要删除所选数据及其子数据吗？', function (r) {
                 if (r) {
-                    var loading = $.ligerDialog.waitting("正在删除数据...");
+                    var loading = parent._LIGERDIALOG.waitting("正在删除数据...");
                     dataModel.updateRemote('${contextRoot}/resource/reportCategory/delete', {
                         data: {id: parseInt(id)},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('删除成功！');
+                                parent._LIGERDIALOG.success('删除成功！');
                                 reloadGrid();
                             } else {
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG.error(data.errorMsg);
                             }
                         },
                         error: function () {
-                            $.Notice.error('删除发生异常');
+                            parent._LIGERDIALOG.error('删除发生异常');
                         },
                         complete: function () {
                             loading.close();
@@ -99,12 +130,12 @@
     }
 
     /*-- 与 Dialog 页面间回调的函数 --*/
-    window.reloadMasterGrid = function() {
+    window.parent.reloadMasterGrid = function() {
         reloadGrid();
     };
-    window.closeDetailDialog = function (type, msg) {
+    window.parent.closeDetailDialog = function (type, msg) {
         detailDialog.close();
-        msg && $.Notice.success(msg);
+        msg && parent._LIGERDIALOG.success(msg);
     };
 
 </script>

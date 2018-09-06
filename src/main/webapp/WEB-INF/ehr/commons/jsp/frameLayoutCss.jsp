@@ -50,7 +50,27 @@
 	.grid_edit:hover{
 		background: url(${staticRoot}/images/app/bianji_btn_pre.png) center no-repeat;
 	}
-
+    .grid_towrite{
+        display:inline-block;
+        width: 40px;
+        height: 40px;
+        cursor:pointer;
+        background: url(${staticRoot}/images/app/icon_bianji.png) center no-repeat;
+    }
+    .grid_detail{
+        display:inline-block;
+        width: 40px;
+        height: 40px;
+        cursor:pointer;
+        background: url(${staticRoot}/images/app/icon_xiangqing.png) center no-repeat;
+    }
+    .grid_hold{
+        display:inline-block;
+        width: 40px;
+        height: 40px;
+        cursor:pointer;
+        background: url(${staticRoot}/images/app/icon_baocun.png) center no-repeat;
+    }
 	.grid_delete{
 		display:inline-block;
 		width: 40px;
@@ -70,7 +90,6 @@
 		cursor:pointer;
 		background: url(${staticRoot}/images/app/suo01_btn.png) center no-repeat;
 	}
-
 	.grid_lock:hover{
 		background: url(${staticRoot}/images/app/suo_btn_pre.png) center no-repeat;
 	}
@@ -115,7 +134,6 @@
 		background-size:60px 20px;
 
 	}
-
 	.label_a{
 		vertical-align: top;
 		text-decoration: underline;
@@ -135,5 +153,20 @@
 	.l-layout-center{left: 200px !important;border-top: 0;}
 
 	/*菜单栏风格修改*/
-	
+
+    .ifr_fixed{
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 10;
+    }
+    .l-layout-center{
+        z-index: 30;
+    }
+
+
+    .m-index-nav{height:40px;background:url('${staticRoot}/images/local_icon.png') 8px 8px no-repeat #fff;padding-left:40px;line-height: 40px;border-bottom: 1px solid #d0d0d0;}
+
 </style>

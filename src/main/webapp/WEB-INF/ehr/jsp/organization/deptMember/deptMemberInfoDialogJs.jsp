@@ -26,7 +26,7 @@
 			$remark: $("#inp_remark"),
 //			$deptId: $("#inp_deptId"),
 			$parentUserId: $("#inp_parentUserId"),
-			$userNames: $('#userName'),
+			$userName: $('#userName'),
 			$parentUserNames: $('#parentUserName'),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
@@ -42,11 +42,27 @@
 
 				this.$dutyName.ligerTextBox({width:240});
 				this.$remark.ligerTextBox({width:240, height: 120 });
-				<%--this.$userId.customCombo('${contextRoot}/deptMember/getUserList', p, undefined, undefined, false);--%>
-				this.$userId.customCombo('${contextRoot}/deptMember/getUserList',{});
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
-//				this.$parentUserId.customCombo(url, p, undefined, undefined, false);
-				this.$parentUserId.customCombo(url);
+                this.$userId.customCombo(url,{},null,null,null,
+                    {
+                        valueField: 'userId',
+                        textField: 'userName'
+                    },
+                    {
+                        columns: [
+                            { header: 'userName', name: 'userName', width: '100%' }
+                        ]
+                    });
+				this.$parentUserId.customCombo(url,{},null,null,null,
+						{
+							valueField: 'userId',
+							textField: 'userName'
+						},
+						{
+							columns: [
+								{ header: 'userName', name: 'userName', width: '100%' }
+							]
+						});
 				<%--this.$deptId.customCombo('${contextRoot}/deptMember/getDeptList');--%>
 
 				var mode = '${mode}';
@@ -64,12 +80,15 @@
 					this.$form.Fields.fillValues({
 						id:info.id,
 						dutyName:info.dutyName,
+						userName:info.userName,
 						remark:info.remark
 					});
 
 					$("#inp_userId").ligerGetComboBoxManager().setValue(info.userId);
 					$("#inp_userId").ligerGetComboBoxManager().setText(info.userName);
+					$("#inp_userId").ligerGetComboBoxManager().setDisabled();
 
+					debugger
 					$("#inp_parentUserId").ligerGetComboBoxManager().setValue(info.parentUserId);
 					$("#inp_parentUserId").ligerGetComboBoxManager().setText(info.parentUserName);
 
@@ -91,7 +110,7 @@
 				});
 				self.$userId.on('change',function () {
 					var name = $(this).val();
-					self.$userNames.val(name);
+					self.$userName.val(name);
 				});
 				self.$parentUserId.on('change',function () {
 					var name = $(this).val();
@@ -121,7 +140,7 @@
 							if (data.successFlg) {
 								reloadMasterUpdateGrid(deptId);
 								$.Notice.success('操作成功');
-								win.closeRsInfoDialog();
+								closeRsInfoDialog();
 							} else {
 								$.Notice.error(data.errorMsg);
 							}
@@ -130,7 +149,7 @@
 				}
 
 				this.$btnCancel.click(function () {
-					win.closeRsInfoDialog();
+					closeRsInfoDialog();
 				});
 			}
 		};

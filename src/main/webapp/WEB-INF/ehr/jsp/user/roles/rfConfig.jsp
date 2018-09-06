@@ -16,7 +16,7 @@
             <input type="text" value="" id="searchInp" />
         </div>
         <%--树--%>
-        <div class="rf-tree">
+        <div class="rf-tree" style="height: 376px">
             <div id="leftTree"></div>
         </div>
     </div>
@@ -30,7 +30,7 @@
             配置
         </div>
         <%--树--%>
-        <div class="rf-tree">
+        <div class="rf-tree" style="height: 376px">
             <div id="rightTree"></div>
         </div>
     </div>

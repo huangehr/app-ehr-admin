@@ -1,6 +1,9 @@
 /**
  * Created by AndyCai on 2015/11/19.
  */
+
+debugger
+var parentDialog = frameElement.dialog;
 var cda = {};
 var Util = $.Util;
 cda.list = {
@@ -579,7 +582,7 @@ cda.attr = {
                     var _res = eval(data);
                     if (_res.successFlg) {
                         $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-                            parent.cda.list.dialog_cda_detail.close();
+                            parentDialog.close();
                         }, null);
                     }
                     else {
@@ -621,7 +624,7 @@ cda.attr = {
                 waittingDialog.close();
                 if (data.successFlg) {
                     $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-                        parent.cda.list.dialog_cda_detail.close();
+                        parentDialog.close();
                     }, null);
                 }
                 else {
@@ -744,7 +747,7 @@ cda.attr = {
                     break;
                 case'btn_close':
 
-                    parent.cda.list.top.dialog_cda_detail.close();
+                    parentDialog.close();
                     break;
                 case'btn-submit':
                     cda.attr.saveRelationship();
@@ -771,7 +774,7 @@ var kindEditor = {
 };
 var formKindEditor = {
     editor: {},
-    content: top.win_editor_storage,
+    content: parent.win_editor_storage,
 
     init: function () {
         var editor = kindEditor.bulidKindEditor("textarea[name='txb_Immed_Temp']")

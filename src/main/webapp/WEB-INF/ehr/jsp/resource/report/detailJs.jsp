@@ -6,6 +6,7 @@
     var dataModel = $.DataModel.init();
     var validator;
     var $form = $("#reportForm");
+    var $filePickerBtnDetail = $('#filePickerBtnDetail');
 
     $(function () {
         init();
@@ -18,7 +19,7 @@
     }
 
     function initForm() {
-        $('#code').ligerTextBox({width: 240});
+        var codeTb = $('#code').ligerTextBox({width: 240});
         $('#name').ligerTextBox({width: 240});
         $("#reportCategoryId").ligerComboBox({
             treeLeafOnly: false,
@@ -41,8 +42,29 @@
             valueField: 'code',
             textField: 'value'
         });
+        $("#showType").ligerComboBox({
+            data: [
+                {text:"图表", id:"1"},
+                {text:"二维表", id:"2"},
+            ]
+        });
         $('#remark').ligerTextBox({width: 240, height: 150});
         $('#templatePath').ligerTextBox({width: 240, disabled: true});
+
+        if(detailModel.id) {
+            codeTb.setDisabled(true);
+        }
+
+        $filePickerBtnDetail.instance = $filePickerBtnDetail.webupload({
+            pick: {id: '#filePickerBtnDetail'},
+            auto: true,
+            server: '${contextRoot}/fileUpload/upload',
+            accept: {
+                title: 'Html',
+                extensions: 'html',
+                mimeTypes: 'text/html'
+            }
+        });
 
         $form.attrScan();
         $form.Fields.fillValues({
@@ -52,7 +74,8 @@
             reportCategoryId: detailModel.reportCategoryId,
             status: detailModel.status,
             remark: detailModel.remark,
-            templatePath: detailModel.templatePath
+            templatePath: detailModel.templatePath,
+            showType: detailModel.showType
         });
     }
 
@@ -92,26 +115,25 @@
         });
 
         // 模版导入
-        $('#templatePathBtn').change(function () {
-            var formData = new FormData($( "#uploadForm" )[0]);
-            $.ajax({
-                url: '${contextRoot}/fileUpload/upload',
-                type: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    if(data.successFlg){
-                        $('#templatePath').val(data.obj);
-                        $.Notice.success('上传成功！');
-                    } else {
-                        $.Notice.warn(data.errorMsg);
-                    }
-                },
-                error: function () {
-                    $.Notice.error('上传文件发生异常');
-                }
-            });
+        var uploader = $filePickerBtnDetail.instance;
+        $('#templateBtn').click(function () {
+            uploader.reset();
+            $(".webuploader-element-invisible", $filePickerBtnDetail).trigger("click");
+        });
+        uploader.on('success', function (file, data, b) {
+            if (data.successFlg) {
+                $('#templatePath').val(data.obj);
+                $.Notice.success('导入成功');
+            } else if (data.errorMsg)
+                $.Notice.error(data.errorMsg);
+            else
+                $.Notice.error('导入失败');
+        });
+        uploader.on('error', function (file, data) {
+            if (file == 'Q_TYPE_DENIED')
+                $.Notice.error('请上传html的非空文件！');
+            else
+                $.Notice.error('导入失败');
         });
     }
 
@@ -127,41 +149,19 @@
                         var code = $("#code").val();
                         if(!$.Util.isStrEquals(code, detailModel.code)) {
                             var ulr = "${contextRoot}/resource/report/isUniqueCode";
-                            return validateByAjax(ulr, {id: id, code: code});
+                            return $.Util.validateByAjax(ulr, {id: id, code: code});
                         }
                         break;
                     case 'name':
                         var name = $("#name").val();
                         if(!$.Util.isStrEquals(name, detailModel.name)) {
                             var ulr = "${contextRoot}/resource/report/isUniqueName";
-                            return validateByAjax(ulr, {id: id, name: name});
+                            return $.Util.validateByAjax(ulr, {id: id, name: name});
                         }
                         break;
                 }
             }
         });
-    }
-
-    // 通过 jValidation 进行异步验证
-    function validateByAjax(url, params) {
-        var result = new $.jValidation.ajax.Result();
-        var dataModel = $.DataModel.init();
-        dataModel.fetchRemote(url, {
-            data: params,
-            async: false,
-            success: function (data) {
-                if (data.successFlg) {
-                    result.setResult(true);
-                } else {
-                    result.setResult(false);
-                    result.setErrorMsg(data.errorMsg);
-                }
-            },
-            error: function () {
-                $.Notice.error('验证发生异常');
-            }
-        });
-        return result;
     }
 
 </script>

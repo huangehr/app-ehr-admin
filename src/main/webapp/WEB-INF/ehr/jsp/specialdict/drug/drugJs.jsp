@@ -60,7 +60,7 @@
 							searchNm: ''
 						},
 						columns: [
-							{display:'id',name:'id',hide:true},
+							{display:'id',name:'id', width: '0.1%',hide:true},
 							{display: '药品编码', name: 'code', width: '20%', align: 'left'},
 							{display: '药品名称', name: 'name', width: '20%',align:'left'},
 							{display: '药品类别', name: 'typeName', width: '10%',align:'left'},
@@ -68,7 +68,7 @@
 							{display: '单位', name: 'unit', width: '10%', align: 'center'},
 							{display: '规格', name: 'specifications', width: '10%', align: 'center'},
 							{
-								display: '操作', name: 'operator', width: '10%', align: 'center',render: function(row){
+								display: '操作', name: 'operator', minWidth: 100, align: 'center',render: function(row){
 								var html ='<sec:authorize url="/specialdict/drug/update"><a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "drug:info:open", row.id,'modify') + '"></a></sec:authorize>'
 										+'<sec:authorize url="/specialdict/drug/deletes"><a class="grid_delete" name="delete_click" style="" title="删除"' +
 										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "drug:info:delete", row.id) + '"></a></sec:authorize>';
@@ -109,7 +109,7 @@
 						}else{
 							title = '新增字典项'
 						};
-						self.infoDialog = $.ligerDialog.open({
+						self.infoDialog = parent._LIGERDIALOG.open({
 							height:600,
 							width:500,
 							title:title,
@@ -132,7 +132,7 @@
 						if(!ids){
 							var rows = infoGrid.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn('请选择要删除的数据行！');
+                                parent._LIGERDIALOG.warn('请选择要删除的数据行！');
 								return;
 							}
 							for(var i=0;i<rows.length;i++){
@@ -140,17 +140,17 @@
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
 						}
-						$.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
 							if(r){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/specialdict/drug/deletes',{
 									data:{ids:ids},
 									success:function(data){
 										if(data.successFlg){
-											$.Notice.success( '删除成功！');
+                                            parent._LIGERDIALOG.success( '删除成功！');
 											masters.reloadGrid();
 										}else{
-											$.Notice.error(data.errorMsg);
+                                            parent._LIGERDIALOG.error(data.errorMsg);
 										}
 									}
 								});
@@ -160,10 +160,10 @@
 				},
 			};
 			/* ************************* Dialog页面回调接口 ************************** */
-			win.reloadDrugInfoGrid = function () {
+			win.parent.reloadDrugInfoGrid = function () {
 				masters.reloadGrid();
 			};
-			win.closeDrugInfoDialog = function (callback) {
+			win.parent.closeDrugInfoDialog = function (callback) {
 				masters.infoDialog.close();
 			};
 			/* ************************* Dialog页面回调接口结束 ************************** */

@@ -14,11 +14,14 @@
 
         var addUserInfo = null;
 
-        var dialog = frameElement.dialog;
-
         var source;
-		var trees;
+        var trees;
 
+        win.orgDeptDio = null;
+        win.ORGDEPTVAL = '';
+        win.roleIds = '';
+
+        debugger
 
         /* ************************** 变量定义结束 **************************** */
 
@@ -44,24 +47,27 @@
             $userEmail: $('#inp_userEmail'),
             $userTel: $('#inp_userTel'),
 //            $org: $('#inp_org'),
-            $major: $('#inp_major'),
+//            $major: $('#inp_major'),
 //            $source: $('#inp_source'),
             $sex: $('input[name="gender"]', this.$form),
             $uploader: $("#div_user_img_upload"),
-            $inp_select_marriage: $("#inp_select_marriage"),
+//            $inp_select_marriage: $("#inp_select_marriage"),
             $inp_select_userType: $("#inp_select_userType"),
             $addUserBtn: $("#div_btn_add"),
             $cancelBtn: $("#div_cancel_btn"),
             $imageShow: $("#div_file_list"),
-			$jryycyc:$("#jryycyc"),//cyctodo
-            $location: $('#location'),
+//            $jryycyc:$("#jryycyc"),//cyctodo
+//            $location: $('#location'),
+            $divBtnShow: $('#divBtnShow'),
+            $divBtnSetrole:$("#div_btn_setrole"),
+            $SelSetrole:$("#inp_select_setrole"),
 
             init: function () {
                 var self = this;
                 self.$sex.eq(0).attr("checked", 'true');
                 self.initForm();
                 self.bindEvents();
-				this.cycToDo()//复制完记得删掉
+//                this.cycToDo()//复制完记得删掉
                 self.$uploader.instance = self.$uploader.webupload({
                     server: "${contextRoot}/user/updateUser",
                     pick: {id: '#div_file_picker'},
@@ -76,120 +82,56 @@
                     if(!resp.successFlg)
                         $.Notice.error(resp.errorMsg);
                     else
-                        $.Notice.success('新增成功');
-                    win.parent.closeAddUserInfoDialog(function () {
+                        $.Notice.success('新增成功',function () {
+                            win.parent.closeAddUserInfoDialog();
                         });
+                    win.parent.closeAddUserInfoDialog(function () {});//只做刷新列表
                 });
 
             },
             initForm: function () {
+                var self = this;
                 this.$loginCode.ligerTextBox({width: 240});
                 this.$userName.ligerTextBox({width: 240});
                 this.$idCard.ligerTextBox({width: 240});
                 this.$userEmail.ligerTextBox({width: 240});
                 this.$userTel.ligerTextBox({width: 240});
-                this.$major.ligerTextBox({width: 240});
+//                this.$major.ligerTextBox({width: 240});
                 this.$sex.ligerRadio();
-                <%--this.$org.addressDropdown({--%>
-                    <%--width:260,--%>
-                    <%--tabsData: [--%>
-                        <%--{--%>
-                            <%--name: '省份',--%>
-                            <%--code: 'id',--%>
-                            <%--value: 'name',--%>
-                            <%--url: '${contextRoot}/address/getParent',--%>
-                            <%--params: {level: '1'}--%>
-                        <%--},--%>
-                        <%--{name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},--%>
-                        <%--{--%>
-                            <%--name: '医院',--%>
-                            <%--code: 'orgCode',--%>
-                            <%--value: 'fullName',--%>
-                            <%--url: '${contextRoot}/address/getOrgs',--%>
-                            <%--beforeAjaxSend: function (ds, $options) {--%>
-                                <%--var province = $options.eq(0).attr('title'),--%>
-                                        <%--city = $options.eq(1).attr('title');--%>
-                                <%--ds.params = $.extend({}, ds.params, {--%>
 
-                                    <%--province: province,--%>
-                                    <%--city: city--%>
-                                <%--});--%>
-                            <%--}--%>
-                        <%--}--%>
-                    <%--]--%>
-                <%--});--%>
-                var select_marriage = this.$inp_select_marriage.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 4
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            select_marriage.setValue(data[0].code);
-                        }
-                    }
-                });
-                var select_user_type = this.$inp_select_userType.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 15
-                    },
-                    onSelected: function (value) {
-                        if (value == 'Doctor')
-                            $('#inp_major_div').show();
-                        else
-                            $('#inp_major_div').hide();
-                    },
-                    //autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            select_user_type.setValue(data[0].code);
-                        }
-                    }
-                });
 
+                var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:'',activeFlag:"1"},function(newvalue){
+                    if(win.roleIds){
+                        win.roleIds="";
+                        parent._LIGERDIALOG.confirm('是否重新前往编辑授权？', function (yes) {
+                            if (yes) {
+                                self.$divBtnSetrole.click();
+                            }
+                        });
+                    }
+                    console.log(newvalue)
+                });
+//                this.$inp_select_userType.customCombo()
                 <%--source = this.$source.ligerComboBox({--%>
-                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
-                    <%--valueField: 'code',--%>
-                    <%--textField: 'value',--%>
-                    <%--dataParmName: 'detailModelList',--%>
-                    <%--urlParms: {--%>
-                        <%--dictId: 26--%>
-                    <%--},--%>
-                    <%--onSuccess: function () {--%>
-                        <%--self.$form.Fields.fillValues({sourceName: user.sourceName,});--%>
-                    <%--},--%>
+                <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                <%--valueField: 'code',--%>
+                <%--textField: 'value',--%>
+                <%--dataParmName: 'detailModelList',--%>
+                <%--urlParms: {--%>
+                <%--dictId: 26--%>
+                <%--},--%>
+                <%--onSuccess: function () {--%>
+                <%--self.$form.Fields.fillValues({sourceName: user.sourceName,});--%>
+                <%--},--%>
 
                 <%--});--%>
 
-                this.$location.ligerComboBox({width: 240});
-                this.$location.addressDropdown({
-                    tabsData: [
-                        {
-                            name: '省份',
-                            code: 'id',
-                            value: 'name',
-                            url: '${contextRoot}/address/getParent',
-                            params: {level: '1'}
-                        },
-                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                        {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                        {name: '街道', maxlength: 200}
-                    ]
-                });
+
 
                 this.$form.attrScan();
             },
 
             bindEvents: function () {
-                debugger
                 var self = this;
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
@@ -197,19 +139,27 @@
                         var checkObj = { result:true, errorMsg: ''};
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_loginCode')) {
                             var loginCode = $("#inp_loginCode").val();
-                            checkObj = checkDataSourceName('login_code', loginCode, "该账号已存在");
+                            checkObj=isChinese(loginCode);
+                            if(checkObj.result){
+                                checkObj = checkDataSourceName('login_code', loginCode, "该账号已存在");
+                            }
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
+                            var cellphone = $("#inp_userTel").val();
                             checkObj = checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
                             if (checkObj.result) {
-                                inputSourceByIdCard(idCard);
+                                inputSourceByIdCard(idCard,cellphone);
                             }
                         }
-                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
-                            var email = $("#inp_userEmail").val();
-                            checkObj = checkDataSourceName('email', email, "该邮箱已存在");
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userName')) {
+                            var realName = $("#inp_userName").val();
+                            checkObj = inputSourceByRealName(realName, "请输入8个字以内的汉字或16个字母以内的英文字母");
                         }
+//                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
+//                            var email = $("#inp_userEmail").val();
+//                            checkObj = checkDataSourceName('email', email, "该邮箱已存在");
+//                        }
 //                        新增用户手机号验证
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userTel')) {
                             var telephone = $("#inp_userTel").val();
@@ -224,7 +174,6 @@
                 });
                 //唯一性验证--账号/身份证号(字段名、输入值、提示信息）  ---新增用户手机号验证
                 function checkDataSourceName(type, inputValue, errorMsg) {
-                    debugger
                     var result = new jValidation.ajax.Result();
                     var dataModel = $.DataModel.init();
                     dataModel.fetchRemote("${contextRoot}/user/existence", {
@@ -243,7 +192,7 @@
                     return result;
                 }
 
-                function inputSourceByIdCard(inputValue) {
+                function inputSourceByIdCard(inputValue,phone) {
                     var result = new jValidation.ajax.Result();
                     var dataModel = $.DataModel.init();
                     dataModel.fetchRemote("${contextRoot}/user/getPatientInUserByIdCardNo", {
@@ -278,6 +227,9 @@
                                 }
                                 if(model.telephoneNo){
                                     self.$userTel.val(model.telephoneNo);
+                                    if(phone){
+                                        self.$userTel.val(phone);
+                                    }
                                 }
                             }
                         },
@@ -288,51 +240,94 @@
                     return result;
                 }
 
+                function inputSourceByRealName(str,errorMsg) {
+                    var result=new jValidation.ajax.Result();
+                    result=checkSpecialChar(str);
+                    if(result.result){
+                        var ta=str.split(""),str_l=0;
+                        var str_fa=Number(ta[0].charCodeAt());
+                        if((str_fa>=65&&str_fa<=90)||(str_fa>=97&&str_fa<=122)||(str_fa>255))
+                        {
+                            for(var i=0;i<=ta.length-1;i++)
+                            {
+                                str_l++;
+                                if(Number(ta[i].charCodeAt())>255){str_l++;}
+                            }
+                            if(str_l<=16){
+                                result.setResult(true);
+                                result.setErrorMsg('');
+                            }else{
+                                result.setResult(false);
+                                result.setErrorMsg(errorMsg);
+                            }
+                        }else{
+                            result.setResult(false);
+                            result.setErrorMsg("不能以除中文或英文的字符开头");
+                        }
+                    }
+                    return result;
+                }
+                function stripscript(value) {
+                    debugger
+                    var pattern = new RegExp("[`~!@#%$^&*+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+                    var rs = "";
+                    for (var i = 0; i < value.length; i++) {
+                        rs = rs+value.substr(i, 1).replace(pattern, '');
+                    }
+                    rs=rs.replace(/\"/g, "");
+                    rs=rs.replace(/\s+/g,"");
+                    $("#inp_userName").val(rs)
+                    return rs;
+                }
+
+                function checkSpecialChar(value) {
+                    var result=new jValidation.ajax.Result();
+                    var pattern = new RegExp("[`~!@#%$^&*-+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+                    if(pattern.test(value)){
+                        result.setResult(false);
+                        result.setErrorMsg("请不要输入特殊字符");
+                    }else{
+                        result.setResult(true);
+                        result.setErrorMsg('');
+                    }
+                    return result;
+                }
+
+                function isChinese(str){
+                    var result=new jValidation.ajax.Result();
+                    var patrn=/[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/gi;
+                    if(!patrn.exec(str)){
+                        result.setResult(true);
+                        result.setErrorMsg('');
+                    }else{
+                        result.setResult(false);
+                        result.setErrorMsg("请不要输入汉字");
+                    }
+                    return result;
+                }
+
+
                 //新增的点击事件
                 this.$addUserBtn.click(function () {
                     var userImgHtml = self.$imageShow.children().length;
                     var addUser = self.$form.Fields.getValues();
-					var roles = addUserInfo.roleIds(addUser.role);
-                    var location = self.$location.val()==""?"":JSON.parse(self.$location.val());
-                    if(location!=""){
-                        var keys = location.keys;
-                        var names = location.names;
-                        if(keys.length==1){//省
-                            addUser.provinceId = parseInt(keys[0]);
-                            addUser.provinceName = names[0];
-                        }
-                        if(keys.length==2){//省、市
-                            addUser.provinceId = parseInt(keys[0]);
-                            addUser.provinceName = names[0];
-                            addUser.cityId = parseInt(keys[1]);
-                            addUser.cityName = names[1];
-                        }
-                        if(keys.length==3){//省、市、县
-                            addUser.provinceId =parseInt(keys[0]);
-                            addUser.provinceName = names[0];
-                            addUser.cityId = parseInt(keys[1]);
-                            addUser.cityName = names[1];
-                            addUser.areaId = parseInt(keys[2]);
-                            addUser.areaName = names[2];
-                        }
-                        if(keys.length==4){//省、市、县、街道
-                            addUser.provinceId = parseInt(keys[0]);
-                            addUser.provinceName = names[0];
-                            addUser.cityId = parseInt(keys[1]);
-                            addUser.cityName = names[1];
-                            addUser.areaId = parseInt(keys[2]);
-                            addUser.areaName = names[2];
-                            addUser.street = keys[3];
-                        }
+                    var roles = win.roleIds;
+                    console.log('selroles'+roles);
+                    addUser.role = roles;
+                    var jsonModel = JSON.stringify(win.ORGDEPTVAL);
+                    if (jsonModel.length <= 0) {
+                        $.Notice.error('请选择机构部门');
+                        return;
                     }
-					addUser.role = roles;
+//                    addUser.organization=JSON.stringify(win.ORGDEPTVAL);
+//                    addUser.organizationName=$("#divBtnShow").find("span").html();
                     if (validator.validate()) {
 //                        var organizationKeys = addUser.organization['keys'];
 //
 //                        addUser.organization = organizationKeys[2];
 //                        addUser.source = source.getValue();
                         if (userImgHtml == 0) {
-                            updateUser(addUser);
+                            updateUser(addUser,jsonModel);
                         } else {
                             var upload = self.$uploader.instance;
                             var image = upload.getFiles().length;
@@ -340,7 +335,7 @@
                                 upload.options.formData.userModelJsonData = encodeURIComponent(JSON.stringify(addUser));
                                 upload.upload();
                             } else {
-                                updateUser(addUser);
+                                updateUser(addUser,jsonModel);
                             }
                         }
 
@@ -351,101 +346,155 @@
 
                 });
 
-                function updateUser(userModel) {
+
+                function updateUser(userModel,jsonModel) {
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
-                    dataModel.updateRemote("${contextRoot}/user/updateUser", {
-                        data: {userModelJsonData: userModelJsonData},
+                    dataModel.updateRemote("${contextRoot}/user/updateUserAndInitRoles", {
+                        data: {userModelJsonData: userModelJsonData,orgModel:jsonModel},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('新增成功');
-                                win.parent.closeAddUserInfoDialog(function () {
-                                   $.Notice.success('新增成功');
+                                $.Notice.success('新增成功',function () {
+                                    win.parent.closeAddUserInfoDialog();
                                 });
+                                win.parent.closeAddUserInfoDialog(function () {});//只做刷新列表
                             } else {
-                                window.top.$.Notice.error(data.errorMsg);
+                                $.Notice.error(data.errorMsg);
                             }
                         }
                     })
                 }
 
                 self.$cancelBtn.click(function () {
-                    dialog.close();
+                    win.parent.closeAddUserInfoDialog();
                 });
+
+                this.$divBtnShow.click(function () {
+                    var wait = $.Notice.waitting("请稍后...");
+                    win.orgDeptDio = $.ligerDialog.open({
+                        height: 620,
+                        width: 800,
+                        title: '选择机构部门',
+                        url: '${contextRoot}/doctor/selectOrgDept',
+                        urlParms: {
+                            idCardNo: ''
+                        },
+                        isHidden: false,
+                        show: false,
+                        onLoaded: function () {
+                            wait.close();
+                            win.orgDeptDio.show();
+                        },
+                        load: true
+                    });
+                    win.orgDeptDio.hide();
+                })
+
+                this.$divBtnSetrole.click(function () {
+                    var addUser = self.$form.Fields.getValues();
+                    if(addUser.userType){
+                        var wait = $.Notice.waitting("请稍后...");
+                        win.roleGroupDio = $.ligerDialog.open({
+                            height: 620,
+                            width: 800,
+                            title: '关联角色组',
+                            url: '${contextRoot}/user/appRoleGroup',
+                            urlParms: {
+                                roles: win.roleIds,
+                                type: addUser.userType,
+                            },
+                            isHidden: false,
+                            show: false,
+                            onLoaded: function () {
+                                wait.close();
+                                win.roleGroupDio.show();
+                            },
+                            load: true
+                        });
+                        win.roleGroupDio.hide();
+                    }else{
+                        $.Notice.warn("请选择用户类别")
+                    }
+                })
             },
-			cycToDo:function(){
-				var self=this;
-				trees=self.$jryycyc.ligerComboBox({
-					width : 240,
-					selectBoxWidth: 238,
-					selectBoxHeight: 500, textField: 'name', treeLeafOnly: false,
-					tree: {
-						url:"${contextRoot}/user/appRolesList",
-						idFieldName:'id',
-						textFieldName:'name',
-						//autoCheckboxEven:false,
-						isExpand:true,
-						onClick:function(e){
-							self.listTree(trees);
-						},
-						onSuccess:function(data){
+
+            cycToDo:function(){
+                var self=this;
+                trees=self.$jryycyc.ligerComboBox({
+                    width : 240,
+                    selectBoxWidth: 238,
+                    selectBoxHeight: 500, textField: 'name', treeLeafOnly: false,
+                    tree: {
+                        url:"${contextRoot}/user/appRolesList",
+                        idFieldName:'id',
+                        textFieldName:'name',
+                        //autoCheckboxEven:false,
+                        isExpand:true,
+                        onClick:function(e){
+
+                            self.listTree(trees);
+                        },
+                        onSuccess:function(data){
 //							for(var item in data) {
 //								$('#'+data[item].id).children('.l-body').children('.l-checkbox').hide();
 //							}
-						}
-					}
-				})
+                        }
+                    },
+                    onBeforeSelect: function () {
 
-				function removeSclBox(){
-					setTimeout(function(){
-						$(trees.tree).prev(".mCustomScrollBox").hide()
-					},100)
-				}
-				self.$jryycyc.on("click", removeSclBox);
-				$('#roleDiv div.l-trigger-icon').on("click",removeSclBox);
-				self.listTreeClick(trees);
-			},//树形结构todo
-			listTree:function(trees){
-				var self=this;
-				var dataAll=trees.treeManager.data//获取所有选中的值
-				var dateTreeEd=trees.treeManager.getChecked()//获取所有选中的值
-				var liHtml="";//li拼接
-				var obj=self.$jryycyc.closest(".m-form-group");//父容器
-				$.each(dateTreeEd,function(i,v){
-					if(v.data.children==null){
-						var  tit="";
-						for(i=0;i<dataAll.length;i++){
-							if(v.data.pid==dataAll[i].id){
-								tit=dataAll[i].name+":"+v.data.name
-							}
-						}
-						liHtml+='<li ><a href="javascript:void(0);" data-id="'+v.data.id+'"  data-index="'+v.data.treedataindex+'" >X</a>'+tit+'</li>';
-					}
-				})
-				if(obj.find(".listree").length==0){
-					obj.append('<div class="listree"></div>')
-				}
-				$(".listree").html(liHtml);
+                    }
+                })
 
-			},
-			listTreeClick:function(trees){
-				$("body").delegate(".listree a","click",function(){
-					$("li#"+$(this).attr("data-id"), trees.tree).find(".l-checkbox").click()
-				})//删除操作
-			},
-			roleIds:function(addUserRole){//得到的角色组ids过滤，去除应用id
-				if(!addUserRole){
-					return '';
-				}
-				var dateTreeEd=trees.treeManager.getChecked();
-				var roleArray = [];
-				for(var i in dateTreeEd){
-					if(!Util.isStrEquals(dateTreeEd[i].data.type,"0")){
-						roleArray.push(dateTreeEd[i].data.id)
-					}
-				}
-				return roleArray.join(",");
-			}
+                function removeSclBox(){
+                    setTimeout(function(){
+                        $(trees.tree).prev(".mCustomScrollBox").hide()
+                    },100)
+                }
+                self.$jryycyc.on("click", removeSclBox);
+                $('#roleDiv div.l-trigger-icon').on("click",removeSclBox);
+                self.listTreeClick(trees);
+            },//树形结构todo
+            listTree:function(trees){
+                var self=this;
+                var dataAll=trees.treeManager.data//获取所有选中的值
+                var dateTreeEd=trees.treeManager.getChecked()//获取所有选中的值
+                var liHtml="";//li拼接
+                var obj=self.$jryycyc.closest(".m-form-group");//父容器
+                $.each(dateTreeEd,function(i,v){
+                    if(v.data.children==null){
+                        var  tit="";
+                        for(i=0;i<dataAll.length;i++){
+                            if(v.data.pid==dataAll[i].id){
+                                tit=dataAll[i].name+":"+v.data.name
+                            }
+                        }
+                        liHtml+='<li ><a href="javascript:void(0);" data-id="'+v.data.id+'"  data-index="'+v.data.treedataindex+'" >X</a>'+tit+'</li>';
+                    }
+                })
+                if(obj.find(".listree").length==0){
+                    obj.append('<div class="listree"></div>')
+                }
+                $(".listree").html(liHtml);
+
+            },
+            listTreeClick:function(trees){
+                $("body").delegate(".listree a","click",function(){
+                    $("li#"+$(this).attr("data-id"), trees.tree).find(".l-checkbox").click()
+                })//删除操作
+            },
+            roleIds:function(addUserRole){//得到的角色组ids过滤，去除应用id
+                if(!addUserRole){
+                    return '';
+                }
+                var dateTreeEd=trees.treeManager.getChecked();
+                var roleArray = [];
+                for(var i in dateTreeEd){
+                    if(!Util.isStrEquals(dateTreeEd[i].data.type,"0")){
+                        roleArray.push(dateTreeEd[i].data.id)
+                    }
+                }
+                return roleArray.join(",");
+            }
         };
 
 

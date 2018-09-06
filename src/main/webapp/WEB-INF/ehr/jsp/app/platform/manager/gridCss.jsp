@@ -46,4 +46,30 @@
     .back{
         border-right: 1px solid #d3d3d3;
     }
+    #div_left{
+        width: 360px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+    }
+    #div_right{
+        position: absolute;
+        top: 0;
+        left: 370px;
+        right: 0;
+        bottom: 0;
+    }
+    #div_wrapper{
+        height: 100%;
+    }
+    #treeMenuWrap{
+        height: 100%;
+        width: 360px;
+        overflow: hidden;
+    }
+    #treeMenu{
+        height: 100%;
+    }
+    #treeMenu .l-grid-header-table{display: none}
 </style>

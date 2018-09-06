@@ -11,20 +11,17 @@
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true">数据集管理</div>
 <div id="div_wrapper">
-    <div id="conditionArea" class="f-mb10 f-mr10" align="right">
-        <input type="text" data-type="select" id="cdaVersion" data-attr-scan="version">
-    </div>
     <div style="height: 34px">
 
         <sec:authorize url="/template/平台标准数据集导入模版.xls">
-        <a href="<%=request.getContextPath()%>/template/平台标准数据集导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
+        <a href="<%=request.getContextPath()%>/template/平台标准数据集导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fl f-mr10"
            style="">
             下载模版
         </a>
         </sec:authorize>
 
         <sec:authorize url="/std/dataset/import">
-        <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div>
+        <div id="upd" class="f-fl f-mr10" style="overflow: hidden; width: 84px; position: relative"></div>
         </sec:authorize>
 
     <%--<div id="div_upload" class="f-mr100" data-alone-file=true align="right">--%>
@@ -35,18 +32,21 @@
 
         <sec:authorize url="/std/dataset/exportToExcel">
         <div>
-            <button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10" style="margin-top: 0px;height: 30px">全部导出</button>
+            <button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fl f-mr10" style="margin-top: 0px;height: 30px">全部导出</button>
         </div>
         </sec:authorize>
 
+        <div id="conditionArea" class="f-mb10 f-mr10 f-fr" align="right">
+            <input type="text" data-type="select" id="cdaVersion" data-attr-scan="version">
+        </div>
     </div>
     <div style="width: 100%" id="grid_content">
         <!--######CDA信息表######-->
-        <div id="div_left" style=" width:400px;float: left;">
+        <div id="div_left">
             <div class="m-retrieve-area f-h50 f-dn f-pr" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0;">
                 <ul>
-                    <li class=" f-mt15">
-                        <span class="f-mt10 f-fs14 f-ml10" style="width: 70px;">
+                    <li class="top-div f-mt10">
+                        <span class="f-mt10 f-fs14 f-ml10" style="width: 70px;vertical-align: middle">
                             <strong style="font-weight: bolder;width: 70px;">数据集:</strong>
                         </span>
 
@@ -61,29 +61,36 @@
             <div id="div_set_grid">
             </div>
         </div>
-        <div id="div_right" style="float: left;">
-            <div class="m-retrieve-area f-h50 f-dn f-pr" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0;">
+        <div id="div_right">
+            <div class="m-retrieve-area f-dn f-pr" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0;overflow: hidden;">
                 <ul>
-                    <li class=" f-mt15">
-                        <span class="f-mt10 f-fs14 f-ml10">
-                           <strong style="font-weight: bolder;">数据元:</strong>
-                        </span>
-
-                        <input type="text" id="searchNmEntry" placeholder="<spring:message code="lbl.input.placehold"/>"
-                               class="f-ml10">
+                    <li class="">
+                        <div class="s-con">
+                            <span class="f-mt5 f-fs14 f-ml10" style="display: inline-block">
+                               <strong style="font-weight: bolder;">数据元:</strong>
+                            </span>
+                        </div>
+                        <div class="s-con">
+                            <input type="text" id="searchNmEntry" placeholder="<spring:message code="lbl.input.placehold"/>"
+                                   class="f-ml10">
+                        </div>
 
                         <sec:authorize url="/std/dataset/deleteMetaData">
-                        <a id="btn_Delete_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr20"
-                           style="  margin-right: 20px;margin-top: -26px;">
-                            批量删除
-                        </a>
+                            <div class="s-con f-fr">
+                                <a id="btn_Delete_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr20"
+                                   style="  margin-right: 20px;margin-top: -30px;">
+                                    批量删除
+                                </a>
+                            </div>
                         </sec:authorize>
 
                         <sec:authorize url="/std/dataset/elementupdate">
-                        <a id="btn_add_element" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
-                           style="  margin-right: 20px;margin-top: -26px;">
-                            新增
-                        </a>
+                            <div class="s-con f-fr">
+                                <a id="btn_add_element" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
+                                   style="  margin-right: 126px;margin-top: -30px;">
+                                    新增
+                                </a>
+                            </div>
                         </sec:authorize>
                     </li>
                 </ul>

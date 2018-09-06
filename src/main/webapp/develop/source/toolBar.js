@@ -81,7 +81,7 @@ function initFormFields(vo, area){
             }
             else if(v.type == 'searchBtn'){
                 $(area).append(
-                    '<div class="m-form-control m-form-control-fr f-ml10">' +
+                    '<div class="m-form-control f-ml10">' +
                         '<div id="'+ v.id +'" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >' +
                             '<span>搜索</span>' +
                         '</div>' +

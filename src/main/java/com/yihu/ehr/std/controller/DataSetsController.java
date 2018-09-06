@@ -6,10 +6,9 @@ import com.yihu.ehr.agModel.standard.datasset.DataSetModel;
 import com.yihu.ehr.agModel.standard.datasset.MetaDataModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
 import com.yihu.ehr.agModel.standard.standardsource.StdSourceModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.std.model.DataSetMsg;
 import com.yihu.ehr.std.model.MetaDataMsg;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -121,11 +120,10 @@ public class DataSetsController extends BaseUIController {
             params.put("version",version);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("/deleteDataSet")
@@ -144,12 +142,10 @@ public class DataSetsController extends BaseUIController {
             params.put("id",dataSetId);
             String envelopStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             return envelopStr;
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping(value = "/getDataSet", produces = "text/html;charset=UTF-8")
@@ -170,10 +166,8 @@ public class DataSetsController extends BaseUIController {
             return envelopStr;
         }catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("/saveDataSet")
@@ -240,12 +234,10 @@ public class DataSetsController extends BaseUIController {
             params.put("json_data",dataJsonUpdate);
             String envelopStrUpdate = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStrUpdate;
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("/searchMetaData")
@@ -273,14 +265,13 @@ public class DataSetsController extends BaseUIController {
             String _rus = HttpClientUtil.doGet(comUrl + url, params, username, password);
             if(StringUtils.isEmpty(_rus)){
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.SavedatasetFailed.toString());
+                result.setErrorMsg("保存失败");
             }else{
                 return _rus;
             }
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -310,10 +301,8 @@ public class DataSetsController extends BaseUIController {
             return envelopStr;
         } catch (Exception ex) {
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping(value = "/getMetaData", produces = "text/html;charset=UTF-8")
@@ -345,7 +334,7 @@ public class DataSetsController extends BaseUIController {
 
             result = getEnvelop(envelopStr);
             MetaDataModel mdModel = getEnvelopModel(result.getObj(), MetaDataModel.class);
-            if(mdModel.getDictId() != 0){
+            if(mdModel.getDictId() != null){
                 Long dictId = mdModel.getDictId();
 
                 String urlForDict = "/dict";
@@ -373,8 +362,7 @@ public class DataSetsController extends BaseUIController {
             return envelopStr;
         } catch (Exception ex) {
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -455,10 +443,8 @@ public class DataSetsController extends BaseUIController {
             return envelopStrUpdate;
         } catch (Exception ex) {
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     /**
@@ -528,10 +514,9 @@ public class DataSetsController extends BaseUIController {
                 envelop.setSuccessFlg(false);
                 envelop.setErrorMsg("验证失败");
             }
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -760,7 +745,7 @@ public class DataSetsController extends BaseUIController {
                         return envelop;
                     }
                     //插入数据元信息
-                    metaData.setId(0);//为0内部自增
+                    metaData.setId(0L);//为0内部自增
                     metaData.setDataSetId(dataSet.getId());
                     metaData.setCode(code);
                     metaData.setName(name);
@@ -793,8 +778,8 @@ public class DataSetsController extends BaseUIController {
             envelop.setObj(saveDatas);
             envelop.setSuccessFlg(true);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -937,8 +922,7 @@ public class DataSetsController extends BaseUIController {
             os.flush();
             os.close();
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
         }
     }
 
@@ -1062,8 +1046,8 @@ public class DataSetsController extends BaseUIController {
     public void importData(MultipartFile file, String version,
                            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         try {
+            UsersModel user = getCurrentUserRedis(request);
             writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
             AExcelReader excelReader = new DataSetMsgReader();

@@ -4,28 +4,28 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <div class="f-dn" data-head-title="true">日志管理</div>
 <div id="div_wrapper">
-    <div class="m-retrieve-area f-h50 f-dn f-pr  m-form-inline" data-role-form>
+    <div class="m-retrieve-area f-dn f-pr  m-form-inline" data-role-form>
         <div class="m-form-group">
-            <div class="m-form-control">
+            <div class="m-form-control f-mb10">
                 <!--下拉框-->
                 <input type="text" id="inp_start_time" class="f-h28 f-w160" placeholder="起始时间"
                        data-attr-scan="startTime">
             </div>
-            <div class="m-form-control" style="margin-top: -15px;font-weight:bold;font-size:35px;"> ~</div>
-            <div class="m-form-control">
+            <div class="m-form-control f-mb10" style="font-weight:bold;font-size:15px;height: 30px;line-height: 30px;padding: 0 10px"> ~</div>
+            <div class="m-form-control f-mb10">
                 <input type="text" id="inp_end_time" class="f-h28 f-w160" placeholder="截止时间" data-attr-scan="endTime">
             </div>
-            <div class="m-form-control f-ml10">
+            <%--<div class="m-form-control f-ml10 f-mb10">
                 <!--下拉框-->
                 <input type="text" id="inp_type" class="f-h28 f-w160" placeholder="请选择类型" data-type="select"
                        data-attr-scan="type">
-            </div>
-            <div class="m-form-control f-ml10">
+            </div>--%>
+            <div class="m-form-control f-ml10 f-mb10">
                 <input type="text" id="inp_caller" class="f-h28 f-w1240" placeholder="请输入操作者姓名" data-attr-scan="caller">
             </div>
 
 
-            <div class="m-form-control f-ml10">
+            <div class="m-form-control f-ml10 f-mb10">
                 <!--按钮:查询 & 新增-->
                 <sec:authorize url="/log/searchLogs">
                     <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
@@ -41,7 +41,7 @@
 
     </div>
     <!--######日志表#结束######-->
-</div>
-<div id="div_log_info_dialog">
+    <div id="div_log_info_dialog">
 
+    </div>
 </div>

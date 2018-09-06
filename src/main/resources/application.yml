@@ -3,6 +3,16 @@ server:
   port: 8090
   sessionTimeout:  30000000
 
+spring:
+  redis:
+    database: 0 # Database index used by the connection factory.
+    timeout: 0 # Connection timeout in milliseconds.
+    pool:
+      max-active: 8 # Max number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.
+      max-idle: 8 # Max number of "idle" connections in the pool. Use a negative value to indicate an unlimited number of idle connections.
+      max-wait: -1 # Maximum amount of time (in milliseconds) a connection allocation should block before throwing an exception when the pool is exhausted. Use a negative value to block indefinitely.
+      min-idle: 1  # Target for the minimum number of idle connections to maintain in the pool. This setting only has an effect if it is positive.
+
 multipart:
   maxFileSize: 50Mb
   maxRequestSize: 50Mb
@@ -14,39 +24,47 @@ fast-dfs:
     wait-time: 500
   connect-timeout: 2
   network-timeout: 30
-
   http:
     tracker-http-port: 80
     anti-steal-token: no
     secret-key: FastDFS1234567890
 
+permissions:
+  info: admin
+
 ---
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
-    username: weifuwu
-    password: weifuwu
+    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: chenweishan
+    password: chenweishan
+  redis:
+    host: 172.19.103.47 # Redis server host.
+    port: 6379
+    password: redis!@456
 app:
-  clientId: zkGuSIm2Fg
+  baseClientId: zkGuSIm2Fg  # 【基础信息管理】应用
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
-  oauth2authorize: http://172.19.103.73:10260/
-  oauth2OutSize: http://27.154.233.186:10260/  #上饶-认证外网
+  oauth2InnerUrl: http://172.19.103.70:1235/gateway/authentication/
+  oauth2OuterUrl: http://27.154.233.186:10260/  #厦门-认证外网
 service-gateway:
   username: user
   password: eureka
-  url: http://192.168.1.221:10000/api/v1.0/admin
-  stdurl: http://192.168.1.221:10000/api/v1.0/admin/std
-  versionurl: http://192.168.1.221:10000/api/v1.0/admin/version
-  cdatypeurl: http://192.168.1.221:10000/api/v1.0/admin/cda_type
-  stdsourceurl: http://192.168.1.221:10000/api/v1.0/admin/standard_source
-  adaption: http://192.168.1.221:10000/api/v1.0/adapter
-  template: http://192.168.1.221:10000/api/v1.0/template
-  standard: http://192.168.1.221:10000/api/v1.0/std
-  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
-  profileurl: http://http://172.17.110.227:9009/api/v1.0
+  url: http://172.19.103.73:10000/api/v1.0/admin
+  adminInnerUrl: http://172.19.103.73:10000
+  stdurl: http://172.19.103.73:10000/api/v1.0/admin/std
+  versionurl: http://172.19.103.73:10000/api/v1.0/admin/version
+  cdatypeurl: http://172.19.103.73:10000/api/v1.0/admin/cda_type
+  stdsourceurl: http://172.19.103.73:10000/api/v1.0/admin/standard_source
+  adaption: http://172.19.103.73:10000/api/v1.0/adapter
+  standard: http://172.19.103.73:10000/api/v1.0/std
+  #browseClientUrl: http://192.168.1.221:8010/profile/browser
+  browseClientUrl: http://172.19.103.70:1235/profile
+  browseClientOutSizeUrl: http://27.154.233.186:9480/profile
+  profileurl: http://172.19.103.74:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
   public-server: http://172.19.103.52:80
@@ -57,61 +75,35 @@ std:
 spring:
   profiles: alpha
   datasource:
-    url: jdbc:mysql://192.168.1.220:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
-    username: ha
-    password: ha
-app:
-  clientId: zkGuSIm2Fg
-  qcReportClientId: 2YTOSRI0tw
-  resourceBrowseClientId: W8RDizgDIB
-  browseClientId: uzs5G0HgTp
-  oauth2authorize: http://192.168.1.221:10260/
-  oauth2OutSize: http://192.168.1.221:10260/
-service-gateway:
-  username: user
-  password: eureka
-  url: http://localhost:10000/api/v1.0/admin
-  stdurl: http://localhost:10000/api/v1.0/admin/std
-  versionurl: http://localhost:10000/api/v1.0/admin/version
-  cdatypeurl: http://localhost:10000/api/v1.0/admin/cda_type
-  stdsourceurl: http://localhost:10000/api/v1.0/admin/standard_source
-  adaption: http://localhost:10000/api/v1.0/adapter
-  template: http://localhost:10000/api/v1.0/template
-  standard: http://localhost:10000/api/v1.0/std
-  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
-  profileurl: http://localhost:9009/api/v1.0
-fast-dfs:
-  tracker-server: 172.19.103.54:22122
-std:
-  version: 59083976eebd
-
----
-spring:
-  profiles: test
-  datasource:
-    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: chenweishan
     password: chenweishan
+  redis:
+    host: 172.19.103.47 # Redis server host.
+    port: 6379
+    password: redis!@456
 app:
-  clientId: zkGuSIm2Fg
+  baseClientId: zkGuSIm2Fg  # 【基础信息管理】应用
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
-  oauth2authorize: http://172.19.103.73:10260/
-  oauth2OutSize: http://172.19.103.73:10260/
+  oauth2InnerUrl: http://172.19.103.70:1235/gateway/authentication/
+  oauth2OuterUrl: http://27.154.233.186:10260/  #厦门-认证外网
 service-gateway:
   username: user
   password: eureka
   url: http://172.19.103.73:10000/api/v1.0/admin
+  adminInnerUrl: http://172.19.103.73:10000
   stdurl: http://172.19.103.73:10000/api/v1.0/admin/std
   versionurl: http://172.19.103.73:10000/api/v1.0/admin/version
   cdatypeurl: http://172.19.103.73:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://172.19.103.73:10000/api/v1.0/admin/standard_source
   adaption: http://172.19.103.73:10000/api/v1.0/adapter
-  template: http://172.19.103.73:10000/api/v1.0/template
   standard: http://172.19.103.73:10000/api/v1.0/std
-  BrowseClienturl: http://172.19.103.73:8010/ehr/browser
-  profileurl: http://172.19.103.73:9009/api/v1.0
+  #browseClientUrl: http://192.168.1.221:8010/profile/browser
+  browseClientUrl: http://172.19.103.70:1235/profile
+  browseClientOutSizeUrl: http://27.154.233.186:9480/profile
+  profileurl: http://172.19.103.74:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
   public-server: http://172.19.103.52:80
@@ -122,67 +114,37 @@ std:
 spring:
   profiles: prod
   datasource:
-    url: jdbc:mysql://192.168.1.220:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
-    username: ha
-    password: ha
+    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: chenweishan
+    password: chenweishan
+  redis:
+    host: 172.19.103.47 # Redis server host.
+    port: 6379
+    password: redis!@456
 app:
-  clientId: zkGuSIm2Fg
+  baseClientId: zkGuSIm2Fg  # 【基础信息管理】应用
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
-  oauth2authorize: http://192.168.1.221:10260/
-  oauth2OutSize: http://192.168.1.221:10260/
+  oauth2InnerUrl: http://172.19.103.70:1235/gateway/authentication/
+  oauth2OuterUrl: http://27.154.233.186:10260/  #厦门-认证外网
 service-gateway:
   username: user
   password: eureka
-  url: http://11.1.2.21:10000/api/v1.0/admin
-  stdurl: http://11.1.2.21:10000/api/v1.0/admin/std
-  versionurl: http://11.1.2.21:10000/api/v1.0/admin/version
-  cdatypeurl: http://11.1.2.21:10000/api/v1.0/admin/cda_type
-  stdsourceurl: http://11.1.2.21:10000/api/v1.0/admin/standard_source
-  adaption: http://11.1.2.21:10000/api/v1.0/adapter
-  template: http://11.1.2.21:10000/api/v1.0/template
-  standard: http://11.1.2.21:10000/api/v1.0/std
-  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
-  profileurl: http://11.1.2.21:9009/api/v1.0
+  url: http://172.19.103.73:10000/api/v1.0/admin
+  adminInnerUrl: http://172.19.103.73:10000
+  stdurl: http://172.19.103.73:10000/api/v1.0/admin/std
+  versionurl: http://172.19.103.73:10000/api/v1.0/admin/version
+  cdatypeurl: http://172.19.103.73:10000/api/v1.0/admin/cda_type
+  stdsourceurl: http://172.19.103.73:10000/api/v1.0/admin/standard_source
+  adaption: http://172.19.103.73:10000/api/v1.0/adapter
+  standard: http://172.19.103.73:10000/api/v1.0/std
+  #browseClientUrl: http://192.168.1.221:8010/profile/browser
+  browseClientUrl: http://172.19.103.70:1235/profile
+  browseClientOutSizeUrl: http://27.154.233.186:9480/profile
+  profileurl: http://172.19.103.83:9009/api/v1.0
 fast-dfs:
-  tracker-server: 11.1.2.9:22122
+  tracker-server: 172.19.103.13:22122
+  public-server: http://172.19.103.52:80
 std:
   version: 59083976eebd
-logging:
-    config: classpath:logback-spring.xml
-
----
-spring:
-  profiles: prod_fz
-  datasource:
-    url: jdbc:mysql://192.168.135.39:3306/healtharchive?useUnicode=true&amp;characterEncoding=UTF-8
-    username: sr_healtharchive
-    password: data!@)1
-app:
-  clientId: zkGuSIm2Fg
-  qcReportClientId: 2YTOSRI0tw
-  resourceBrowseClientId: W8RDizgDIB
-  browseClientId: uzs5G0HgTp
-  oauth2authorize: http://192.168.135.35:10260/
-  oauth2OutSize: http://192.168.135.35:10260/
-service-gateway:
-  username: user
-  password: eureka
-  url: http://192.168.135.31:10000/api/v1.0/admin
-  stdurl: http://192.168.135.31:10000/api/v1.0/admin/std
-  versionurl: http://192.168.135.31:10000/api/v1.0/admin/version
-  cdatypeurl: http://192.168.135.31:10000/api/v1.0/admin/cda_type
-  stdsourceurl: http://192.168.135.31:10000/api/v1.0/admin/standard_source
-  adaption: http://192.168.135.31:10000/api/v1.0/adapter
-  template: http://192.168.135.31:10000/api/v1.0/template
-  standard: http://192.168.135.31:10000/api/v1.0/std
-  BrowseClienturl: http://192.168.135.34:8010/ehr/browser
-  profileurl: http://192.168.135.31:9009/api/v1.0
-fast-dfs:
-  tracker-server: 192.168.135.42:22122
-  public-server: http://192.168.135.42:22122
-std:
-  version: 59083976eebd
-logging:
-    config: classpath:logback-spring.xml

@@ -89,11 +89,11 @@
                 rendBarTools : function(){
                     function onUploadSuccess(g, result){
                         if(result=='suc')
-                            $.Notice.success("导入成功");
+                            parent._LIGERDIALOG.success("导入成功");
                         else{
                             result = eval('(' + result + ')')
                             var url = "${contextRoot}/resource/dict/downLoadErrInfo?f="+ result.eFile[1] + "&datePath=" + result.eFile[0];
-                            $.ligerDialog.open({
+                            parent._LIGERDIALOG.open({
                                 height: 80,
                                 content: "请下载&nbsp;<a target='diframe' href='"+ url +"'>导入失败信息</a><iframe id='diframe' name='diframe'> </iframe>",
                             });
@@ -105,7 +105,7 @@
                    function onBeforeUpload(){
                        if(!versionStage)
                        {
-                           $.Notice.error("已发布版本不可新增，请确认!");
+                           parent._LIGERDIALOG.error("已发布版本不可新增，请确认!");
                            return false;
                        }else{
                            return true;
@@ -225,14 +225,14 @@
 
                             if(!versionStage)
                             {
-                                $.Notice.error("已发布版本不可新增，请确认!");
+                                parent._LIGERDIALOG.error("已发布版本不可新增，请确认!");
                                 return;
                             }
                             title = '新增标准字典';
                         }
                         isSaveSelectStatus = true;
                         var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                        dictMaster.dictInfoDialog = $.ligerDialog.open({
+                        dictMaster.dictInfoDialog = parent._LIGERDIALOG.open({
                             height: 462,
                             width: 460,
                             title: title,
@@ -253,11 +253,11 @@
 
                         if(!versionStage)
                         {
-                            $.Notice.error("已发布版本不可删除，请确认!");
+                            parent._LIGERDIALOG.error("已发布版本不可删除，请确认!");
                             return;
                         }
 
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
                                 var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
@@ -265,10 +265,10 @@
                                     data: {dictId: id, cdaVersion: stdDictVersion},
                                     success: function (data) {
                                         if(data.successFlg){
-                                            $.Notice.success('删除成功！');
+                                            parent._LIGERDIALOG.success('删除成功！');
                                             dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
                                         }else{
-                                            $.Notice.error(data.errorMsg);
+                                            parent._LIGERDIALOG.error(data.errorMsg);
                                         }
 
 
@@ -304,12 +304,12 @@
                     this.grid = $("#div_relation_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/cdadict/searchDictEntryList',
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: 'id', name: 'id', width: '0.1%', hide: true},
+                            {display: 'dictId', name: 'dictId', width: '0.1%', hide: true},
                             {display: '值域编码', name: 'code', width: '33%', isAllowHide: false, align: 'left'},
                             {display: '值域名称', name: 'value', width: '34%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '33%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
 
                                 var html = '';
                                 <sec:authorize url="/cdadict/saveDictEntry">
@@ -356,7 +356,7 @@
                     //
                     $.subscribe('entry:dictInfo:open', function (event, id, dictId, mode) {
                         if (!dictMaster.grid.getSelectedRow()) {
-                            $.Notice.warn('请先添加标准字典数据！');
+                            parent._LIGERDIALOG.warn('请先添加标准字典数据！');
                             return;
                         }
                         var title = '';
@@ -368,14 +368,14 @@
 
                             if(!versionStage)
                             {
-                                $.Notice.error("已发布版本不可新增，请确认!");
+                                parent._LIGERDIALOG.error("已发布版本不可新增，请确认!");
                                 return;
                             }
                             dictId = dictMaster.grid.getSelectedRow().id;
                             title = '新增字典项';
                         }
                         var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                        entryMater.entryInfoDialog = $.ligerDialog.open({
+                        entryMater.entryInfoDialog = parent._LIGERDIALOG.open({
                             height: 360,
                             width: 460,
                             title: title,
@@ -397,14 +397,14 @@
 
                         if(!versionStage)
                         {
-                            $.Notice.error("已发布版本不可删除，请确认!");
+                            parent._LIGERDIALOG.error("已发布版本不可删除，请确认!");
                             return;
                         }
                         var delLen = 1;
                         if (!ids) {
                             var rows = entryMater.grid.getSelectedRows();
                             if (rows.length == 0) {
-                                $.Notice.warn('请选择要删除的数据行！');
+                                parent._LIGERDIALOG.warn('请选择要删除的数据行！');
                                 return;
                             }
                             delLen = rows.length;
@@ -414,14 +414,14 @@
                             ids = ids.length > 0 ? ids.substring(1, ids.length) : ids;
                         }
 
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
                                 var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
                                 dataModel.updateRemote('${contextRoot}/cdadict/deleteDictEntryList', {
                                     data: {id: ids, cdaVersion: stdDictVersion},
                                     success: function (data) {
-                                        $.Notice.success('操作成功！');
+                                        parent._LIGERDIALOG.success('操作成功！');
                                         entryMater.reloadGrid(Util.checkCurPage.call(entryMater.grid, delLen));
                                     }
                                 });
@@ -435,22 +435,22 @@
                 }
             };
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadMasterGrid = function () {
+            win.parent.reloadMasterGrid = function () {
                 dictMaster.reloadGrid();
             };
-            win.getStrVersion = function () {
+            win.parent.getStrVersion = function () {
                 return $("#stdDictVersion").ligerGetComboBoxManager().getValue();
             };
-            win.reloadEntryMasterGrid = function () {
+            win.parent.reloadEntryMasterGrid = function () {
                 entryMater.reloadGrid();
             };
-            win.closeDialog = function (type, msg) {
+            win.parent.closeDialog = function (type, msg) {
                 if (type == 'right')
                     entryMater.closeDl();
                 else
                     dictMaster.dictInfoDialog.close();
                 if (msg)
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
             };
             /* *************************** 页面功能 **************************** */
             pageInit();

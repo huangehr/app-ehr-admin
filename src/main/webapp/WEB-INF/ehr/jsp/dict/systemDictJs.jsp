@@ -19,12 +19,7 @@
 
             var systemDictInfoGrid = null;
             var systemDictEntryInfoGrid = null;
-
-            var systemDictUpdateDialog = null;
-
-            var addSystemDictEntityDialog = null;
-            var updateSystemDictEntityDialog = null;
-
+            var systemDictEntityDialog = null;
             var code = null;
             var selectRow = null, selectEntityRow=null;
             var isSaveSelectStatus = false, isSaveEntitySelectStatus = false;
@@ -99,7 +94,6 @@
 
                 initSystemDictForm: function () {
                     var self = this;
-                    self.$systemDictName.ligerTextBox({width: 240});
                     self.$systemDictEntityValue.ligerTextBox({width: 240});
                     self.$systemDictEntitySort.ligerTextBox({width: 240});
                     self.$systemDictEntityCatalog.ligerTextBox({width: 240});
@@ -180,12 +174,12 @@
                             dictId: dictId
                         },
                         columns: [
-                            {display: 'sort', name: 'sort', hide: true},
-                            {display: 'catalog', name: 'catalog', hide: true},
+                            {display: 'sort', name: 'sort', hide: true, width: '0.1%'},
+                            {display: 'catalog', name: 'catalog', hide: true, width: '0.1%'},
                             {display: '字典代码', name: 'code', width: '40%'},
                             {display: '值', name: 'value', width: '45%'},
                             {
-                                display: '操作', name: 'operator', width: '15%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/dict/updateDictEntry">
                                 html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "systemDictEntity:systemDictEntityInfoModifyDialog:update", row.code, row.value, row.sort, row.catalog) + '"></a>';
@@ -272,163 +266,66 @@
                         self.$updateSystemDictEntityValue.val(value);
                         self.$updateSystemDictEntitySort.val(sort);
                         self.$updateSystemDictEntityCatalog.val(catalog);
-                        self.updateSystemEntityDialog();
+                        systemDictEntityDialog = parent._LIGERDIALOG.open({
+                            height:280,
+                            width: 416,
+                            title : "修改字典详情",
+                            url: '${contextRoot}/dict/editSystemDictDetail',
+                            urlParms: {
+                                mode:"modify",
+                                code:code,
+                                name:value,
+                                catalog:catalog,
+                                systemDictId:master.$systemDictId.val()
+                            },
+                            isHidden: false,
+                            opener: true,
+                            load:true
+                        });
                     });
 
                 },
-                updateSystemDialog: function (msg) {
+                updateSystemDialog: function (mode) {
                     var self = this;
                     var title = '';
-                    if (Util.isStrEquals(msg, 'add')) {
+                    if (Util.isStrEquals(mode, 'add')) {
                         title = '新增字典'
                     } else {
                         title = '修改字典'
                     }
-                    systemDictUpdateDialog = $.ligerDialog.open({
-                        title: title,
-                        width: 416,
-                        height: 200,
-                        target: self.$updateSystemDictDialog
+                    self.$updateSystemDictDialog = parent._LIGERDIALOG.open({
+                        height:200,
+                        width: 400,
+                        title : title,
+                        url: '${contextRoot}/dict/editSystemDict',
+                        urlParms: {
+                            mode:mode,
+                            systemName:self.$systemDictName.val(),
+                            systemDictId:self.$systemDictId.val()
+                        },
+                        isHidden: false,
+                        opener: true,
+                        load:true
                     });
-                    var validator = new jValidation.Validation(self.$updateSystemDictDialog, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                        var systemNameCopy =  self.$systemNameCopy.val();
-                        var systemName = self.$systemDictName.val();
-                        var result = new jValidation.ajax.Result();
-                        if(Util.isStrEquals(systemNameCopy,systemName)){
-                            return true;
-                        }
-                        var dataModel = $.DataModel.init();
-                        dataModel.updateRemote('${contextRoot}/dict/validator', {
-                            data: {systemName: systemName},
-                            async: false,
-                            success: function (data) {
-                                if (data.successFlg) {
-                                    result.setResult(true);
-                                } else {
-                                    result.setResult(false);
-                                    result.setErrorMsg("该字典名称已被使用");
-                                }
-                            }
-                        });
-                        return result;
-                    }
-                    });
-                    //新增/修改 系统字典保存点击事件
-                    this.$addSystemDictBtn.click( function () {
-                        if (validator.validate()) {
-                            var systemName = self.$systemDictName.val();
-                            var reference = self.$systemDictReference.val();         // reference 参数预留
-                            var systemDictId = self.$systemDictId.val();
-                            var systemDictUpdateUrl = null;
-                            var data = null;
-                            if (Util.isStrEquals(systemDictId, "")) {
-                                systemDictUpdateUrl = '${contextRoot}/dict/createDict';
-                                data = {name: systemName, reference: ''};
-                            } else {
-                                systemDictUpdateUrl = '${contextRoot}/dict/updateDict';
-                                data = {dictId: systemDictId, name: systemName};
-                            }
-                            var dataModel = $.DataModel.init();
-                            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
-                            dataModel.createRemote(systemDictUpdateUrl, {
-                                data: data,
-                                success: function (data) {
-                                    waittingDialog.close();
-                                    if (data.successFlg) {
-                                        $.Notice.success('更新成功');
-                                        self.searchSystemDict();
-                                    } else {
-                                        $.Notice.error("更新失败");
-                                    }
-                                    systemDictUpdateDialog.close();
-                                }
-                            });
-                        } else {
-                            //return;
-                        }
-                    });
-                    validator.reset();//还原
                 },
                 addSystemEntityDialog: function () {
                     var self = this;
-                    addSystemDictEntityDialog = $.ligerDialog.open({
-                        title: '新增字典详情',
+                    systemDictEntityDialog = parent._LIGERDIALOG.open({
+                        height:280,
                         width: 416,
-                        height: 250,
-                        target: self.$addSystemDictEntityDialog
+                        title : "新增字典详情",
+                        url: '${contextRoot}/dict/editSystemDictDetail',
+                        urlParms: {
+                            mode:"add",
+                            code:"",
+                            name:"",
+                            catalog:"",
+                            systemDictId:master.$systemDictId.val()
+                        },
+                        isHidden: false,
+                        opener: true,
+                        load:true
                     });
-                    //新增、修改字典详情验证
-                    var validateEntityAdd = new jValidation.Validation(self.$addSystemDictEntityDialog, {immediate: true, onSubmit: false,
-                        onElementValidateForAjax:function(elm){}});
-
-                    //新增字典 详情 保存事件
-                    this.$addSystemDictEntityBtn.click(function () {
-                        if (validateEntityAdd.validate()) {
-                            var code = self.$systemDictEntityCode.val();
-                            var value = self.$systemDictEntityValue.val();
-                            var sort = self.$systemDictEntitySort.val();
-                            var catalog = self.$systemDictEntityCatalog.val();
-                            var systemDictId = master.$systemDictId.val();
-                            if (Util.isStrEquals(systemDictId,'30')){
-                                catalog = catalog.replace('，',',');
-                            }
-                            var dataModel = $.DataModel.init();
-                            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
-                            dataModel.updateRemote('${contextRoot}/dict/createDictEntry', {
-                                data: {dictId: systemDictId, code: code, value: value, sort: sort, catalog: catalog},
-                                success: function (data) {
-                                    waittingDialog.close();
-                                    if (data.successFlg) {
-                                        $.Notice.success('保存成功');
-                                        master.searchSystemDictEntity(master.$systemDictId.val());
-                                    } else {
-                                        $.Notice.error(data.errorMsg);
-                                    }
-                                    addSystemDictEntityDialog.close();
-                                }
-                            });
-                        }
-                    });
-                    validateEntityAdd.reset();//还原
-                },
-                updateSystemEntityDialog: function () {
-
-                    var self = this;
-                    updateSystemDictEntityDialog = $.ligerDialog.open({
-                        title: '修改字典详情',
-                        width: 416,
-                        height: 250,
-                        target: self.$updateSystemDictEntityDialog
-                    });
-                    var validateEntityUpdate = new jValidation.Validation(self.$updateSystemDictEntityDialog, {immediate: true, onSubmit: false,
-                        onElementValidateForAjax:function(elm){}});
-                    //修改字典 详情 保存事件
-                    this.$updateSystemDictEntityBtn.click(function ()  {
-                        if (validateEntityUpdate.validate()) {
-                            var code = self.$updateSystemDictEntityCode.val();
-                            var value = self.$updateSystemDictEntityValue.val();
-                            var sort = self.$updateSystemDictEntitySort.val();
-                            var catalog = self.$updateSystemDictEntityCatalog.val();
-                            var systemDictId = master.$systemDictId.val();
-                            if (Util.isStrEquals(systemDictId,'30')){
-                                catalog = catalog.replace('，',',');
-                            }
-                            var dataModel = $.DataModel.init();
-                            dataModel.updateRemote('${contextRoot}/dict/updateDictEntry', {
-                                data: {dictId: systemDictId, code: code, value: value, sort: sort, catalog: catalog},
-                                success: function (data) {
-                                    if (data.successFlg) {
-                                        $.Notice.success('更新成功');
-                                        master.searchSystemDictEntity(master.$systemDictId.val());
-                                    } else {
-                                        $.Notice.error('更新失败');
-                                    }
-                                    updateSystemDictEntityDialog.close();
-                                }
-                            });
-                        }
-                    });
-                    validateEntityUpdate.reset();//还原
                 },
                 deleteSystemDictDialog: function (type,dictId, code, deleteUrl) {
                     var self = this;
@@ -438,14 +335,14 @@
                     } else {
                         data = {dictId: dictId, code: code}
                     }
-                    $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                    parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
                         if (yes) {
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote(deleteUrl, {
                                 data: data,
                                 success: function (data) {
                                     if (data.successFlg) {
-                                        $.Notice.success('删除成功');
+                                        parent._LIGERDIALOG.success('删除成功');
                                         if (type=='Dict') {
                                             self.searchSystemDict("", Util.checkCurPage.call(systemDictInfoGrid, 1));
                                         }else if (type=='DictEntry') {
@@ -453,7 +350,7 @@
                                         }
 
                                     } else {
-                                        $.Notice.error('删除失败');
+                                        parent._LIGERDIALOG.error('删除失败');
                                     }
                                 }
                             });
@@ -462,6 +359,25 @@
                 }
             };
             /* ************************* 模块初始化结束 ************************** */
+            /* ******************Dialog页面回调接口****************************** */
+            win.parent.reloadMasterGrid = function () {
+                master.searchSystemDict();
+            };
+            win.parent.closeDialog = function (msg) {
+                master.$updateSystemDictDialog.close();
+                if(msg)
+                    parent._LIGERDIALOG.success(msg);
+            };
+            win.parent.closeDetailDialog = function (msg) {
+               systemDictEntityDialog.close();
+                if(msg)
+                    parent._LIGERDIALOG.success(msg);
+            };
+            win.parent.reloadEntryMasterGrid = function () {
+                master.searchSystemDictEntity(master.$systemDictId.val());
+            };
+
+            /* *************************** 页面功能 **************************** */
             /* *************************** 页面初始化 **************************** */
             pageInit();
             /* ************************* 页面初始化结束 ************************** */

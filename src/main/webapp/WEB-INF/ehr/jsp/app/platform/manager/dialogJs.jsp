@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 
 <script type="text/javascript">
 
@@ -7,15 +8,15 @@
         var urls = {
             update: "${contextRoot}/app/feature/update",
             existence: "${contextRoot}/app/feature/existence"
-        }
+        };
         var model = ${model};
         var mode = '${mode}';
         var extParms = getEditParms();//其他信息
 
         var initForm = function () {
             var vo = [
-                {type: 'text', id: 'ipt_af_name', opts: {readonly: mode=='modify', disabled: mode=='modify'}},
-                {type: 'text', id: 'ipt_af_code'},
+                {type: 'text', id: 'ipt_af_name'},
+                {type: 'text', id: 'ipt_af_code', opts: {readonly: mode=='modify', disabled: mode=='modify'}},
                 {type: 'select', id: 'ipt_af_type', dictId: 39, opts: {disabled: mode=='modify',
                     onSuccess: function (data) {
                         if(mode=='new'){
@@ -31,10 +32,12 @@
                         }
                     }
                 }},
+                {type: 'text', id: 'ipt_af_sort'},
                 {type: 'select', id: 'ipt_af_open', dictId: 40, opts: {initVal: mode=='new'? '1': undefined}},
                 {type: 'select', id: 'ipt_af_audit', dictId: 41, opts: {initVal: mode=='new'? '1': undefined}},
-                {type: 'text', id: 'ipt_af_icon_url'},
                 {type: 'text', id: 'ipt_af_url', opts:{height:60}},
+                {type: 'text', id: 'ipt_af_prefixUrl', opts:{height:60}},
+                {type: 'text', id: 'ipt_af_icon_url'},
                 {type: 'text', id: 'ipt_af_description', opts:{height:100}}
             ];
             initFormFields(vo);
@@ -60,22 +63,70 @@
 
                 $form.attrScan();
                 var newModel = $form.Fields.getValues();
+                newModel.sort = !newModel.sort ? 1 : newModel.sort;
                 var id = newModel.id || '';
                 var extParms = {oldUrl: model.url};
                 var parms = {model: JSON.stringify(newModel), modelName: 'model', id: id , extParms:  JSON.stringify(extParms)}
 
-                saveForm({url: urls.update, $form: $form, parms: parms, validator: validator});
+                saveDForm({url: urls.update, $form: $form, parms: parms, validator: validator});
             });
 
             $('#btn_cancel').click(function () {
                 closeDialog();
             });
         };
+        function saveDForm(opts){
+            var $form = opts.$form;
+            var validator = opts.validator;
 
+            if(!validator){
+                validator = initValidate($form);
+            }
+            if(!validator.validate())
+                return;
+
+            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+            var parms = opts.parms;
+            if(!parms){
+                $form.attrScan();
+                var model = $form.Fields.getValues();
+                var id = model.id || '';
+                if(opts.notIncluded){
+                    var tmp = opts.notIncluded.split(',');
+                    for(var i=0; i< tmp.length; i++){
+                        model[tmp[i]] = undefined;
+                    }
+                }
+                parms = {model: JSON.stringify(model), modelName: opts.modelName ? opts.modelName : '', id: id  }
+            }
+            var dataModel = $.DataModel.init();
+            dataModel.createRemote(opts.url, {
+                data: parms,
+                success: function (data) {
+                    waittingDialog.close();
+                    if (data.successFlg) {
+                        if(opts.onSuccess)
+                            opts.onSuccess(data);
+                        else
+                            closeDialog("保存成功!", data);
+                    } else {
+                        if (data.errorMsg)
+                            _LIGERDIALOG.error(data.errorMsg);
+                        else
+                            _LIGERDIALOG.error('出错了！');
+                    }
+                },
+                error: function () {
+                    waittingDialog.close();
+                }
+            });
+        }
         var init = function () {
             if(mode=='new'){
+                var level = extParms.upId == '0' ?  1 : parseInt(extParms.upLevel) + 1;
                 model.parentId = extParms.upId;
                 model.appId = extParms.appId;
+                model.level = level;
             }
             initForm();
             initBtn();

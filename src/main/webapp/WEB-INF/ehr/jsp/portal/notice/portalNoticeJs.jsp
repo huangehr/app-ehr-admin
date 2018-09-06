@@ -68,13 +68,13 @@
                         },
                        allowHideColumn:false,
                         columns: [
-                            {display: '标题', name: 'title', width: '35%',align: 'left'},
+                            {display: '标题', name: 'title', width: '45%',align: 'left'},
                             {display: '类型', name: 'typeName', width: '15%'},
-                            {display: '门户类型', name: 'portalTypeName', width: '10%'},
+//                            {display: '门户类型', name: 'portalTypeName', width: '10%'},
 //                            {display: '内容', name: 'content', width: '45%', resizable: true,align: 'left'},
                             {display: '发布日期', name: 'releaseDate', width: '20%', resizable: true,align: 'center'},
                             {
-                                display: '操作', name: 'operator', width: '20%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                     var html = '<sec:authorize url="/portalNotice/updatePortalNotice"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalNotice:noticeInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/portalNotice/deletePortalNotice"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalNotice:noticeInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
                                     return html;
@@ -86,8 +86,8 @@
                         unSetValidateAttr: false,
                         onDblClickRow : function (row){
                             var mode = 'view';
-                            var wait = $.Notice.waitting("请稍后...");
-                            var rowDialog = $.ligerDialog.open({
+                            var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                            var rowDialog = parent._LIGERDIALOG.open({
                                 height: 550,
                                 width: 750,
                                 isDrag:true,
@@ -126,7 +126,7 @@
 
                     //新增通知公告信息
                     retrieve.$newPortalNotice.click(function(){
-                        self.addNoticeInfoDialog = $.ligerDialog.open({
+                        self.addNoticeInfoDialog = parent._LIGERDIALOG.open({
                             height: 550,
                             width: 750,
                             load: false,
@@ -136,8 +136,8 @@
                     });
                     //修改通知公告信息
                     $.subscribe('portalNotice:noticeInfoModifyDialog:open', function (event, portalNoticeId, mode) {
-                        var wait = $.Notice.waitting("请稍后...");
-                        self.noticeInfoDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        self.noticeInfoDialog = parent._LIGERDIALOG.open({
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
@@ -161,7 +161,7 @@
                     });
                     //删除通知公告
                     $.subscribe('portalNotice:noticeInfoModifyDialog:del', function (event, portalNoticeId) {
-                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
+                        parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
                             if(yes){
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote("${contextRoot}/portalNotice/deletePortalNotice",{
@@ -169,11 +169,11 @@
                                     async:true,
                                     success: function(data) {
                                         if(data.successFlg){
-                                            $.Notice.success('删除成功。');
+                                            parent._LIGERDIALOG.success('删除成功。');
                                             isFirstPage = false;
                                             master.reloadGrid();
                                         }else{
-                                            $.Notice.error('删除失败。');
+                                            parent._LIGERDIALOG.error('删除失败。');
                                         }
                                     }
                                 });
@@ -185,10 +185,10 @@
             };
 
             /* ************************* Dialog页面回调接口 ************************** */
-            win.reloadMasterUpdateGrid = function () {
+            win.parent.reloadMasterUpdateGrid = win.reloadMasterUpdateGrid = function () {
                 master.reloadGrid();
             };
-            win.closeAddPortalNoticeInfoDialog = function (callback) {
+            win.parent.closeAddPortalNoticeInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);
@@ -196,7 +196,7 @@
                 }
                 master.addNoticeInfoDialog.close();
             };
-            win.closeNoticeInfoDialog = function (callback) {
+            win.parent.closeNoticeInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);

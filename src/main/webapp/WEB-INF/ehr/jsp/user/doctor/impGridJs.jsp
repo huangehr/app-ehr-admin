@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
 <script>
 
     (function ($, win) {
@@ -11,7 +14,7 @@
                 userExistence: "${contextRoot}/doctorImport/userIsExistence",
                 doctorExistence: "${contextRoot}/doctorImport/doctorIsExistence",
                 orgExistence: "${contextRoot}/doctorImport/orgCodeIsExistence",
-                orgDeptExistence: "${contextRoot}/doctorImport/deptIsExistence",
+                <%--orgDeptExistence: "${contextRoot}/doctorImport/deptIsExistence",--%>
 
                 batchSave: "${contextRoot}/doctorImport/batchSave",
                 downLoad: "${contextRoot}/doctorImport/downLoadErrInfo",
@@ -25,7 +28,7 @@
             var barTools = function(){
 
                 function save(){
-                    if(true){
+                    if(validator.validate()){
                         if($form.Fields)
                             $form.removeData('propMap');
                         $form.attrScan();
@@ -49,10 +52,12 @@
                                     $.Notice.success("保存成功!");
                                     searchFun();
                                 } else {
-                                    if (data.errorMsg)
-                                        $.Notice.error(data.errorMsg);
-                                    else
+                                    if (data.errorMsg) {
+                                    $.Notice.error(data.errorMsg);
+                                    searchFun();
+                                    }else{
                                         $.Notice.error('出错了！');
+                                    }
                                 }
                             },
                             error: function () {
@@ -100,7 +105,6 @@
             function onAfterShowData(data){
                 $('.l-grid-row-cell-inner').attr('title', '');
                 validator = initValidate($form, function (elm) {
-                    debugger;
                     var field = $(elm).attr('id');
                     var val = $('#' + field).val();
                     var oldVal = $(elm).attr('data-old-val');
@@ -132,10 +136,10 @@
                         return uniqValid(urls.userExistence, "email="+val, "该邮箱在账户表中已存在！");
                     }
                     if(field.indexOf('idCardNo')!=-1){
-                        return uniqValid(urls.doctorExistence, "id_card_no="+val, "该身份证号在医生表中已存在！");
+                        return uniqValid(urls.doctorExistence, "idCardNo="+val, "该身份证号在医生表中已存在！");
                     }
                     if(field.indexOf('idCardNo')!=-1){
-                        return uniqValid(urls.userExistence, "id_card_no="+val, "该身份证号在账户表中已存在！");
+                        return uniqValid(urls.userExistence, "idCardNo="+val, "该身份证号在账户表中已存在！");
                     }
                     if(field.indexOf('orgCode')!=-1){
                         debugger;
@@ -158,9 +162,9 @@
                         return result;
 
                     }
-                    if(field.indexOf('orgDeptName')!=-1){
-                        return uniqValid(urls.orgDeptExistence, "orgCode="+$('#' + code).val()+ ";orgFullName="+$('#' + fullName).val()+";deptName="+val, "该机构部门不存在！");
-                    }
+//                    if(field.indexOf('orgDeptName')!=-1){
+//                        return uniqValid(urls.orgDeptExistence, "orgCode="+$('#' + code).val()+ ";orgFullName="+$('#' + fullName).val()+";deptName="+val, "该机构部门不存在！");
+//                    }
                 });
                 validator.validate();
             }
@@ -258,27 +262,55 @@
                     {display: '排序号', name: 'excelSeq', hide: true, render: function (row, index) {
                         return '<input type="hidden" value="'+ row.excelSeq +'" data-attr-scan="excelSeq_'+ index +'">'
                     }},
-                    {display: '医生账号', name: 'code', width: '110', align: 'left', render: textRender},
+                    {display: '机构id',  hide: true,name: 'orgId', width: '110', align: 'left', render: textRender},
                     {display: '姓名', name: 'name', width: '93', align: 'left', render: textRender},
                     {display: '身份证号', name: 'idCardNo', width: '151', align: 'left', render: textRender},
                     {display: '性别',hide: true, name: 'sex', width: '40', align: 'left', render: selRender},
                     {display: '机构代码', name: 'orgCode', width: '110', align: 'left', render: textRender},
+
                     {display: '机构名称', name: 'orgFullName', width: '110', align: 'left', render: textRender},
-                    {display: '部门名称', name: 'orgDeptName', width: '100', align: 'left', render: textRender},
+                    {display: '科室名称', name: 'dept_name', width: '100', align: 'left', render: textRender},
+                    {display: '身份证件种类', hide: true,name: 'sfzjzl', width: '148', align: 'left', render: textRender},
+                    {display: '出生日期', name: 'csrq', width: '140', align: 'left', render: textRender},
+                    {display: '手机号码', name: 'phone', width: '125', align: 'left', render: textRender},
 
-                    {display: '医生专长', hide: true,name: 'skill', width: '148', align: 'left', render: textRender},
-                    {display: '邮箱', name: 'email', width: '140', align: 'left', render: textRender},
-                    {display: '联系电话', name: 'phone', width: '125', align: 'left', render: textRender},
-                    {display: '办公电话（固）',hide: true, name: 'officeTel', width: '140', align: 'left', render: textRender},
+                    {display: '民族代码',hide: true, name: 'mzdm', width: '140', align: 'left', render: textRender},
+                    {display: '参加工作日期',  hide: true,name: 'cjgzrq', width: '95', align: 'left', render: textRender},
+
+                    {display: '办公室电话号码',  hide: true,name: 'officeTel', width: '95', align: 'left', render: textRender},
+                    {display: '所在科室代码',  hide: true,name: 'szksdm', width: '95', align: 'left', render: textRender},
+                    {display: '从事专业类别代码',  hide: true,name: 'role_type', width: '95', align: 'left', render: textRender},
+                    {display: '医师/卫生监督员执业证书编码',  hide: true,name: 'yszyzsbm', width: '95', align: 'left', render: textRender},
+                    {display: '医师执业类别代码', hide: true, name: 'job_type', width: '95', align: 'left', render: textRender},
 
 
+                    {display: '医师执业范围代码',  hide: true,name: 'job_scope', width: '95', align: 'left', render: textRender},
+                    {display: '是否多地点执业医师',  hide: true,name: 'sfdddzyys', width: '95', align: 'left', render: textRender},
+                    {display: '第2执业单位的机构类别',  hide: true,name: 'dezydwjglb', width: '95', align: 'left', render: textRender},
+                    {display: '第3执业单位的机构类别',  hide: true,name: 'dszydwjglb', width: '95', align: 'left', render: textRender},
+                    {display: '是否获得国家住院医师规范化培训合格证书',  hide: true,name: 'sfhdgjzs', width: '95', align: 'left', render: textRender},
 
-                    {display: '医生门户首页',  hide: true,name: 'workPortal', width: '95', align: 'left', render: textRender},
-                    {display: '教学职称',  hide: true,name: 'jxzc', width: '95', align: 'left', render: textRender},
-                    {display: '临床职称',  hide: true,name: 'lczc', width: '95', align: 'left', render: textRender},
-                    {display: '学历',  hide: true,name: 'xlzc', width: '95', align: 'left', render: textRender},
-                    {display: '行政职称',  hide: true,name: 'xzzc', width: '95', align: 'left', render: textRender},
-                    {display: '简介', hide: true, name: 'introduction', width: '95', align: 'left', render: textRender}];
+                    {display: '住院医师规范化培训合格证书编码',  hide: true,name: 'zyyszsbm', width: '95', align: 'left', render: textRender},
+                    {display: '行政/业务管理职务代码',  hide: true,name: 'xzzc', width: '95', align: 'left', render: textRender},
+                    {display: '专业技术资格(评)代码',  hide: true,name: 'lczc', width: '95', align: 'left', render: textRender},
+                    {display: '专业技术职务(聘)代码',  hide: true,name: 'zyjszwdm', width: '95', align: 'left', render: textRender},
+                    {display: '学历代码',  hide: true,name: 'xldm', width: '95', align: 'left', render: textRender},
+
+                    {display: '学位代码',  hide: true,name: 'xwdm', width: '95', align: 'left', render: textRender},
+                    {display: '所学专业代码',  hide: true,name: 'szydm', width: '95', align: 'left', render: textRender},
+                    {display: '专业特长1',  hide: true,name: 'zktc1', width: '95', align: 'left', render: textRender},
+                    {display: '专业特长2',  hide: true,name: 'zktc2', width: '95', align: 'left', render: textRender},
+                    {display: '专业特长3',  hide: true,name: 'zktc3', width: '95', align: 'left', render: textRender},
+
+                    {display: '年内人员流动情况',  hide: true,name: 'nnryldqk', width: '95', align: 'left', render: textRender},
+                    {display: '调入/调出时间',  hide: true,name: 'drdcsj', width: '95', align: 'left', render: textRender},
+                    {display: '编制情况',  hide: true,name: 'bzqk', width: '95', align: 'left', render: textRender},
+                    {display: '是否注册为全科医学专业',  hide: true,name: 'sfzcqkyx', width: '95', align: 'left', render: textRender},
+                    {display: '全科医生取得培训合格证书情况',  hide: true,name: 'qdhgzs', width: '95', align: 'left', render: textRender},
+
+                    {display: '是否由乡镇卫生院或社区卫生服务机构派驻村卫生室工作',  hide: true,name: 'xzsqpzgz', width: '95', align: 'left', render: textRender},
+                    {display: '是否从事统计信息化业务工作',  hide: true,name: 'sfcstjgz', width: '95', align: 'left', render: textRender},
+                    {display: '统计信息化业务工作',  hide: true,name: 'tjxxhgz', width: '95', align: 'left', render: textRender}];
 
                 grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
                 searchFun();

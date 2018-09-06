@@ -3,11 +3,11 @@ package com.yihu.ehr.dict.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.dict.SystemDictModel;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.http.HttpResponse;
+import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +30,7 @@ import java.util.Map;
 @Controller
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
 public class SystemDictController extends BaseUIController {
+
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -40,109 +44,102 @@ public class SystemDictController extends BaseUIController {
         return "pageView";
     }
 
+    /*系统字典的新增和修改*/
+    @RequestMapping("editSystemDict")
+    public String editSystemDict(Model model, String systemName, String mode,String systemDictId) {
+        model.addAttribute("systemName",systemName);
+        model.addAttribute("mode",mode);
+        model.addAttribute("systemDictId",systemDictId);
+        model.addAttribute("contentPage","/dict/editSystemDict");
+        return "emptyView";
+    }
+
+    /*系统字典详情的新增*/
+    @RequestMapping("editSystemDictDetail")
+    public String editSystemDictDetail(Model model, String mode,String code,String name,String catalog,String systemDictId) {
+        model.addAttribute("code",code);
+        model.addAttribute("mode",mode);
+        model.addAttribute("name",name);
+        model.addAttribute("catalog",catalog);
+        model.addAttribute("systemDictId",systemDictId);
+        model.addAttribute("contentPage","/dict/editSystemDictDetail");
+        return "emptyView";
+    }
+
+
     @RequestMapping("/createDict")
     @ResponseBody
-    public Object createDict(String name, String reference, String userId) {
-
+    public Envelop createDict(String name, String reference, String userId) {
         Map<String, Object> params = new HashMap<>();
-        Envelop result = new Envelop();
-        String resultStr = "";
-
-        if(StringUtils.isEmpty(name)){
-            result.setSuccessFlg(false);
-            result.setErrorMsg("字典名字不能为空");
-            return result;
+        if (StringUtils.isEmpty(name)){
+            return failed("字典名称不能为空");
         }
-        SystemDictModel systemDictModel= new SystemDictModel();
-        systemDictModel.setName(name);
+        SystemDictModel systemDictModel = new SystemDictModel();
+        systemDictModel.setName(name.replace(" ", ""));
         systemDictModel.setAuthorId("System");
-        params.put("dictionary",toJson(systemDictModel));
-
-        try{
-            String urlCheck = "/dictionaries/existence";
+        params.put("dictionary", toJson(systemDictModel));
+        try {
+            String urlCheck = "/basic/api/v1.0/dictionaries/existence";
             Map<String, Object> paramsCheck = new HashMap<>();
             paramsCheck.put("dict_name",name);
-            String resultCheckStr = HttpClientUtil.doGet(comUrl + urlCheck, paramsCheck, username, password);
-
-            if(Boolean.parseBoolean(resultCheckStr)){
-                result.setSuccessFlg(false);
-                result.setErrorMsg("字典名字在系统中已存在。");
-                return result;
+            String resultCheckStr = HttpClientUtil.doGet(adminInnerUrl + urlCheck, paramsCheck, username, password);
+            boolean exists = Boolean.valueOf(resultCheckStr);
+            if (exists) {
+                return failed("字典名字在系统中已存在");
             }
-
-            String url = "/dictionaries";
-            resultStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
-            return resultStr;
-
-        }catch (Exception ex){
-            result.setSuccessFlg(false);
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+            String url = "/basic/api/v1.0/dictionaries";
+            HttpResponse resultStr = HttpUtils.doJsonPost(adminInnerUrl + url, toJson(systemDictModel), null, username, password);
+            if (resultStr.isSuccessFlg()) {
+                return toModel(resultStr.getContent(), Envelop.class);
+            } else {
+                return failed(resultStr.getContent());
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ex.getMessage());
         }
     }
 
-    @RequestMapping("deleteDict")
+    @RequestMapping("/deleteDict")
     @ResponseBody
-    public Object deleteDict(long dictId) {
-
-        Envelop result = new Envelop();
-        String resultStr = "";
-
+    public Envelop deleteDict(long dictId) {
         try {
             Map<String, Object> params = new HashMap<>();
-            params.put("dictId",dictId);
-
-            String url ="/dictionaries/" + dictId;
-            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
-            return resultStr;
-
-        }catch (Exception ex){
-            result.setSuccessFlg(false);
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+            params.put("dictId", dictId);
+            String url ="/basic/api/v1.0/dictionaries/" + dictId;
+            String resultStr = HttpClientUtil.doDelete(adminInnerUrl + url, params, username, password);
+            boolean success = Boolean.valueOf(resultStr);
+            if (success) {
+                return success(true);
+            }
+            return failed("删除失败");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ex.getMessage());
         }
     }
 
-    @RequestMapping("updateDict")
+    @RequestMapping("/updateDict")
     @ResponseBody
-    public Object updateDict(long dictId, String name) {
-
-        Map<String, Object> params = new HashMap<>();
-        Envelop result = new Envelop();
-        String resultStr = "";
-
-        if(StringUtils.isEmpty(name)) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("字典名字不能为空！");
-            return result;
+    public Envelop updateDict(long dictId, String name) {
+        if (StringUtils.isEmpty(name)) {
+            return failed("字典名称不能为空");
         }
-
         try {
-            String urlGetDict = "/dictionaries/" + dictId;
             Map<String, Object> dictParams = new HashMap<>();
-            dictParams.put("id",dictId);
-            String dictResultStr = HttpClientUtil.doGet(comUrl + urlGetDict, dictParams, username, password);
-            result = getEnvelop(dictResultStr);
-
-            if(result.isSuccessFlg()){
-                SystemDictModel systemDictModel = getEnvelopModel(result.getObj(),SystemDictModel.class);
-                systemDictModel.setName(name);
-                params.put("dictionary",toJson(systemDictModel));
-
-                String urlCheckDict = "/dictionaries";
-                resultStr = HttpClientUtil.doPut(comUrl + urlCheckDict, params, username, password);
-                return resultStr;
+            dictParams.put("id", dictId);
+            dictParams.put("name", name.replace(" ", ""));
+            String url = "/basic/api/v1.0/dictionaries";
+            HttpResponse httpResponse = HttpUtils.doJsonPut(adminInnerUrl + url, toJson(dictParams), null, username, password);
+            if (httpResponse.isSuccessFlg()) {
+                return toModel(httpResponse.getContent(), Envelop.class);
+            } else {
+                return failed(httpResponse.getContent());
             }
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ex.getMessage());
         }
-        return result;
     }
 
     @RequestMapping("searchSysDicts")
@@ -169,12 +166,9 @@ public class SystemDictController extends BaseUIController {
             String url ="/dictionaries";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -204,8 +198,8 @@ public class SystemDictController extends BaseUIController {
 
         SystemDictEntryModel dictEntryModel = new SystemDictEntryModel();
         dictEntryModel.setDictId(dictId);
-        dictEntryModel.setCode(code);
-        dictEntryModel.setValue(value);
+        dictEntryModel.setCode(code.replace(" ", ""));
+        dictEntryModel.setValue(value.replace(" ", ""));
         dictEntryModel.setSort(sort);
         dictEntryModel.setCatalog(catalog);
         params.put("entry",toJson(dictEntryModel));
@@ -214,7 +208,7 @@ public class SystemDictController extends BaseUIController {
             String urlCheck = "/dictionaries/existence/" + dictId ;
             Map<String, Object> paramsCheck = new HashMap<>();
             paramsCheck.put("dict_id",dictId);
-            paramsCheck.put("code",code);
+            paramsCheck.put("code",code.replace(" ", ""));
             String resultCheckStr = HttpClientUtil.doGet(comUrl + urlCheck, paramsCheck, username, password);
 
             if(Boolean.parseBoolean(resultCheckStr)){
@@ -227,18 +221,15 @@ public class SystemDictController extends BaseUIController {
             resultStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return resultStr;
 
-        }catch (Exception ex){
-            result.setSuccessFlg(false);
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     @RequestMapping("deleteDictEntry")
     @ResponseBody
-    public Object deleteDictEntry(long dictId, String code) {
+    public Object deleteDictEntry(long dictId, String code) throws Exception{
 
         Envelop result = new Envelop();
         String resultStr = "";
@@ -246,17 +237,14 @@ public class SystemDictController extends BaseUIController {
         params.put("id",dictId);
         params.put("code",code);
 
-        String url = "/dictionaries/"+ dictId + "/entries/"+ code;
+        String url = "/dictionaries/"+ dictId + "/entries/"+ URLEncoder.encode(code, "UTF-8");
 
         try {
             resultStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return resultStr;
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -281,14 +269,14 @@ public class SystemDictController extends BaseUIController {
 
         SystemDictEntryModel dictEntryModel = new SystemDictEntryModel();
         dictEntryModel.setDictId(dictId);
-        dictEntryModel.setCode(code);
-        dictEntryModel.setValue(value);
+        dictEntryModel.setCode(code.replace(" ", ""));
+        dictEntryModel.setValue(value.replace(" ", ""));
         dictEntryModel.setSort(sort);
         dictEntryModel.setCatalog(catalog);
         params.put("dictionary",toJson(dictEntryModel));
 
         try {
-            String dictEntryUrl = "/dictionaries/" + dictId + "/entries/" + code;
+            String dictEntryUrl = "/dictionaries/" + dictId + "/entries/" + URLEncoder.encode(code,"UTF-8");
             Map<String, Object> dictEntryParams = new HashMap<>();
             dictEntryParams.put("dict_id",dictId);
             dictEntryParams.put("code",code);
@@ -297,7 +285,7 @@ public class SystemDictController extends BaseUIController {
 
             if(result.isSuccessFlg()){
                 SystemDictEntryModel systemDictEntryModel = getEnvelopModel(result.getObj(),SystemDictEntryModel.class);
-                systemDictEntryModel.setValue(value);
+                systemDictEntryModel.setValue(value.replace(" ", ""));
                 systemDictEntryModel.setSort(sort);
                 systemDictEntryModel.setCatalog(catalog);
                 params.put("entry",toJson(systemDictEntryModel));
@@ -306,10 +294,9 @@ public class SystemDictController extends BaseUIController {
                 resultStr = HttpClientUtil.doPut(comUrl + urlCheckDict, params, username, password);
                 return resultStr;
             }
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -338,12 +325,9 @@ public class SystemDictController extends BaseUIController {
             String url ="/dictionaries/entries";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictEntryModel.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -364,12 +348,9 @@ public class SystemDictController extends BaseUIController {
             result.setObj(result.getDetailModelList());
 
             return result;
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -404,11 +385,59 @@ public class SystemDictController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         }catch (Exception ex){
-            LogService.getLogger(SystemDictEntryModel.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
 
-            return result;
+
+    @RequestMapping("searchDictForSelect")
+    @ResponseBody
+    public Object searchDictForSelect(Long dictId, String searchParm, Integer page, Integer rows) {
+
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(dictId)) {
+            stringBuffer.append("dictId=" + dictId+";");
+        }
+        if (!StringUtils.isEmpty(searchParm)){
+            stringBuffer.append("code?"+searchParm+" g1;value?"+searchParm+" g1;");
+        }
+        String filters = stringBuffer.toString();
+        params.put("filters", "");
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        if(StringUtils.isEmpty(page) || page == 0){
+            page = 1;
+        }
+        if(StringUtils.isEmpty(rows) || rows == 0){
+            rows = 50;
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        params.put("sorts", "+sort");
+
+        try {
+            String url ="/dictionaries/entries";
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop envelopGet = objectMapper.readValue(resultStr,Envelop.class);
+            List<SystemDictEntryModel> modelList = (List<SystemDictEntryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<SystemDictEntryModel>(),SystemDictEntryModel.class);
+            List<Map> list = new ArrayList<>();
+            for (SystemDictEntryModel m:modelList){
+                Map map = new HashMap<>();
+                map.put("id", m.getCode());
+                map.put("name",m.getValue());
+                list.add(map);
+            }
+            envelopGet.setDetailModelList(list);
+            return envelopGet;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -424,17 +453,15 @@ public class SystemDictController extends BaseUIController {
         try {
             String url ="/dictionaries/existence";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-
             if(Boolean.parseBoolean(resultStr)){
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.RepeatSysDictName.toString());
+                result.setErrorMsg("名称重复");
             }else{
                 result.setSuccessFlg(true);
             }
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }

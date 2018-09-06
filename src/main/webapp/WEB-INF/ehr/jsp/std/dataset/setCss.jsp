@@ -11,16 +11,13 @@
 <style>
 
   .image-create{
-    margin-left:340px;
-    margin-top: -25px;
     width: 22px;
     height: 22px;
+      margin-left:60px;
     background: url(${staticRoot}/images/add_btn.png);
   }
 
   .image-create:hover{
-    margin-left:340px;
-    margin-top: -25px;
     width: 22px;
     height: 22px;
     background: url(${staticRoot}/images/add_btn_pre.png);
@@ -36,9 +33,46 @@
     margin-top: -22px;
     background: url(${staticRoot}/images/Delete_btn_pre.png);
   }
-
+    .l-trigger-icon{
+        vertical-align: initial;
+    }
   .font_right{
     text-align: right;
   }
-
+.s-con{
+    display: inline-block;
+    overflow: hidden;
+    height: 45px;
+    position: relative;
+    padding-top: 10px;
+}
+    .s-con .l-text{
+        margin-top: 0!important;
+        margin-left: 10px!important;
+    }
+      .s-con .btn{
+          margin-top: 0!important;
+      }
+     .s-con .btn#btn_add_element{
+         margin-right: 10px!important;
+     }
+    #div_left{
+        width: 400px;
+        float: left;
+        position: absolute;
+        top: 38px;
+        left: 0;
+        bottom: 0;
+    }
+    #div_right{
+        position: absolute;
+        top: 38px;
+        left: 410px;
+        right: 0;
+        bottom: 0;
+    }
+    .top-div div{
+        display: inline-block;
+        vertical-align: middle;
+    }
 </style>

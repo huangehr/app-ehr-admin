@@ -3,13 +3,9 @@ package com.yihu.ehr.patient.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
-import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.user.controller.UserController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.service.GetInfoService;
@@ -78,7 +74,7 @@ public class PatientController extends BaseUIController {
                 model.addAttribute("patientDialogType", patientDialogType);
                 model.addAttribute("contentPage", "patient/patientInfoDialog");
 //                return "generalView";
-                return "simpleView";
+                return "emptyView";
             } else {
                 url = "/populations/";
                 //todo 该controller的download方法放后台处理
@@ -106,11 +102,11 @@ public class PatientController extends BaseUIController {
                         model.addAttribute("userId", userId);
                         model.addAttribute("contentPage", "patient/patientInfoDialog");
                         //return "generalView";
-                        return "simpleView";
+                        return "emptyView";
                     } else if (patientDialogType.equals("patientInfoMessage")) {
                         model.addAttribute("userId", userId);
                         model.addAttribute("contentPage", "patient/patientBasicInfoDialog");
-                        return "simpleView";
+                        return "emptyView";
                     }
                 } else {
                     return envelop.getErrorMsg();
@@ -119,9 +115,8 @@ public class PatientController extends BaseUIController {
             }
 
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -142,9 +137,8 @@ public class PatientController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -162,9 +156,8 @@ public class PatientController extends BaseUIController {
             resultStr = restTemplates.doDelete(comUrl + url);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -188,9 +181,8 @@ public class PatientController extends BaseUIController {
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -214,9 +206,8 @@ public class PatientController extends BaseUIController {
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -280,12 +271,13 @@ public class PatientController extends BaseUIController {
                     updatePatient.setLocalPath("");
 
                     imageId = fileUpload(updatePatient.getIdCardNo(),restStream,imageName);
-                    if (!StringUtils.isEmpty(imageId))
+                    if (!StringUtils.isEmpty(imageId)) {
                         updatePatient.setPicPath(imageId);
+                    }
 
                     //联系电话
-                    Map<String, String> telphoneNo = null;
-                    String tag = "联系电话";
+                    Map<String, String> telphoneNo = new HashMap<>();
+             /*       String tag = "联系电话";
                     telphoneNo = toModel(updatePatient.getTelephoneNo(), Map.class);
                     if (telphoneNo != null) {
                         if (telphoneNo.containsKey(tag)) {
@@ -293,8 +285,8 @@ public class PatientController extends BaseUIController {
                         }
                     } else {
                         telphoneNo = new HashMap<String, String>();
-                    }
-                    telphoneNo.put(tag, patientDetailModel.getTelephoneNo());
+                    }*/
+                    telphoneNo.put("联系电话", patientDetailModel.getTelephoneNo());
                     updatePatient.setTelephoneNo(toJson(telphoneNo));
                     updatePatient.setEmail(patientDetailModel.getEmail());
 
@@ -334,9 +326,8 @@ public class PatientController extends BaseUIController {
                 result.setSuccessFlg(getEnvelop(resultStr).isSuccessFlg());
                 return result;
             } catch (Exception e) {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.SystemError.toString());
-                return result;
+                e.printStackTrace();
+                return failed(ERR_SYSTEM_DES);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -384,9 +375,8 @@ public class PatientController extends BaseUIController {
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -438,29 +428,29 @@ public class PatientController extends BaseUIController {
 
     @RequestMapping("searchPatientByParams")
     @ResponseBody
-    public Object searchPatientByParams(String searchNm,String gender, String province, String city, String district, String searchRegisterTimeStart,String searchRegisterTimeEnd,int page, int rows) {
-        String url = "/populationsByParams";
-        String resultStr = "";
-        Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        String districtList = getInfoService.getDistrictList();
-        params.put("search", searchNm.trim());
-        params.put("gender", gender);
-        params.put("page", page);
-        params.put("rows", rows);
-        params.put("home_province", province);
-        params.put("home_city", city);
-        params.put("home_district", district);
-        params.put("searchRegisterTimeStart", searchRegisterTimeStart);
-        params.put("searchRegisterTimeEnd", searchRegisterTimeEnd);
-       /* params.put("districtList", org.apache.commons.lang.StringUtils.isBlank(districtList) ? "-1" : districtList);*/
+    public Object searchPatientByParams(String searchNm,
+                                        String gender,
+                                        String homeAddress,
+                                        String searchRegisterTimeStart,
+                                        String searchRegisterTimeEnd,
+                                        int page,
+                                        int rows) {
+        String url = "/basic/api/v1.0/populations/byParams";
+
         try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("search", searchNm.trim());
+            params.put("gender", gender);
+            params.put("homeAddress", homeAddress);
+            params.put("searchRegisterTimeStart", searchRegisterTimeStart);
+            params.put("searchRegisterTimeEnd", searchRegisterTimeEnd);
+            params.put("rows", rows);
+            params.put("page", page);
+            String resultStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -489,8 +479,6 @@ public class PatientController extends BaseUIController {
     /**
      * 查找用户关联卡（卡状态为审核通过）
      * @param
-     * @param page
-     * @param rows
      * @return
      */
     @RequestMapping("/PatientCardByUserId")
@@ -517,9 +505,8 @@ public class PatientController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -531,7 +518,6 @@ public class PatientController extends BaseUIController {
     @RequestMapping(value = "/deletePatientCardByCardId")
     @ResponseBody
     public Object auditUserCards(long id, HttpServletRequest request)throws Exception {
-//        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/deletePatientCardByCardId";
         Map<String, Object> params = new HashMap<>();
         params.put("id", Long.valueOf(id));
@@ -543,6 +529,7 @@ public class PatientController extends BaseUIController {
         Envelop envelop = getEnvelop(resultStr);
         return envelop;
     }
+
     //获取所有平台应用下的角色组用于下拉框
     @RequestMapping("/appRolesList")
     @ResponseBody
@@ -562,9 +549,9 @@ public class PatientController extends BaseUIController {
 //                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), PlatformAppRolesTreeModel.class);
 //            }
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(UserController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -584,8 +571,8 @@ public class PatientController extends BaseUIController {
             params.put("user_id",userId);
              envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
         } catch (Exception ex) {
-            LogService.getLogger(UserController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelopStr;
     }
@@ -614,8 +601,8 @@ public class PatientController extends BaseUIController {
                 result.setSuccessFlg(false);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }

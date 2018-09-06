@@ -50,6 +50,11 @@ public class ReportController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/archivesReport")
+    public String dataCenter(Model model) {
+        model.addAttribute("contentPage", "/report/archivesReport");
+        return "pageView";
+    }
     /**
      * 趋势分析页(对外）
      * @param model
@@ -80,6 +85,17 @@ public class ReportController extends BaseUIController {
     }
 
     /**
+     * 采集状况页
+     * @param model
+     * @return
+     */
+    @RequestMapping("acquisitionConditionSign")
+    public String acquisitionConditionSign(Model model) {
+        model.addAttribute("contentPage", "/report/acquisitionConditionSign");
+        return "emptyView";
+    }
+
+    /**
      * 分析列表页面
      * @param model
      * @return
@@ -91,7 +107,7 @@ public class ReportController extends BaseUIController {
         model.addAttribute("startTime",startTime);
         model.addAttribute("endTime",endTime);
         model.addAttribute("contentPage", "/report/analysisList");
-        return "pageView";
+        return "emptyView";
     }
 
     /**
@@ -126,9 +142,7 @@ public class ReportController extends BaseUIController {
             return resultStr;
         } catch (Exception ex) {
             LogService.getLogger(ReportController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -149,9 +163,7 @@ public class ReportController extends BaseUIController {
             return resultStr;
         } catch (Exception ex) {
             LogService.getLogger(ReportController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -172,9 +184,7 @@ public class ReportController extends BaseUIController {
             return resultStr;
         } catch (Exception ex) {
             LogService.getLogger(ReportController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
     //趋势分析 -按机构列表查询,初始化查询
@@ -194,9 +204,7 @@ public class ReportController extends BaseUIController {
             return resultStr;
         } catch (Exception ex) {
             LogService.getLogger(ReportController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -216,9 +224,7 @@ public class ReportController extends BaseUIController {
             return resultStr;
         } catch (Exception ex) {
             LogService.getLogger(ReportController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -239,9 +245,7 @@ public class ReportController extends BaseUIController {
             return resultStr;
         } catch (Exception ex) {
             LogService.getLogger(ReportController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -249,7 +253,6 @@ public class ReportController extends BaseUIController {
     @RequestMapping("/exportToExcel")
     //@ResponseBody
     public void exportToExcel(HttpServletResponse response,String location,String startTime,String endTime){
-        Envelop envelop = new Envelop();
         try {
             String fileName = "分析列表明细";
             String url="";
@@ -300,8 +303,7 @@ public class ReportController extends BaseUIController {
             os.flush();
             os.close();
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
         }
     }
 
@@ -385,9 +387,8 @@ public class ReportController extends BaseUIController {
                 return result;
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

@@ -1,198 +1,201 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<script src="${contextRoot}/develop/lib/plugin/echarts/3.0/js/echarts.min.js"></script>
+<script src="${contextRoot}/static-dev/base/avalon/avalon2.js"></script>
 <script>
     $(function () {
         var inf = ['${contextRoot}/resource/resourceManage/resourceUpDown'];
-        var obj = ${resultStr},
-            id = '${id}',
-            chartsTitArr = [],
-            optsArr = [],
-            listMap = [],
-            dimensionMapArr = [],
-            qutoId = [],
-            dataLength = 0,
-            charts = [];
-
-        dataLength = 0;
-        if (obj && obj.length > 0) {
-            for (var i = 0, len = obj.length; i < len; i++) {
-                if (obj[i]) {
-                    var opt = {};
-                    if (obj[i].option) {
-                        opt = JSON.parse(obj[i].option);
-                    } else {
-//                        $.Notice.success('获取数据失败,请重试！');
-                        return;
-                    }
-                    optsArr.push(opt);
-                    chartsTitArr.push(obj[i].title);
-                    listMap.push(obj[i].listMap);
-                    dimensionMapArr.push(obj[i].dimensionMap);
-                    qutoId.push(obj[i].quotaId);
-                    dataLength++;
-                }
-            }
-        } else {
-            $.Notice.success('获取数据失败,请重试！');
-        }
-        var showSharts = {
-            $tabList: $('.tab-list'),
-            $chartsMain: $('.charts-main'),
-            conTmp: $('#tabTmp').html(),
-            optionsArr: [],
-            index: 0,
-            myChartsArr: [],
+        var showCharts = {
+            id: '${id}',
             dataModel: $.DataModel.init(),
+            chartInfoModel: ${chartInfoModel},//总数据
+            nrsAvalon: null,
+            chart: document.getElementById('chart'),
+            resourceId: '${id}',
+            myChart: null,
+            xAxisMap: {},//可选维度
+            firstDimension: '',//默认第一次查询的默认维度code
+            dimensionMap: {},//默认维度-对象
+            $cDropDown: $('#cDropDown'),
             init: function () {
-                this.insertHtml();
-                this.bindEvnt();
-                this.$tabList.mCustomScrollbar({
-                    axis: "x"
-                });
+                this.initAvalon();
+                this.initData();
+                this.bindEvents();
             },
-            loadData: function (dim, qf, $con, num, domId) {
+            initAvalon: function () {
                 var me = this;
-                me.dataModel.fetchRemote( inf[0], {
-                    data: {
-                        id: id,
-                        dimension: dim,
-                        quotaFilter: qf,
-                        quotaId: qutoId[domId]
+                debugger
+                me.nrsAvalon = avalon.define({
+                    $id: 'nrsApp',
+                    downClass: '',
+                    showDown: false,//是否显示下拉
+                    dimensionMap: [],//默认维度-数组
+                    downValArr: [],//下钻数据
+                    downKeyArr: [],//默认维度index
+                    selVal: '',//图表选中值
+                    isSel: false,//是否先选中图表
+                    nowDimension: [],//下砖维度顺序
+                    num: 0,
+                    upVal: function() {
+                        var valArr = [],
+                                str = '无上卷项';
+                        _.each(this.nowDimension, function (o, k) {
+                            if (k == 0) return;
+                            valArr.push(o);
+                        });
+                        if (valArr.length > 0) {
+                            str = me.dimensionMap[valArr[valArr.length - 1]];
+                        }
+                        return str;
                     },
-                    success: function (data) {
-                        if (data && data[0]) {
-                            var opt = JSON.parse(data[0].option);
-                            dimensionMapArr[domId] = data[0].dimensionMap;
-                            $con.attr('data-num', num);
-                            $con.attr('data-quota-filter', qf);
-                            charts[domId].clear();
-                            charts[domId].setOption(opt, true);
+                    cUp: function () {//上卷
+                        if (this.downKeyArr.length > 0) {
+                            var dimension = '';
+                            this.selVal = '';
+                            this.nowDimension.pop();
+                            this.num--;
+                            this.dimensionMap[this.downKeyArr[this.downKeyArr.length - 1]].isShow = true;
+                            this.downKeyArr.splice(this.downKeyArr.length - 1, 1);
+                            this.downValArr.splice(this.downValArr.length - 1, 1);
+                            dimension = this.nowDimension[this.nowDimension.length - 1];
+                            me.reloadData((dimension ? dimension : me.firstDimension), this.downValArr.join(';'));
+                        }
+                    },
+                    cSH: function () {//控制 下拉
+                        var that = this;
+                        if (!that.isSel) return;
+                        if (that.showDown) {
+                            that.showDown = false;
                         } else {
-                            $.Notice.success('获取数据失败,请重试！');
+                            that.showDown = true;
+                        }
+                    },
+                    cDown: function (key, v, num) { //选择下砖数据
+                        this.showDown = false;
+                        this.isSel = false;
+                        this.downKeyArr.push(num);
+                        this.dimensionMap[num].isShow = false;
+                        this.downValArr.push(this.nowDimension[this.num] + '=' + me.xAxisMap[this.selVal]);
+                        this.downClass = '';
+                        this.selVal = '';
+                        this.nowDimension.push(key);
+                        me.reloadData(key, this.downValArr.join(';'));
+                        this.num++;
+                    },
+                    cLink: function (k, l) {
+                        var arrVal = [],
+                            arrKey = [],
+                            arrND = [me.firstDimension],
+                            i;
+                        if (typeof l != 'undefined') {
+                            for (i = 0; i <= l; i++) {
+                                arrVal.push(this.downValArr[i]);
+                                arrKey.push(this.downKeyArr[i]);
+                                arrND.push(this.nowDimension[i + 1]);
+                            }
+                            for (; i < this.dimensionMap.length; i++) {
+                                this.dimensionMap[this.downKeyArr[i]].isShow = true;
+                            }
+                            this.downValArr = arrVal;
+                            this.downKeyArr = arrKey;
+                            this.nowDimension = arrND;
+                            me.reloadData(k, this.downValArr.join(';'));
+                        }
+                    },
+                    getFirstVal: function () {
+                        return me.dimensionMap[me.firstDimension];
+                    }
+                });
+            },
+            reloadData: function (dimension, quotaFilter) {
+                var me = this;
+                this.dataModel.fetchRemote(inf, {
+                    data: {
+                        id: this.resourceId,
+                        dimension: dimension,
+                        quotaFilter: quotaFilter
+                    },
+                    success: function(data) {
+                        me.xAxisMap = data.xAxisMap;
+                        var option = data.option;
+                        if (option) {
+                            option = JSON.parse(option);
+                            me.reloadChart(option);
                         }
                     }
                 });
             },
-            //加载html
-            insertHtml: function () {
+            initData: function () {
                 var me = this,
-                    html = '',
-                    conHtml = '';
-                $.each(chartsTitArr, function (key, val) {
-                    var cN = key == 0 ? 'active' : '',
-                        cl = key != 0 ? 'un-show' : '',
-                        obj = {
-                            class: cl,
-                            id: key,
-                            idOne: 'chartsMain' + key + '1',
-                            idTwo: 'chartsMain' + key + '2',
-                            checkboxs: '',
-                            dimension: ''
-                        },
-                        checkboxHtml = '';
-                    var list = [];
-                    $.each(listMap[key], function (key, obj) {
-                        var dis = obj.isMain == 'true' ? 'disabled' : '';
-                        var che = obj.isCheck == 'true' ? 'checked' : '';
-                        checkboxHtml += '<input type="checkbox" data-key="' +
-                                            obj.code + '" ' +
-                                            che + '  '+
-                                            dis + '/>' +
-                                            obj.name;
-                        list.push(obj.code);
+                        option = JSON.parse(me.chartInfoModel.option),
+                        arr = [];
+                if (option) {
+                    _.each(option.xAxis, function (o, k) {
+                        option.xAxis[k]['axisTick'] = {};
+                        option.xAxis[k]['axisTick']['alignWithLabel'] = true;
                     });
-                    obj.dimension = list.join(',');
-                    obj.checkboxs = checkboxHtml;
-                    html += '<li class="tab-item '+ cN +'"><a href="javascript:;" title="'+ val +'">' + val + '</a></li>';
-                    conHtml += me.render(me.conTmp, obj);
-                });
-                me.$tabList.append(html);
-                me.$chartsMain.append(conHtml);
-                me.initCharts();
-            },
-            initCharts: function () {
-                var me = this;
-                for (var m = 0; m < dataLength; m ++) {
-                    var myChart1 = echarts.init(document.getElementById("chartsMain" + m + "1")),
-                        myChart2 = echarts.init(document.getElementById("chartsMain" + m + "2")),
-                        options = optsArr[m];
-                    if(options) {
-                        try {
-                            myChart1.setOption(options);
-                            myChart2.setOption(options);
-                            (function (ec) {
-                                charts.push(ec);
-                                ec.on('click', function (param) {
-                                    me.reloadECharts(param, ec, me)
-                                });
-                            })(myChart1);
-                        } catch (e) {
-                            console.log(e.message);
-                        }
-                    }
-                }
-            },
-            reloadECharts: function (param, dom, me) {
-                var $dom = $(dom._dom),
-                        domId = $dom.closest('.tab-con ').attr('data-id'),
-                        $condition = $dom.prev(),
-                        $goBack = $condition.find('.go-back'),
-                        dataNum = parseInt($condition.attr('data-num')),//下转层级
-                        quotaFilter = $condition.attr('data-quota-filter'),//过滤条件
-                        dataList = ($condition.attr('data-list')).split(','),//维度集
-                        key = dataList[dataNum],
-                        dimension = '';//下砖维度
-                $goBack.show();
-                quotaFilter += ((quotaFilter == '' ? '' : ';') + key + '=' + dimensionMapArr[domId][param.name]);
-                dataNum++;
-                dimension = dataList[dataNum];
-                if (dimension) {
-                    me.loadData(dimension, quotaFilter, $condition, dataNum, domId);
+                    me.initChart(option);
                 } else {
-                    $.Notice.success('已是最底层！');
+                    $.Notice.success('图表数据有误！');
+                    return;
                 }
+                me.dimensionMap = me.chartInfoModel.dimensionMap;
+                me.xAxisMap = me.chartInfoModel.xAxisMap;
+                me.firstDimension = me.chartInfoModel.firstDimension;//
+                me.nrsAvalon.nowDimension = [me.chartInfoModel.firstDimension];
+                _.map(me.chartInfoModel.dimensionMap, function (v, k) {
+                    if (k == me.firstDimension) return;
+                    arr.push({
+                        value: v,
+                        key: k,
+                        isShow: true//是否显示
+                    });
+                });
+                me.nrsAvalon.dimensionMap = arr;
             },
-            bindEvnt: function () {
+            initChart: function (option) {
                 var me = this;
-                me.$tabList.on('click', '.tab-item', function () {
-                    var index = $(this).index(),
-                        $tabCon = me.$chartsMain.find('.tab-con');
-                    $(this).addClass('active').siblings().removeClass('active');
-                    $tabCon.hide().eq(index).show();
-                });
-                me.$chartsMain.on('click', '.con-t-i', function () {
-                    var $that = $(this),
-                        $parent = $that.closest('.tab-con'),
-                        $conTCon = $parent.find('.con-t-con'),
-                        index = $that.index();
-                    $that.addClass('active').siblings().removeClass('active');
-                    $conTCon.hide().eq(index).show();
-                }).on('click', '.go-back', function () {
-                    var $parent = $(this).parent(),
-                        domId = $(this).closest('.tab-con ').attr('data-id'),
-                        dataNum = parseInt($parent.attr('data-num')),//下转层级
-                        quotaFilter = $parent.attr('data-quota-filter'),//过滤条件
-                        dataList = ($parent.attr('data-list')).split(','),
-                        qf = quotaFilter.split(';'),
-                        dimension = '';
-                    dataNum--;
-                    qf.pop();
-                    if (qf.length <= 0) {
-                        $(this).hide();
-                    }
-                    dimension = dataList[dataNum];
-                    quotaFilter = qf;
-                    me.loadData(dimension, quotaFilter, $parent, dataNum, domId);
-                });
+                me.myChart = echarts.init(me.chart);
+                me.myChart.setOption(option);
+                me.setEvent();
             },
-            render: function(tmpl, data, cb){
-                return tmpl.replace(/\{\{(\w+)\}\}/g, function(m, $1){
-                    cb && cb.call(this, data, $1);
-                    return data[$1];
+            setEvent: function () {
+                var me = this;
+                function eConsole(param) {
+                    var num = 0;
+                    _.each(me.nrsAvalon.dimensionMap, function (o , k) {
+                        if (!o.isShow) {
+                            num++;
+                        }
+                    });
+                    if (me.nrsAvalon.dimensionMap.length > num) {
+                        me.nrsAvalon.selVal = param.name;
+                        me.nrsAvalon.isSel = true;
+                        me.nrsAvalon.downClass = 'active';
+                    }
+                }
+                me.myChart.on('click', eConsole);
+            },
+            reloadChart: function (opt) {
+                this.myChart = echarts.init(this.chart);
+//                this.myChart.clear();
+                this.myChart.setOption(opt, true);
+                this.setEvent();
+            },
+            bindEvents: function () {
+                var me = this;
+                me.$cDropDown.on('click', function () {
+                    var key = $(this).attr('key');
+                    me.reloadData(key, '');
+                    me.nrsAvalon.downValArr = [];
+                    me.nrsAvalon.downKeyArr = [];
+                    me.nrsAvalon.nowDimension = [me.firstDimension];
+                    me.nrsAvalon.selVal = '';
+                    _.each(me.nrsAvalon.dimensionMap, function (o , k) {
+                        o.isShow = true;
+                    });
                 });
             }
-        }
-        showSharts.init();
+        };
+        showCharts.init();
     });
 </script>

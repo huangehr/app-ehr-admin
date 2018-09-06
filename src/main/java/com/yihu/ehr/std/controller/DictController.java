@@ -3,7 +3,7 @@ package com.yihu.ehr.std.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.standard.dict.DictEntryModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.std.model.DictionaryMsg;
@@ -105,7 +105,7 @@ public class DictController  extends BaseUIController {
         model.addAttribute("mode",mode);
         model.addAttribute("staged",staged);
         model.addAttribute("contentPage","/std/dict/stdDictInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("template/dictEntryInfo")
@@ -138,7 +138,7 @@ public class DictController  extends BaseUIController {
         model.addAttribute("mode",mode);
         model.addAttribute("staged",staged);
         model.addAttribute("contentPage","/std/dict/dictEntryInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -151,51 +151,46 @@ public class DictController  extends BaseUIController {
     public Object saveDict(String cdaVersion, String dictId, String code, String name, String baseDict, String stdSource, String stdVersion, String description,HttpServletRequest request) {
         Envelop result = new Envelop();
         String resultStr = "";
-
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String userId = userDetailModel.getId().toString();
-
-        if (StringUtils.isEmpty(cdaVersion)) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("版本号不能为空！");
-            return result;
-        }
-        if (StringUtils.isEmpty(code)) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("代码不能为空！");
-            return result;
-        }
-        if (StringUtils.isEmpty(name)) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("名称不能为空！");
-            return result;
-        }
-
-        Map<String, Object> params = new HashMap<>();
-        DictModel dictModel = new DictModel();
-        dictModel.setId(Long.parseLong(dictId));
-        dictModel.setCode(code);
-        dictModel.setName(name);
-        dictModel.setBaseDict(StringUtils.isEmpty(baseDict) ? null : Long.parseLong(baseDict));
-        dictModel.setSourceId(stdSource);
-        dictModel.setDescription(description);
-        dictModel.setAuthor(userId);
-        dictModel.setStdVersion(cdaVersion);
-
-        params.put("version_code",cdaVersion);
-        params.put("json_data",toJson(dictModel));
-
         try{
+            UsersModel userDetailModel = getCurrentUserRedis(request);
+            String userId = userDetailModel.getId().toString();
+            if (StringUtils.isEmpty(cdaVersion)) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("版本号不能为空！");
+                return result;
+            }
+            if (StringUtils.isEmpty(code)) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("代码不能为空！");
+                return result;
+            }
+            if (StringUtils.isEmpty(name)) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("名称不能为空！");
+                return result;
+            }
+            Map<String, Object> params = new HashMap<>();
+            DictModel dictModel = new DictModel();
+            if(StringUtils.isNotBlank(dictId)){
+                dictModel.setId(Long.parseLong(dictId));
+            }
+            dictModel.setCode(code);
+            dictModel.setName(name);
+            dictModel.setBaseDict(StringUtils.isEmpty(baseDict) ? null : Long.parseLong(baseDict));
+            dictModel.setSourceId(stdSource);
+            dictModel.setDescription(description);
+            dictModel.setAuthor(userId);
+            dictModel.setStdVersion(cdaVersion);
+
+            params.put("version_code",cdaVersion);
+            params.put("json_data",toJson(dictModel));
             String url = "/save_dict";
             resultStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
        /* Result result = new Result();
         Long id = dictId.equals("") ? 0 : Long.parseLong(dictId);
@@ -275,10 +270,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 /*        Result result = new Result();
         Long id = Long.parseLong(dictId);
@@ -340,11 +333,10 @@ public class DictController  extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
 
-        }catch(Exception ex){
+        } catch(Exception ex){
 //            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg("数据加载失败！");
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -374,10 +366,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         } catch (Exception ex) {
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.GetCDAVersionListFailed.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -409,10 +399,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
         /*Result result = new Result();
@@ -473,10 +461,8 @@ public class DictController  extends BaseUIController {
 
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.GetCDAVersionListFailed.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -518,10 +504,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -563,10 +547,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
     /**
@@ -660,10 +642,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
        /* Result result = new Result();
@@ -744,10 +724,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -774,12 +752,11 @@ public class DictController  extends BaseUIController {
                 result.setSuccessFlg(true);
             }else{
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.DeleteDictEntryFailed.toString());
+                result.setErrorMsg("删除失败");
             }
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -821,9 +798,8 @@ public class DictController  extends BaseUIController {
 
         }catch(Exception ex){
 //            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
  /*       Result result = new Result();
@@ -875,11 +851,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
 
@@ -913,7 +886,7 @@ public class DictController  extends BaseUIController {
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel user = getCurrentUserRedis(request);
         try {
             String version = request.getParameter("version");
             if(StringUtils.isBlank(version)){
@@ -1083,8 +1056,7 @@ public class DictController  extends BaseUIController {
             os.flush();
             os.close();
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
         }
     }
 

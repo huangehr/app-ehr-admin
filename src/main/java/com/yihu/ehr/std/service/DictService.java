@@ -1,8 +1,7 @@
 package com.yihu.ehr.std.service;
 
 import com.yihu.ehr.adapter.service.ExtendService;
-import com.yihu.ehr.model.adaption.MAdapterDataSet;
-import com.yihu.ehr.model.standard.MStdDict;
+import com.yihu.hos.model.standard.MStdDict;
 import org.springframework.stereotype.Service;
 
 /**

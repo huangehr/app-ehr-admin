@@ -17,16 +17,16 @@
 			<div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div>
 		</sec:authorize>
     </div>
-    <div id="div_wrapper">
+    <div id="div_wrapper" style="position: relative;overflow: hidden">
 
-        <div id="grid_content" style="width: 100%">
+        <div id="grid_content" style="width: 100%;position: relative;overflow: hidden">
             <!--   字典-->
             <div id="div_left" style=" width:400px;float: left;">
                 <div id="retrieve" class="m-retrieve-area f-h50 f-pr m-form-inline condition retrieve-border" data-role-form>
 
                     <div id="retrieve_inner" class="m-retrieve-inner m-form-group f-mt10">
 
-                        <div class="f-mt10 f-fs14 f-ml10 f-fl f-fwb f-mr10">
+                        <div class="f-mt5 f-fs14 f-ml10 f-fl f-fwb f-mr10">
                             <span id="left_title"><spring:message code="lbl.dict"/></span>
                         </div>
 
@@ -41,16 +41,16 @@
             </div>
 
             <!--   字典项   -->
-            <div id="div_right" style="float: left;width: 700px;margin-left: 10px">
-                <div id="entryRetrieve" class="m-retrieve-area f-h50 f-pr m-form-inline condition retrieve-border" data-role-form>
+            <div id="div_right" style="/*float: left;width: 700px;margin-left: 10px*/position: absolute;left: 408px;top: 0;right: 0;bottom: 0;">
+                <div id="entryRetrieve" class="m-retrieve-area f-pr m-form-inline condition retrieve-border" data-role-form>
                     <input id="s_dictId" data-attr-scan="dictId"  hidden>
-                    <div id="entry_retrieve_inner" class="m-retrieve-inner m-form-group f-mt10">
+                    <div id="entry_retrieve_inner" class="m-retrieve-inner m-form-group f-mt10" style="padding-bottom: 0">
 
-                        <div class="f-mt10 f-fs14 f-ml10 f-fl f-fwb f-mr10">
+                        <div class="f-mt5 f-fs14 f-ml10 f-fl f-fwb f-mr10 f-mb10">
                             <span id="right_title"><spring:message code="lbl.dict.meta"/></span>
                         </div>
 
-                        <div class="m-form-control" >
+                        <div class="m-form-control f-mb10" >
                             <input type="text" id="searchNmEntry" placeholder="<spring:message code="lbl.input.placehold"/>" class="f-ml10" data-attr-scan="code"/>
                         </div>
 

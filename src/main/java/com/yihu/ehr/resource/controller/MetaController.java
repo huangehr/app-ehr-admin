@@ -3,7 +3,7 @@ package com.yihu.ehr.resource.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.adapter.service.PageParms;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.resource.model.RsMetaMsgModel;
@@ -51,6 +51,12 @@ public class MetaController extends ExtendController<MetaService> {
         comboKv.put("value", "name");
         comboKv.put("domainName", "domainName");
         comboKv.put("domain", "domain");
+    }
+
+    @RequestMapping("dataInitial")
+    public String gridInitial(Model model) {
+        model.addAttribute("contentPage","/resource/meta/grid");
+        return "pageView";
     }
 
     @RequestMapping("/gotoImportLs")
@@ -167,7 +173,7 @@ public class MetaController extends ExtendController<MetaService> {
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel user = getCurrentUserRedis(request);
         try {
             writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");

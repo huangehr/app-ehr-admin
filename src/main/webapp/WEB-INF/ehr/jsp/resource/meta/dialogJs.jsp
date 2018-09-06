@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
 
 <script type="text/javascript">
 
@@ -49,14 +51,59 @@
             });
 
             $('#btn_save').click(function () {
-                saveForm({url: urls.update, $form: $form, modelName: 'metadata', validator: validator});
+                saveDForm({url: urls.update, $form: $form, modelName: 'metadata', validator: validator});
             });
 
             $('#btn_cancel').click(function () {
                 closeDialog();
             });
         };
+        function saveDForm(opts){
+            var $form = opts.$form;
+            var validator = opts.validator;
 
+            if(!validator){
+                validator = initValidate($form);
+            }
+            if(!validator.validate())
+                return;
+
+            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+            var parms = opts.parms;
+            if(!parms){
+                $form.attrScan();
+                var model = $form.Fields.getValues();
+                var id = model.id || '';
+                if(opts.notIncluded){
+                    var tmp = opts.notIncluded.split(',');
+                    for(var i=0; i< tmp.length; i++){
+                        model[tmp[i]] = undefined;
+                    }
+                }
+                parms = {model: JSON.stringify(model), modelName: opts.modelName ? opts.modelName : '', id: id  }
+            }
+            var dataModel = $.DataModel.init();
+            dataModel.createRemote(opts.url, {
+                data: parms,
+                success: function (data) {
+                    waittingDialog.close();
+                    if (data.successFlg) {
+                        if(opts.onSuccess)
+                            opts.onSuccess(data);
+                        else
+                            closeDialog("保存成功!", data);
+                    } else {
+                        if (data.errorMsg)
+                            _LIGERDIALOG.error(data.errorMsg);
+                        else
+                            _LIGERDIALOG.error('出错了！');
+                    }
+                },
+                error: function () {
+                    waittingDialog.close();
+                }
+            });
+        }
         var init = function () {
             initForm();
             initBtn();

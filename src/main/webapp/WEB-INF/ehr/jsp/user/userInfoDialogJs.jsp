@@ -20,12 +20,18 @@
         var jValidation = $.jValidation;
 
         var allData = ${allData};
+
+        var isinit=true;
+
         var user = allData.obj;
+        debugger
 		var trees;
 
 
         /* ************************** 变量定义结束 **************************** */
-
+        win.orgDeptDio = null;
+        win.ORGDEPTVAL = allData.obj.organization;
+        win.roleIds=allData.obj.role;
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             userInfo.init();
@@ -37,13 +43,12 @@
         userInfo = {
             $idCardCopy: $('#idCardCopy'),
             $emailCopy: $('#emailCopy'),
-            $tel2: $('#inp_userTel2'),
-            $location: $('#location'),
-            $fertilityStatus: $('#inp_fertilityStatus'),
-            $qq: $('#inp_qq'),
-            $micard: $('#inp_micard'),
-            $ssid: $('#inp_ssid'),
-            $realnameFlag: $('input[name="realnameFlag"]', this.$form),
+//            cation: $('#location'),
+//            $fertilityStatus: $('#inp_fertilityStatus'),
+//            $qq: $('#inp_qq'),
+//            $micard: $('#inp_micard'),
+//            $ssid: $('#inp_ssid'),
+//            $realnameFlag: $('input[name="realnameFlag"]', this.$form),
             $birthday: $("#inp_birthday"),
 
             $form: $("#div_user_info_form"),
@@ -53,11 +58,11 @@
             $email: $('#inp_userEmail'),
             $tel: $('#inp_userTel'),
 //            $org: $('#inp_org'),
-            $major: $('#inp_major'),
+//            $major: $('#inp_major'),
 //            $source:$('#inp_source'),
             $userSex: $('input[name="gender"]', this.$form),
-            $marriage: $("#inp_select_marriage"),
-            $userType: $("#inp_select_userType"),
+//            $marriage: $("#inp_select_marriage"),
+            $inp_select_userType: $("#inp_select_userType"),
             $updateUserDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
             $resetPassword: $("#div_resetPassword"),
@@ -77,11 +82,14 @@
             $affirmBtn: $('#div_affirm_btn'),
             $toolbar: $('#div_toolbar'),
             $imageShow: $('#div_file_list'),
-			$jryycyc:$("#jryycyc"),//cyctodo
+//			$jryycyc:$("#jryycyc"),//cyctodo
+            $divBtnShow: document.getElementById('divBtnShow'),
+            $divBtnSetrole:$("#div_btn_setrole"),
+            $SelSetrole:$("#inp_select_setrole"),
 
             init: function () {
 				var self = this;
-				this.cycToDo()//复制完记得删掉
+//				this.cycToDo()//复制完记得删掉
                 self.initForm();
                 self.bindEvents();
                 //self.$uploader.webupload();
@@ -143,12 +151,23 @@
                 this.$idCard.ligerTextBox({width: 240});
                 this.$email.ligerTextBox({width: 240});
                 this.$tel.ligerTextBox({width: 240});
-                this.$qq.ligerTextBox({width: 240});
-                this.$micard.ligerTextBox({width: 240});
-                this.$ssid.ligerTextBox({width: 240});
-                this.$tel2.ligerTextBox({width: 240});
+//                this.$qq.ligerTextBox({width: 240});
+//                this.$micard.ligerTextBox({width: 240});
+//                this.$ssid.ligerTextBox({width: 240});
+//                this.$tel2.ligerTextBox({width: 240});
                 this.$birthday.ligerDateEditor({format: "yyyy-MM-dd"});
-
+                var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:'',activeFlag:"1"},function(newvalue){
+                    if(win.roleIds&&!isinit){
+                        win.roleIds="";
+                        parent._LIGERDIALOG.confirm('是否重新前往编辑授权？', function (yes) {
+                            if (yes) {
+                                self.$divBtnSetrole.click();
+                            }
+                        });
+                    }
+                    isinit=false
+                    console.log(newvalue)
+                });
                 <%--this.$org.addressDropdown({--%>
                     <%--tabsData: [--%>
                         <%--{name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},--%>
@@ -165,55 +184,55 @@
                         <%--}--%>
                     <%--]--%>
                 <%--});--%>
-                this.$major.ligerTextBox({width: 240});
+//                this.$major.ligerTextBox({width: 240});
 //                this.$source.ligerTextBox({width: 240});
                 this.$userSex.ligerRadio();
-                this.$marriage.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 4
-                    },
-                    onSuccess: function () {
-                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
-                    }
-                });
+                <%--this.$marriage.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                    <%--valueField: 'code',--%>
+                    <%--textField: 'value',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {--%>
+                        <%--dictId: 4--%>
+                    <%--},--%>
+                    <%--onSuccess: function () {--%>
+                        <%--self.$form.Fields.fillValues({martialStatus: user.martialStatus});--%>
+                    <%--}--%>
+                <%--});--%>
 
-                this.$fertilityStatus.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 54
-                    },
-                    onSuccess: function () {
-                        self.$form.Fields.fillValues({fertilityStatus: user.fertilityStatus});
-                    }
-                });
+                <%--this.$fertilityStatus.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                    <%--valueField: 'code',--%>
+                    <%--textField: 'value',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {--%>
+                        <%--dictId: 54--%>
+                    <%--},--%>
+                    <%--onSuccess: function () {--%>
+                        <%--self.$form.Fields.fillValues({fertilityStatus: user.fertilityStatus});--%>
+                    <%--}--%>
+                <%--});--%>
 
-                this.$userType.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 15
-                    },
-                    onSuccess: function () {
-                        self.$form.Fields.fillValues({userType: user.userType});
-                        self.$userType.parent().removeClass('l-text-focus')
-                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
-                    },
-                    onSelected: function (value) {
-                        if (value == 'Doctor')
-                            $('#inp_major_div').show();
-                        else
-                            $('#inp_major_div').hide();
-                    }
-                });
+                <%--this.$userType.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                    <%--valueField: 'code',--%>
+                    <%--textField: 'value',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {--%>
+                        <%--dictId: 15--%>
+                    <%--},--%>
+                    <%--onSuccess: function () {--%>
+                        <%--self.$form.Fields.fillValues({userType: user.userType});--%>
+                        <%--self.$userType.parent().removeClass('l-text-focus')--%>
+                        <%--self.$form.Fields.fillValues({martialStatus: user.martialStatus});--%>
+                    <%--},--%>
+                    <%--onSelected: function (value) {--%>
+                        <%--if (value == 'Doctor')--%>
+                            <%--$('#inp_major_div').show();--%>
+                        <%--else--%>
+                            <%--$('#inp_major_div').hide();--%>
+                    <%--}--%>
+                <%--});--%>
 
 
 
@@ -243,7 +262,7 @@
                         email: user.email,
                         telephone: user.telephone,
 //                        organization: [user.province, user.city, user.organization],
-                        major: user.major,
+//                        major: user.major,
                         publicKey: user.publicKey,
                         validTime: user.validTime,
                         startTime: user.startTime,
@@ -252,40 +271,24 @@
                         secondPhone:user.secondPhone,
                         birthday:user.birthday != null?user.birthday.substring(0,10):"",
                         micard:user.micard,
-                        qq:user.qq,
+//                        qq:user.qq,
                         ssid:user.ssid,
-                        realnameFlag:user.realnameFlag,
+//                        realnameFlag:user.realnameFlag,
 
                     });
-                    if(user.role){
-                        var roleArr = user.role.split(",") ;
-                        for(var k in roleArr){
-                            $("#"+ roleArr[k], trees.tree).find(".l-checkbox").click()
-                        }
-                    }
+
+//                    $("#divBtnShow").find("span").attr("data-cd",JSON.parse(user.organization));
+//                    if(user.organizationName){
+//                        $("#divBtnShow").find("span").html(user.organizationName);
+//                    }
+                    self.$inp_select_userType.ligerGetComboBoxManager().setValue(user.userType);
+                    self.$inp_select_userType.val(user.userTypeName);
+//                    $("#inp_select_userType_val").val(user.userType)
                     self.$publicKeyMessage.val(user.publicKey);
                     self.$publicKeyValidTime.html(user.validTime);
                     self.$publicKeyStartTime.html(user.startTime);
                     self.$idCardCopy.val(user.idCardNo);
                     self.$emailCopy.val(user.email);
-                    this.$location.ligerComboBox({width: 240});
-                    this.$location.addressDropdown({
-                        tabsData: [
-                            {
-                                name: '省份',
-                                code: 'id',
-                                value: 'name',
-                                url: '${contextRoot}/address/getParent',
-                                params: {level: '1'}
-                            },
-                            {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                            {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                            {name: '街道', maxlength: 200}
-                        ]
-                    });
-                    setTimeout(function(){
-                        self.$form.Fields.location.setValue([user.provinceName, user.cityName, user.areaName, user.street]);
-                    },500);
 
                     var pic = user.imgRemotePath;
                     if (!Util.isStrEmpty(pic)) {
@@ -311,21 +314,19 @@
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
                     onElementValidateForAjax: function (elm) {
-                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
-                            var email = $("#inp_userEmail").val();
-                            var emailCopy = self.$emailCopy.val();
-                            if (emailCopy != null && emailCopy != '' && emailCopy == email) {
-                                return true;
-                            }
-                            return checkDataSourceName('email', email, "该邮箱已被绑定，请确认。");
+                        var checkObj = { result:true, errorMsg: ''};
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_user_name')) {
+                            var realName = $("#inp_user_name").val();
+                            checkObj = inputSourceByRealName(realName, "请输入8个字以内的汉字或16个字母以内的英文字母");
                         }
-                        if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
-                            var idCard = $("#inp_idCard").val();
-                            var idCardCopy = self.$idCardCopy.val();
-                            if (idCardCopy != null && idCardCopy != '' && idCardCopy == idCard) {
-                                return true;
-                            }
-                            return checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userTel')) {
+                            var telephone = $("#inp_userTel").val();
+                            checkObj = checkDataSourceName('telephone', telephone, "该手机号码已存在");
+                        }
+                        if (!checkObj.result) {
+                            return checkObj;
+                        } else {
+                            return checkObj.result;
                         }
                     }
                 });
@@ -346,52 +347,131 @@
                         }
                     });
                     return result;
+                };
+
+                function inputSourceByRealName(str,errorMsg) {
+                    var result=new jValidation.ajax.Result();
+                    result=checkSpecialChar(str);
+                    if(result.result){
+                        var ta=str.split(""),str_l=0;
+                        var str_fa=Number(ta[0].charCodeAt());
+                        if((str_fa>=65&&str_fa<=90)||(str_fa>=97&&str_fa<=122)||(str_fa>255))
+                        {
+                            for(var i=0;i<=ta.length-1;i++)
+                            {
+                                str_l++;
+                                if(Number(ta[i].charCodeAt())>255){str_l++;}
+                            }
+                            if(str_l<=16){
+                                result.setResult(true);
+                                result.setErrorMsg('');
+                            }else{
+                                result.setResult(false);
+                                result.setErrorMsg(errorMsg);
+                            }
+                        }
+                    }
+                    return result;
                 }
+
+
+                function stripscript(value) {
+                    debugger
+                    var pattern = new RegExp("[`~!@#%$^&*+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+                    var rs = "";
+                    for (var i = 0; i < value.length; i++) {
+                        rs = rs+value.substr(i, 1).replace(pattern, '');
+                    }
+                    rs=rs.replace(/\"/g, "");
+                    rs=rs.replace(/\s+/g,"");
+                    $("#inp_user_name").val(rs)
+                    return rs;
+                }
+
+
+                function checkSpecialChar(value) {
+                    var result=new jValidation.ajax.Result();
+                    var pattern = new RegExp("[`~!@#%$^&*-+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+                    if(pattern.test(value)){
+                        result.setResult(false);
+                        result.setErrorMsg("请不要输入特殊字符");
+                    }else{
+                        result.setResult(true);
+                        result.setErrorMsg('');
+                    }
+                    return result;
+                }
+
+                // 选择机构部门
+                self.$divBtnShow.onclick = function () {
+                    var wait = $.Notice.waitting("请稍后...");
+                    debugger
+                    win.orgDeptDio = win.$.ligerDialog.open({
+                        height: 620,
+                        width: 780,
+                        title: '选择机构部门',
+                        url: '${contextRoot}/doctor/selectOrgDept',
+                        urlParms: {
+                            idCardNo: allData.obj.id,
+                            type: '${mode}',
+                            origin: 'user',
+                        },
+                        isHidden: false,
+                        show: false,
+                        onLoaded:function() {
+                            wait.close();
+                            win.orgDeptDio.show();
+                        },
+                        load: true
+                    });
+                    win.orgDeptDio.hide();
+                }
+                this.$divBtnSetrole.click(function () {
+                    var addUser = self.$form.Fields.getValues();
+                    debugger
+                    if(addUser.userType){
+                        var wait = $.Notice.waitting("请稍后...");
+                        win.roleGroupDio = $.ligerDialog.open({
+                            height: 620,
+                            width: 800,
+                            title: '关联角色组',
+                            url: '${contextRoot}/user/appRoleGroup',
+                            urlParms: {
+                                roles: win.roleIds,
+                                type: addUser.userType,
+                            },
+                            isHidden: false,
+                            show: false,
+                            onLoaded: function () {
+                                wait.close();
+                                win.roleGroupDio.show();
+                            },
+                            load: true
+                        });
+                        win.roleGroupDio.hide();
+                    }else{
+                        $.Notice.warn("请选择用户类别")
+                    }
+                })
 
                 //修改用户的点击事件
                 this.$updateUserDtn.click(function () {
-                    debugger
                     var userImgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
-                        var location = self.$form.Fields.location.val()==""?"":JSON.parse(self.$location.val());
-                        if(location!=""){
-                            var keys = location.keys;
-                            var names = location.names;
-                            if(keys.length==1){//省
-                                userModel.provinceId = parseInt(keys[0]);
-                                userModel.provinceName = names[0];
-                            }
-                            if(keys.length==2){//省、市
-                                userModel.provinceId = parseInt(keys[0]);
-                                userModel.provinceName = names[0];
-                                userModel.cityId = parseInt(keys[1]);
-                                userModel.cityName = names[1];
-                            }
-                            if(keys.length==3){//省、市、县
-                                userModel.provinceId =parseInt(keys[0]);
-                                userModel.provinceName = names[0];
-                                userModel.cityId = parseInt(keys[1]);
-                                userModel.cityName = names[1];
-                                userModel.areaId = parseInt(keys[2]);
-                                userModel.areaName = names[2];
-                            }
-                            if(keys.length==4){//省、市、县、街道
-                                userModel.provinceId = parseInt(keys[0]);
-                                userModel.provinceName = names[0];
-                                userModel.cityId = parseInt(keys[1]);
-                                userModel.cityName = names[1];
-                                userModel.areaId = parseInt(keys[2]);
-                                userModel.areaName = names[2];
-                                userModel.street = keys[3];
-                            }
-                        }
                         delete userModel.location;
-						userModel.role = userInfo.roleIds(userModel.role);
+                        userModel.role = win.roleIds;
+                        var jsonModel = JSON.stringify(win.ORGDEPTVAL);
+                        if (jsonModel.length <= 0) {
+                            $.Notice.error('请选择机构部门');
+                            return;
+                        }
+//                        userModel.organization=JSON.stringify(win.ORGDEPTVAL);
+//                        userModel.organizationName=$("#divBtnShow").find("span").html();
 //                        var organizationKeys = userModel.organization['keys'];
 //                        userModel.organization = organizationKeys[2];
                         if (userImgHtml == 0) {
-                            updateUser(userModel);
+                            updateUser(userModel,jsonModel);
                         } else {
                             var upload = self.$uploader.instance;
                             var image = upload.getFiles().length;
@@ -401,7 +481,7 @@
                                 win.closeUserInfoDialog();
                                 win.reloadMasterUpdateGrid();
                             } else {
-                                updateUser(userModel);
+                                updateUser(userModel,jsonModel);
                             }
                         }
                     } else {
@@ -409,22 +489,23 @@
                     }
                 });
 
-                function updateUser(userModel) {
+                function updateUser(userModel,jsonModel) {
                     debugger
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
-                    dataModel.updateRemote("${contextRoot}/user/updateUser", {
-                        data: {userModelJsonData: userModelJsonData},
+                    dataModel.updateRemote("${contextRoot}/user/updateUserAndInitRoles", {
+                        data: {userModelJsonData: userModelJsonData,orgModel:jsonModel},
                         success: function (data) {
                             if (data.successFlg) {
                                 win.closeUserInfoDialog();
                                 win.reloadMasterUpdateGrid();
                                 $.Notice.success('修改成功');
                             } else {
-                                $.Notice.error('修改失败');
+                                $.Notice.error(data.errorMsg);
                             }
                         }
                     })
+
                 }
 
                 //重置密码的点击事件
@@ -492,7 +573,7 @@
                 this.$affirmBtn.click(function () {
                     publicKeyMsgDialog.close();
                 })
-                self.$userType.removeClass("l-text-focus")
+                self.$inp_select_userType.removeClass("l-text-focus")
             },
 
 			listTree:function(trees){

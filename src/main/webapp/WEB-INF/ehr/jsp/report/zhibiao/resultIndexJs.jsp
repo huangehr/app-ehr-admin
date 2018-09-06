@@ -11,6 +11,9 @@
             // 页面表格条件部模块
             var patientRetrieve = null;
             var id = ${id};
+            var slaveKey1Name ='${slaveKey1Name}';
+            var slaveKey2Name ='${slaveKey2Name}';
+            var slaveKey3Name ='${slaveKey3Name}';
 
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
@@ -23,23 +26,87 @@
                 $searchBtn: $('#btn_search'),
                 $orgName: $('#inp_org_name'),
                 $location: $("#inp_location"),
+                $select:$('#select'),
                 $starTime: $('#inp_start_time'),
                 $endTime: $('#inp_end_time'),
+                //创建变量
+                $selectChnage:'qb',
                 init: function () {
                     this.$element.show();
-                    this.$starTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:true});
-                    this.$endTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:true});
+                    this.$starTime.ligerDateEditor({width: '150',format: "yyyy-MM-dd",showTime:true});
+                    this.$endTime.ligerDateEditor({width: '150',format: "yyyy-MM-dd",showTime:true});
 
-                    this.$location.addressDropdown({tabsData:[
-                        {name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},
-                        {name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
-                        {name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}
-                    ]});
-                    this.$orgName.ligerTextBox({width: 140 });
+                    <%--this.$location.addressDropdown({tabsData:[--%>
+                        <%--{name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},--%>
+                        <%--{name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},--%>
+                        <%--{name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}--%>
+                    <%--]});--%>
+
+//                    this.$location.ligerTextBox({labelWidth: 100, labelAlign: 'center' });
+                    this.initDistribute(361100, this.$location);
+
+                    this.$select.ligerComboBox({
+                        width : 150,
+                        data: [
+                            { text: '全部', id: 'qb' },
+                            { text: '统计值大于0', id: '>0' }
+                        ],
+                        value:"qb",
+                        initIsTriggerEvent: false,
+                        onSelected: function (value ,text)
+                        {
+                            if(text=='统计值大于0'){
+                                patientRetrieve.$selectChnage = value;
+                            }if(text=='全部'){
+                            patientRetrieve.$selectChnage = value;
+                            }
+                        }
+                    });
+                    this.$orgName.customCombo('${contextRoot}/organization/getOrgList',{searchParm:''},null,null,null,
+                        {
+                            valueField: 'orgCode',
+                            textField: 'fullName'
+                        },
+                        {
+                            columns: [
+                                { header: 'fullName', name: 'fullName', width: '100%' }
+                            ]
+                        });
+//                    this.initOrg(this.$orgName);
                     this.bindEvents();
                     this.$element.show();
                     this.$element.attrScan();
                     window.form = this.$element;
+                },
+                initDistribute: function (pid, target) {
+                    var target = $(target);
+                    var dataModel = $.DataModel.init();
+                    dataModel.fetchRemote("${contextRoot}/address/getDistrictByParent", {
+                        data: {pid: pid},
+                        success: function (data) {
+                            target.ligerComboBox({
+                                valueField: 'id',
+                                textField: 'name',
+                                width: '150',
+                                data: [].concat(data.obj)
+                            });
+                        }
+                    });
+                },
+                initOrg: function (target) {
+                    var target = $(target);
+                    var dataModel = $.DataModel.init();
+                    dataModel.fetchRemote("${contextRoot}/organization/getOrgList", {
+                        data: {},
+                        success: function (data) {
+                            target.ligerComboBox({
+                                valueField: 'orgCode',
+                                textField: 'fullName',
+                                width: '150',
+                                data: [].concat(data.detailModelList)
+                            });
+                        }
+                    });
                 },
                 bindEvents: function () {
                     var self = this;
@@ -65,21 +132,24 @@
                                 orgName: '',
                                 location: '',
                                 startTime: '',
-                                endTime: ''
+                                endTime: '',
                             },
                             columns: [
                                 {display: '指标编码', name: 'quotaCode', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '统计时间', name: 'quotaDate', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '结果', name: 'result', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '省份', name: 'provinceName', width: '5%', isAllowHide: false, align: 'left'},
-                                {display: '城市', name: 'cityName', width: '5%', isAllowHide: false, align: 'left'},
+//                                {display: '省份', name: 'provinceName', width: '5%', isAllowHide: false, align: 'left'},
+//                                {display: '城市', name: 'cityName', width: '5%', isAllowHide: false, align: 'left'},
                                 {display: '区县', name: 'townName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '机构名称', name: 'orgName', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '团队名称', name: 'teamName', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '从维度1名称', name: 'slaveKey1Name', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '从维度2名称', name: 'slaveKey2Name', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '从维度3名称', name: 'slaveKey3Name', width: '10%', isAllowHide: false, align: 'left'}
+                                {display: '机构类型名称', name: 'orgHealthCategoryName', width: '10%', isAllowHide: false, align: 'left'},
+//                                {display: '团队名称', name: 'teamName', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '年份', name: 'yearName', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: slaveKey1Name, name: 'slaveKey1Name', width: '10%', hide: (!!!slaveKey1Name), align: 'left'},
+                                {display: slaveKey2Name, name: 'slaveKey2Name', width: '10%', hide: (!!!slaveKey2Name), align: 'left'},
+                                {display: slaveKey3Name, name: 'slaveKey3Name', width: '10%', hide: (!!!slaveKey3Name), align: 'left'},
+                                {display: '结果', name: 'result', width: '10%', isAllowHide: false, align: 'left'}
                             ],
+                            enabledSort: false,
                             validate: true,
                             unSetValidateAttr: false,
                             allowHideColumn: false,
@@ -91,21 +161,35 @@
                     }
                 },
                 reloadGrid: function (curPage) {
+//                    console.log(patientRetrieve.$selectChnage)
                     patientRetrieve.$element.attrScan();
 //                    var values = patientRetrieve.$element.Fields.getValues();
-                    var address = patientRetrieve.$element.Fields.location.getValue();
-                    var values = $.extend({}, patientRetrieve.$element.Fields.getValues(),
-                            {province: (address.names[0] == null ? '' : address.names[0])},
-                            {city: (address.names[1] == null ? '' : address.names[1])},
-                            {district: (address.names[2] == null ? '' : address.names[2])});
+//                    var address = patientRetrieve.$element.Fields.location.getValue();
+                    // 起止时间
+                    var startTime = patientRetrieve.$starTime.val();
+                    var endTime = patientRetrieve.$endTime.val();
+                    var address = $("#inp_location_val").val();
+                    var orgName = $("#inp_org_name_val").val();
+
+                    var values = $.extend({},
+//                            {province: (address.names[0] == null ? '' : address.names[0])},
+                            {startTime:(startTime)},
+                            {endTime:(endTime)},
+                            {orgName:(orgName)},
+                            {city: (address)},
+                            {tjQuotaId: (id)},
+//                            {district: (address.names[2] == null ? '' : address.names[2])},
+                            {res:patientRetrieve.$selectChnage});
                     Util.reloadGrid.call(this.grid, '${contextRoot}/tjQuota/selectQuotaResult', values, curPage);
                 },
                 bindEvents: function () {
                     var self = this;
                     patientRetrieve.$searchBtn.click(function () {
-                        dictMaster.reloadGrid();
+                        dictMaster.reloadGrid(1);
                     });
-
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
                 }
             };
 

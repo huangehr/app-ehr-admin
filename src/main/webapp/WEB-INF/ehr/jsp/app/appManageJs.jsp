@@ -42,6 +42,15 @@
 				this.grid.loadData(true);
 				isFirstPage = true;
 			}
+			//添加碎片
+			function appendNav(str, url, data) {
+                sessionStorage.setItem("applevel1",JSON.stringify(data));
+                $('#navLink').append('<span class="applevel1"> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").css({
+                    'height': 'calc(100% - 40px)'
+                }).empty().load(url,data);
+            }
 
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
@@ -94,8 +103,8 @@
 							page:searchParms.page
                         },
                         columns: [
-							{ display: 'APP ID',name: 'id', width: '10%',isAllowHide: false,hide:true},
-							{ display: 'APP Secret', name: 'secret', width: '11%', minColumnWidth: 60, hide:true},
+							{ display: 'APP ID',name: 'id', width: '0.1%',isAllowHide: false,hide:true},
+							{ display: 'APP Secret', name: 'secret', width: '0.1%', minColumnWidth: 60, hide:true},
                             { display: '应用名称', name: 'name',width: '20%', isAllowHide: false,align:'left' },
                             { display: '应用来源', name: 'sourceType',width: '10%',isAllowHide: false,render:function(row){
                                 if (row.sourceType==1) {
@@ -109,7 +118,7 @@
 							{ display: '机构名称', name: 'orgName',width: '18%',align:'left'},
 							{ display: '类型', name: 'catalogName', width: '10%'},
 //                          { display: '回调URL', name: 'url', width: '15%',align:'left'},
-							{ display: '审核', name: 'checkStatus', width: '8%',minColumnWidth: 20,render: function (row){
+							{ display: '审核', name: 'checkStatus', width: 80,minColumnWidth: 20,render: function (row){
 								if(Util.isStrEquals( row.status,'WaitingForApprove')) {
 									return '<sec:authorize url="/app/check"><a data-toggle="model"  class="checkPass label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:approved", row.id)+'">'+'通过'+'</a>/' +
 											'<a class="veto label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:reject", row.id)+'">'+'否决'+'</a></sec:authorize>'
@@ -122,12 +131,12 @@
 								}
 							}},
 //							{ display: '已授权资源', name: 'resourceNames', width: '8%',align:'left'},
-							{ display: '操作', name: 'operator', width: '25%', render: function (row) {
+							{ display: '操作', name: 'operator', minWidth: 240, render: function (row) {
 								var html = '';
 								if(Util.isStrEquals( row.status,'WaitingForApprove') || Util.isStrEquals( row.status,'Approved')){
-									html += '<sec:authorize url="/app/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
+									html += '<sec:authorize url="/app/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">视图授权</a></sec:authorize>';
 								}
-                                html += '<sec:authorize url="/app/feature/initial"><a class="label_a" style="margin-left:10px"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:platform:manager", row.id,row.name) + '">功能管理</a></sec:authorize>';
+                                html += '<sec:authorize url="/app/functionfeature/initial"><a class="label_a" style="margin-left:10px"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:platform:manager", row.id,row.name) + '">功能管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/app/feature/initial"><a class="label_a" style="margin-left:10px"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:api:manager", row.id,row.name) + '">API管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/app/template/appInfo"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
 								html += '<sec:authorize url="/app/deleteApp"><a class="grid_delete" style="width:30px" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "app:appInfo:delete", row.id) + '"></a></sec:authorize>';
@@ -136,7 +145,7 @@
                         ],
 						pageSize:searchParms.pageSize,
 
-						enabledSort:true,
+						enabledSort:false,
                         enabledEdit: true,
                         validate : true,
                         unSetValidateAttr:false,
@@ -189,13 +198,13 @@
 						isFirstPage = false;
                         var title = '';
                         var wait=null;
-                        wait = $.Notice.waitting('正在加载中...');
+                        wait = parent._LIGERDIALOG.waitting('正在加载中...');
 
                         if(mode == 'modify'){title = '修改应用信息';};
 						if(mode == 'new'){title = '新增应用信息';};
 						if(mode == 'view'){title = '查看应用信息';}
-                        master.appInfoDialog = $.ligerDialog.open({
-                            height:490,
+                        master.appInfoDialog = parent._LIGERDIALOG.open({
+                            height:530,
                             width: 850,
                             title : title,
                             url: '${contextRoot}/app/template/appInfo',
@@ -219,17 +228,17 @@
 					//删除
 					$.subscribe('app:appInfo:delete',function(event,appId){
 						isFirstPage = false;
-						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+						parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
 							if (yes) {
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/app/deleteApp', {
 									data: {appId: appId},
 									success: function (data) {
 										if (data.successFlg) {
-											$.Notice.success('操作成功。');
+                                            parent._LIGERDIALOG.success('操作成功。');
 											master.reloadGrid();
 										} else {
-											$.Notice.open({type: 'error', msg: '操作失败。'});
+                                            parent._LIGERDIALOG.open({type: 'error', msg: '操作失败。'});
 										}
 									}
 								});
@@ -255,9 +264,7 @@
                     });
 					//资源授权页面跳转
 					$.subscribe('app:resource:list', function (event, appId,name,catalogName) {
-
 						master.savePageParamsToSession();
-
 						var data = {
 							'appId':appId,
 							'appName':name,
@@ -265,9 +272,8 @@
 							'categoryIds':'',
 							'sourceFilter':'',
 						}
-						var url = '${contextRoot}/app/resource/initial?';
-						$("#contentPage").empty();
-						$("#contentPage").load(url,{backParams:JSON.stringify(data)});
+						var url = '${contextRoot}/app/resource/initial';
+                        appendNav("视图授权", url, {backParams:JSON.stringify(data)});
 					});
                     //功能管理
                     $.subscribe('app:platform:manager', function (event, appId,name) {
@@ -275,8 +281,7 @@
                             'dataModel':appId+","+name
                         }
                         var url = '${contextRoot}/app/feature/initial';
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url,data);
+                        appendNav("功能管理", url, data);
                     });
 
                     //API管理
@@ -285,22 +290,25 @@
                         var data = {
                             'dataModel':appId
                         }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url,data);
+                        appendNav("API管理", url, data);
                     });
 
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
 
                 },
             };
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadMasterGrid = function () {
+            win.parent.reloadMasterGrid = function () {
                 master.reloadGrid();
             };
-            win.closeDialog = function (callback) {
+            win.parent.closeDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     master.reloadGrid();
                 }
+                master.reloadGrid();
                 master.appInfoDialog.close();
             };
             /* *************************** 页面功能 **************************** */

@@ -17,7 +17,7 @@
             var settledWayDictId = 15;
 
             var isFirstPage = true;
-
+            var dialog=null;
             /* *************************** 函数定义 ******************************* */
             /**
              * 页面初始化。
@@ -60,24 +60,27 @@
                 //$inpOrg: $('#inp_org'),
                 init: function () {
                     var self = this;
-                    retrieve.initDDL(settledWayDictId,this.$searchType);
+//                    retrieve.initDDL(settledWayDictId,this.$searchType);
                     this.$element.show();
                     this.$element.attrScan();
                     window.form = this.$element;
                     this.$searchBox.ligerTextBox({width:240});
                     /*var combo = self.$inpOrg.customCombo('${contextRoot}/deptMember/getOrgList');
-                    self.$inpOrg.parent().css({
-                        width:'240'
-                    }).parent().css({
-                        display:'inline-block',
-                        width:'240px'
-                    });*/
+                     self.$inpOrg.parent().css({
+                     width:'240'
+                     }).parent().css({
+                     display:'inline-block',
+                     width:'240px'
+                     });*/
+                    var select_user_type = this.$searchType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:'',activeFlag:"1"},function(newvalue){
+
+                    });
                 },
                 //下拉框列表项初始化
                 initDDL: function (dictId, target) {
                     var target = $(target);
                     var dataModel = $.DataModel.init();
-                    dataModel.fetchRemote("${contextRoot}/dict/searchDictEntryList",{data:{dictId: dictId},
+                    dataModel.fetchRemote("${contextRoot}/userRoles/user/searchUserType",{data:{searchParm:'',activeFlag:"1"},
                         success: function(data) {
                             target.ligerComboBox({
                                 valueField: 'code',
@@ -102,7 +105,7 @@
                         },
                         columns: [
                             // 隐藏列：hide: true（隐藏），isAllowHide: false（列名右击菜单中不显示）
-                            {name: 'id', hide: true, isAllowHide: false},
+                            {name: 'id', hide: true, width: '0.1%', isAllowHide: false},
                             {display: '用户类型', name: 'userTypeName', width: '15%',align:'left'},
                             {display: '姓名', name: 'realName', width: '15%',align:'left'},
                             {display: '账号',name: 'loginCode', width:'15%', isAllowHide: false,align:'left'},
@@ -113,21 +116,21 @@
                             {display: '是否生/失效', name: 'activated', width: '8%', minColumnWidth: 20,render:function(row){
                                 var html = Util.isStrEquals(row.activated,true) ? "生效" : "失效";
                                 <sec:authorize url='User_Actived'>
-								if(Util.isStrEquals(row.activated,true)){
-									html = '<a class="grid_on" href="javascript:void(0)" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,0,"失效") + '"></a>';
-								}else if(Util.isStrEquals(row.activated,false)){
-									html ='<a class="grid_off" href="javascript:void(0)" title="已失效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,1,"生效") + '"></a>';
-								}
+                                if(Util.isStrEquals(row.activated,true)){
+                                    html = '<a class="grid_on" href="javascript:void(0)" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,0,"失效") + '"></a>';
+                                }else if(Util.isStrEquals(row.activated,false)){
+                                    html ='<a class="grid_off" href="javascript:void(0)" title="已失效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,1,"生效") + '"></a>';
+                                }
                                 </sec:authorize>
-								return html;
+                                return html;
 
                             }},
 //                            {display:'用户来源',name:'sourceName',width:'10%'},
-							{display: '最近登录时间', name: 'lastLoginTime', width: '12%',align:'left'},
-                            {display: '操作', name: 'operator', width: '12%', render: function (row) {
-								var html = '';
+                            {display: '最近登录时间', name: 'lastLoginTime', width: '12%',align:'left'},
+                            {display: '操作', name: 'operator', minWidth: 130, render: function (row) {
+                                var html = '';
                                 <sec:authorize url="/user/appFeatureInitial">
-								html += '<a class="label_a" title="查看权限" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "user:feature:open", row.id) + '">查看权限</a>';
+                                html += '<a class="label_a" title="查看权限" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "user:feature:open", row.id) + '">查看权限</a>';
                                 </sec:authorize>
                                 <sec:authorize url="/user/updateUser">
                                 html += '<a class="grid_edit" title="编辑" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.id, 'modify') + '"></a>';
@@ -136,15 +139,15 @@
                                 html += '<a class="grid_delete" title="删除" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoDialog:del", row.id, 'delete') + '"></a>';
                                 </sec:authorize>
                                 return html;
-							}}
+                            }}
                         ],
                         enabledEdit: true,
                         validate: true,
                         unSetValidateAttr: false,
                         onDblClickRow : function (row){
                             var mode = 'view';
-                            var wait = $.Notice.waitting("请稍后...");
-                            var rowDialog = $.ligerDialog.open({
+                            var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                            var rowDialog = parent._LIGERDIALOG.open({
                                 height: 620,
                                 width: 600,
                                 isDrag:true,
@@ -158,10 +161,10 @@
                                     userId: row.id,
                                     mode:mode
                                 },
-								onLoaded:function() {
-									wait.close(),
-	                                rowDialog.show()
-								}
+                                onLoaded:function() {
+                                    wait.close(),
+                                        rowDialog.show()
+                                }
                             });
                             rowDialog.hide();
                         }
@@ -180,15 +183,15 @@
                     var self = this;
                     //查询事件
                     retrieve.$searchBtn.click(function(){
-                            master.reloadGrid();
+                        master.reloadGrid();
                     });
                     //修改用户信息
                     $.subscribe('user:userInfoModifyDialog:open', function (event, userId, mode) {
-                        var wait = $.Notice.waitting("请稍后...");
-                        self.userInfoDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        self.userInfoDialog = parent._LIGERDIALOG.open({
                             //  关闭对话框时销毁对话框
                             title:'修改基本信息',
-                            height: 620,
+                            height: 600,
                             width: 600,
                             load: true,
                             isDrag: true,
@@ -200,36 +203,51 @@
                                 userId: userId,
                                 mode:mode
                             },
-							onLoaded:function() {
-								wait.close(),
-                                self.userInfoDialog.show()
-							}
+                            onLoaded:function() {
+                                wait.close(),
+                                    self.userInfoDialog.show()
+                            },
+                            load: true,
                         });
                         self.userInfoDialog.hide();
                     });
                     //新增用户
                     retrieve.$newRecordBtn.click(function () {
-                        self.addUserInfoDialog = $.ligerDialog.open({
-                            height: 620,
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        self.addUserInfoDialog = parent._LIGERDIALOG.open({
+                            height: 520,
                             width: 600,
+                            isDrag: true,
+                            //isResize:true,
                             title: '新增用户信息',
-                            url: '${contextRoot}/user/addUserInfoDialog?'+ $.now()
-                        })
+                            url: '${contextRoot}/user/addUserInfoDialog',
+                            load: true,
+                            urlParms: {
+
+                            },
+                            isHidden: false,
+                            show: false,
+                            onLoaded: function () {
+                                wait.close(),
+                                    self.addUserInfoDialog.show()
+                            }
+                        });
+                        self.addUserInfoDialog.hide();
                     });
                     //修改用户状态(生/失效)
                     $.subscribe('user:userInfoModifyDialog:failure', function (event, userId,activated,msg) {
-                        $.ligerDialog.confirm('是否对该用户进行'+msg+'操作', function (yes) {
+                        parent._LIGERDIALOG.confirm('是否对该用户进行'+msg+'操作', function (yes) {
                             if (yes) {
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote('${contextRoot}/user/activityUser', {
                                     data: {userId: userId,activated:activated},
                                     success: function (data) {
                                         if (data.successFlg) {
-//                                            $.Notice.success('修改成功');
+//                                            parent._LIGERDIALOG.success('修改成功');
                                             isFirstPage = false;
                                             master.reloadGrid();
                                         } else {
-//                                            $.Notice.error('修改失败');
+//                                            parent._LIGERDIALOG.error('修改失败');
                                         }
                                     }
                                 });
@@ -238,7 +256,7 @@
                     });
                     //删除用户
                     $.subscribe('user:userInfoDialog:del', function (event, userId, activityFlg) {
-                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
+                        parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
                             if(yes){
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote("${contextRoot}/user/deleteUser",{
@@ -246,11 +264,11 @@
                                     async:true,
                                     success: function(data) {
                                         if(data.successFlg){
-                                            $.Notice.success('删除成功。');
+                                            parent._LIGERDIALOG.success('删除成功。');
                                             isFirstPage = false;
                                             master.reloadGrid();
                                         }else{
-                                            $.Notice.error('删除失败。');
+                                            parent._LIGERDIALOG.error('删除失败。');
                                         }
                                     }
                                 });
@@ -258,15 +276,15 @@
                         });
 
                     });
-					//查看应用权限
-					$.subscribe('user:feature:open', function (event, userId) {
+                    //查看应用权限
+                    $.subscribe('user:feature:open', function (event, userId) {
                         var dataModel = $.DataModel.init();
                         dataModel.updateRemote("${contextRoot}/user/isRoleUser",{
                             data:{userId:userId},
                             async:false,
                             success: function(data) {
                                 if(data){
-                                    self.userInfoDialog = $.ligerDialog.open({
+                                    self.userInfoDialog = parent._LIGERDIALOG.open({
                                         title:'查看权限',
                                         height: 650,
                                         width: 600,
@@ -279,21 +297,21 @@
                                         }
                                     });
                                 }else{
-                                    $.Notice.error('该用户无任何应用的授权信息。');
+                                    parent._LIGERDIALOG.error('该用户无任何应用的授权信息。');
                                 }
                             }
                         });
-					});
+                    });
                 }
             };
 
             /* ************************* 模块初始化结束 ************************** */
 
             /* ************************* Dialog页面回调接口 ************************** */
-            win.reloadMasterUpdateGrid = function () {
+            win.parent.reloadMasterUpdateGrid = win.reloadMasterUpdateGrid = function () {
                 master.reloadGrid();
             };
-            win.closeUserInfoDialog = function (callback) {
+            win.parent.closeUserInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);
@@ -301,7 +319,7 @@
                 }
                 master.userInfoDialog.close();
             };
-            win.closeAddUserInfoDialog = function (callback) {
+            win.parent.closeAddUserInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);

@@ -21,10 +21,17 @@
         var allData = ${allData};
         var doctor = allData.obj;
 
-        var roleTypeDictId = 13;
+        var jxzcDictId = 108; // 是否制证
+        var lczcDictId = 118; // 技术职称
+        var roleTypeDictId = 120; // 人员类别
+        var jobTypeDictId = 104; // 执业类别
+        var jobLevelDictId = 105; // 从事专业类别代码-执业级别
+        var jobScopeDictId = 103; // 执业范围
+        var jobStateDictId = 106; // 执业状态
 
         /* ************************** 变量定义结束 **************************** */
-
+        win.orgDeptDio = null;
+        win.ORGDEPTVAL = '';
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             doctorInfo.init();
@@ -57,9 +64,15 @@
             $updateDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
             $roleType:$("#inp_roleType"),
+            $jobType:$("#inp_jobType"),
+            $jobLevel:$("#inp_jobLevel"),
+            $jobScope:$("#inp_jobScope"),
+            $jobState:$("#inp_jobState"),
+            $registerFlag: $('input[name="registerFlag"]', this.$form),
+            $divBtnShow: document.getElementById('divBtnShow'),
 
             init: function () {
-				var self = this;
+                var self = this;
 
                 self.initForm();
                 self.bindEvents();
@@ -79,7 +92,7 @@
                         $.Notice.error(resp.errorMsg);
                     else
                         $.Notice.success('修改成功');
-                    closeAddDoctorInfoDialog(function () {});
+                        win.closeDoctorInfoDialog();
                 });
             },//树形结构todo
             initForm: function () {
@@ -95,15 +108,21 @@
                 this.$secondPhone.ligerTextBox({width: 240});
                 this.$familyTel.ligerTextBox({width: 240});
                 this.$officeTel.ligerTextBox({width: 240});
-                this.$jxzc.ligerTextBox({width: 240});
-                this.$lczc.ligerTextBox({width: 240});
+                this.initDDL(jxzcDictId, this.$jxzc);
+                this.initDDL(lczcDictId, this.$lczc);
                 this.$xlzc.ligerTextBox({width: 240});
                 this.$zxzc.ligerTextBox({width: 240});
                 this.$introduction.ligerTextBox({width:600,height:100 });
                 this.initDDL(roleTypeDictId, this.$roleType);
+                this.initDDL(jobTypeDictId, this.$jobType);
+                this.initDDL(jobLevelDictId, this.$jobLevel);
+                this.initDDL(jobScopeDictId, this.$jobScope);
+                this.initDDL(jobStateDictId, this.$jobState);
+                this.$registerFlag.ligerRadio();
                 this.$sex.ligerRadio();
                 $imageShow: $('#div_file_list'),
-                this.$form.attrScan();
+                        this.$form.attrScan();
+                win.ORGDEPTVAL = allData.detailModelList;
                 this.$form.Fields.fillValues({
                     id: doctor.id,
                     code: doctor.code,
@@ -122,7 +141,12 @@
                     lczc: doctor.lczc,
                     xlzc: doctor.xlzc,
                     xzzc: doctor.xzzc,
-                    roleType: doctor.roleType
+                    roleType: doctor.roleType,
+                    jobType: doctor.jobType,
+                    jobLevel: doctor.jobLevel,
+                    jobScope: doctor.jobScope,
+                    jobState: doctor.jobState,
+                    registerFlag: doctor.registerFlag
                 });
 
 
@@ -155,21 +179,26 @@
 
                 //修改的点击事件
                 this.$updateDtn.click(function () {
-
+                    var jsonModel = win.ORGDEPTVAL;
+                    if (jsonModel.length <= 0) {
+                        $.Notice.error('请选择机构部门');
+                        return;
+                    }
                     var imgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         doctorModel = self.$form.Fields.getValues();
                         if (imgHtml == 0) {
-                            update(doctorModel);
+                            update(doctorModel, jsonModel);
                         } else {
                             var upload = self.$uploader.instance;
                             var image = upload.getFiles().length;
                             if (image) {
                                 upload.options.formData.doctorModelJsonData = encodeURIComponent(JSON.stringify(doctorModel));
+                                upload.options.formData.jsonModel = encodeURIComponent(JSON.stringify(jsonModel));
                                 upload.upload();
                                 win.reloadMasterUpdateGrid();
                             } else {
-                                update(doctorModel);
+                                update(doctorModel, jsonModel);
                             }
                         }
                     } else {
@@ -177,14 +206,17 @@
                     }
                 });
 
-                function update(doctorModel) {
+                function update(doctorModel, jsonModel) {
                     var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var doctorModelJsonData = JSON.stringify(doctorModel);
                     var dataModel = $.DataModel.init();
+
+                    jsonModel = JSON.stringify(jsonModel);
+                    win.ORGDEPTVAL = null;
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
-                        data: {doctorModelJsonData: doctorModelJsonData},
+                        data: {doctorModelJsonData: doctorModelJsonData,jsonModel: jsonModel},
                         success: function (data) {
-                            waittingDialog.close();
+                          waittingDialog.close();
                             if (data.successFlg) {
                                 win.closeDoctorInfoDialog();
                                 win.reloadMasterUpdateGrid();
@@ -199,6 +231,29 @@
                 this.$cancelBtn.click(function () {
                     win.closeDoctorInfoDialog();
                 });
+
+
+                self.$divBtnShow.onclick = function () {
+                    var wait = $.Notice.waitting("请稍后...");
+                    win.orgDeptDio = win.$.ligerDialog.open({
+                        height: 620,
+                        width: 800,
+                        title: '选择机构部门',
+                        url: '${contextRoot}/doctor/selectOrgDept',
+                        urlParms: {
+                            idCardNo: self.$idCardNo.ligerGetComboBoxManager().getValue(),
+                            type: '${mode}'
+                        },
+                        isHidden: false,
+                        show: false,
+                        onLoaded:function() {
+                            wait.close();
+                            win.orgDeptDio.show();
+                        },
+                        load: true
+                    });
+                    win.orgDeptDio.hide();
+                }
             }
 
         };

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
 
 <script type="text/javascript">
 
@@ -36,7 +38,15 @@
             });
 
             $('#btn_save').click(function () {
-                saveForm({url: urls.update, $form: $form, validator: validator});
+                saveForm({url: urls.update, $form: $form, modelName: 'model', validator: validator,
+                    onSuccess: function (data) {
+                        if(data.successFlg){
+                            closeDialog("保存成功!");
+                        }else {
+                            closeDialog("保存失败!");
+                        }
+                    }});
+//                saveForm({url: urls.update, $form: $form, validator: validator});
             });
 
             $('#btn_cancel').click(function () {

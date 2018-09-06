@@ -10,14 +10,22 @@
         // 表单校验工具类
         var jValidation = $.jValidation;
         var mode = '${mode}';
-        var type = '${type}';
+
         var nameCopy = '';
         var codeCopy = '';
         <%--var categoryIdOld = '${categoryId}';--%>
 
-        var queryCondition = '${queryCondition}' || [];
-        var metadatas = '${metadatas}';
-        console.log(queryCondition + '-' + metadatas);
+        var resourceStr = sessionStorage.getItem("customQueryDialog_resourceBrowse")
+        var resourceJson = {};
+        if(resourceStr) {
+            resourceJson = JSON.parse(resourceStr);
+        }
+
+        var type = resourceJson.type;
+        var queryCondition = resourceJson.queryCondition || [];
+        var metadatas = resourceJson.metadatas || "[]";
+        console.log(metadatas);
+        console.log(queryCondition);
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -35,6 +43,8 @@
             $description: $("#inp_description"),
             $btnSave: $("#btn_save"),
             $btnCancel: $("#btn_cancel"),
+            $echartType: $("#echartType"),
+
 
             init: function () {
                 this.initForm();
@@ -58,7 +68,21 @@
                 }
                 lr1.setDisabled();
                 lr2.setDisabled();
-
+                this.$echartType.ligerComboBox({
+                    data: [
+                        {text:"混合图形", id:"mixed"},
+                        {text:"数值", id:"data"},
+                        {text:"柱状图", id:"bar"},
+                        {text:"线形图", id:"line"},
+                        {text:"饼图", id:"pie"},
+                        {text:"二维表", id:"twoDimensional"},
+                        {text:"雷达图", id:"radar"},
+                        {text:"旭日图", id:"nestedPie"}
+                    ]
+                });
+                if (type && type == 1) {
+                    $("#dataShowType").show();
+                }
                 this.$form.attrScan();
                 this.$form.show();
             },
@@ -78,6 +102,8 @@
                     textField: 'name',
                     width:240
                 });
+                this.$interface.ligerGetComboBoxManager().setValue(type == '0' ? 'getEhrCenter' : 'getQuotaData');
+                this.$interface.ligerGetComboBoxManager().setDisabled();
             },
 
             bindEvents: function () {
@@ -122,6 +148,9 @@
                         return
                     }
                     var values = self.$form.Fields.getValues();
+                    if (type && type == 1) {
+                        values.echartType = $("#echartType_val").val().trim();
+                    }
                     var categoryId = values.categoryId;
 //                    if(Util.isStrEquals(categoryIdOld,categoryId)){
 //                        update(values)
@@ -159,7 +188,9 @@
                             if (data.successFlg) {
 //                                reloadMasterUpdateGrid(categoryIdNew);
                                 $.Notice.success('操作成功');
-                                win.closeRsInfoDialog();
+                                setTimeout(function(){
+                                    win.parent.closeRsInfoDialog()
+                                },3000)
                             } else {
                                 $.Notice.error('操作失败！');
                             }
@@ -168,7 +199,7 @@
                 }
 
                 this.$btnCancel.click(function () {
-                    win.closeRsInfoDialog();
+                    win.parent.closeRsInfoDialog();
                 });
             }
         };

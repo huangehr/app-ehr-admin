@@ -65,7 +65,7 @@
     jValidation.Tips = {
         useTips: true,
         showArrow: true,
-        position: 'right'
+        position: 'top'
     };
 
     jValidation.ValidatorDefaultOptions = function () {
@@ -284,6 +284,7 @@
         ['validate-digits', '请输入数字.'],
         ['validate-positive-integer', '请输入正整数'],
         ['validate-alpha', '请输入英文字母.'],
+        ['validate-alpha-underline', '请输入英文字母或下划线.'],
         ['validate-alphanum', '请输入英文字母或是数字,其它字符是不允许的.'],
         ['validate-email', '请输入有效的邮件地址,如 username@example.com.'],
         ['validate-url', '请输入有效的URL地址.'],
@@ -324,7 +325,8 @@
         ['validate-money', '请输入正确的数值,最高保留2位小数'],
         ['validate-contact-way', '请输入有效的电话号码或手机号码'],
         ['validate-org-length', '请选择到医院一级！'],
-        ['validate-org-code', '请输入正确的组织代码格式，如:46650460-X'],
+        // ['validate-org-code', '请输入正确的组织代码格式，如:46650460-X'],
+        ['validate-org-code', ''],
         ['validate-special-char', '不允许输入 \' 符号'],
         ['validate-code-char', '只允许输入数字、英文、小数点与下划线'],
         ['validate-meta-id', '请输入以 EHR_ 开头，后面跟着6位数字的字符串，如：EHR_000001']
@@ -852,6 +854,7 @@
         ['validate-positive-integer', /^[1-9]([0-9])*$/],
         ['validate-alphanum', /^[a-zA-Z0-9]+$/],
         ['validate-alpha', /^[a-zA-Z]+$/],
+        ['validate-alpha-underline', /^[a-zA-Z_]+$/],
         ['validate-email', /\w{1,}[@][\w\-]{1,}([.]([\w\-]{1,})){1,3}$/],
         ['validate-url', /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i],
         ['validate-currency-dollar', /^\$?\-?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}\d*(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$/]
@@ -1126,8 +1129,8 @@
             return true;
         }],
         ['validate-code-char', /^[0-9A-Za-z_.]+$/],
-        ['validate-meta-id', /^EHR_\d{6}$/]
-
+        ['validate-meta-id', /^EHR_\d{6}$/],
+        ['validate-positive-integer', /^[1-9]\d*$|^0$/]
     ]);
 
 })(jQuery.jValidation.Validation, jQuery);

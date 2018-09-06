@@ -2,7 +2,7 @@ package com.yihu.ehr.portal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.portal.PortalNoticeDetailModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -16,6 +16,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -87,13 +88,13 @@ public class PortalNoticesController extends BaseUIController {
         }
         params.put("page", page);
         params.put("size", rows);
+        params.put("sorts", "-releaseDate"); // 根据releaseDate排序，-：降序
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -104,7 +105,7 @@ public class PortalNoticesController extends BaseUIController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "updatePortalNotice", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "updatePortalNotice", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
     @ResponseBody
     public Object updatePortalNotice(String portalNoticeModelJsonData,
                                      HttpServletRequest request) throws IOException{
@@ -113,7 +114,7 @@ public class PortalNoticesController extends BaseUIController {
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String strings = URLDecoder.decode(portalNoticeModelJsonData, "UTF-8");
         PortalNoticeDetailModel detailModel = toModel(strings, PortalNoticeDetailModel.class);
@@ -146,9 +147,8 @@ public class PortalNoticesController extends BaseUIController {
                 resultStr = templates.doPost(comUrl + url, params);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -175,13 +175,12 @@ public class PortalNoticesController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -199,9 +198,8 @@ public class PortalNoticesController extends BaseUIController {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
-        params.put("portalNoticeId", portalNoticeId);
         try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
             Envelop ep = getEnvelop(resultStr);
             PortalNoticeDetailModel detailModel = toModel(toJson(ep.getObj()),PortalNoticeDetailModel.class);
             model.addAttribute("allData", resultStr);
@@ -209,9 +207,8 @@ public class PortalNoticesController extends BaseUIController {
             model.addAttribute("contentPage", "portal/notice/portalNoticeInfoDialog");
             return "simpleView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return e.getMessage();
         }
     }
 

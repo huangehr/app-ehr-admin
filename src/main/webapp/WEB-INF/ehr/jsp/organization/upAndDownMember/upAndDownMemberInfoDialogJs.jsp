@@ -34,7 +34,16 @@
 			},
 			initForm: function () {
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
-				this.$userId.customCombo(url);
+                this.$userId.customCombo(url,{},null,null,null,
+                    {
+                        valueField: 'userId',
+                        textField: 'userName'
+                    },
+                    {
+                        columns: [
+                            { header: 'userName', name: 'userName', width: '100%' }
+                        ]
+                    });
 				var mode = '${mode}';
 				this.$form.attrScan();
 				this.$form.show();
@@ -57,7 +66,6 @@
 					if(validator.validate() == false){
 						return
 					}
-debugger;
 					var values = self.$form.Fields.getValues();
 					var userId = values.userId;
 					if(userId == categoryIdOld){
@@ -79,9 +87,9 @@ debugger;
 						success: function(data) {
                             waittingDialog.close();
 							if (data.successFlg) {
+                                closeRsInfoDialog();
 								reloadMasterUpdateGrid(categoryIdOld);
 								$.Notice.success('添加成功');
-								win.closeRsInfoDialog();
 							} else {
 								$.Notice.error(data.errorMsg);
 							}
@@ -90,7 +98,7 @@ debugger;
 				}
 
 				this.$btnCancel.click(function () {
-					win.closeRsInfoDialog();
+					closeRsInfoDialog();
 				});
 			}
 		};

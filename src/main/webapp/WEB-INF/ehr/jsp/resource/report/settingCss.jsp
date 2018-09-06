@@ -37,7 +37,8 @@
         border-bottom: 1px solid #D6D6D6;
     }
     .wrapper .content {
-        padding: 10px;
+        /*padding: 10px;*/
+        height: 490px;
     }
     #settingTreeContainer {
         height: 490px;
@@ -72,5 +73,11 @@
     input {
         height: 28px;
         width: 240px;
+    }
+    .wrapper .content {
+        width: 100%!important;
+        padding: 10px;
+        height: 490px;
+        overflow: scroll;
     }
 </style>

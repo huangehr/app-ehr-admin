@@ -296,6 +296,9 @@
                 $.Notice.warn('请先添加数据集数据！');
               else
                 $.Notice.warn('请先添加平台字典数据！');
+                if(wait){
+                    wait.close();
+                }
               return;
             }
             var title = mode == 'modify'?'修改' :'新增';

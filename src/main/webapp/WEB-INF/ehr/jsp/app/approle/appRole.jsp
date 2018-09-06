@@ -5,7 +5,7 @@
 <div class="f-dn" data-head-title="true">应用分组</div>
 <div id="div_wrapper">
     <!-- ####### 应用角色部分 ####### -->
-    <div class="f-mw25 f-ds1 f-fl">
+    <div class="f-mw25 f-ds1 f-fl" style="position: absolute;left: 0;top: 0;bottom: 0;">
         <div class="f-mt10 f-ml10">
             <!--输入框-->
             <%--<span class="f-fl f-lh30">平台应用：</span>--%>
@@ -21,7 +21,7 @@
         </div>
     </div>
     <!--应用角色组部分-->
-    <div id="div_app_browse_msg" class="div-app-role" style="width: 70%">
+    <div id="div_app_browse_msg" class="div-app-role" style="position: absolute;left: 410px;top: 0;bottom: 0;right: 0">
 
         <div class="f-mt10 f-ml10 f-fl f-mb10 f-mw99">
             <!--输入框-->

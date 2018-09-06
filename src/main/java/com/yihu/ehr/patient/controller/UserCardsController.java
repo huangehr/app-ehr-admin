@@ -3,7 +3,7 @@ package com.yihu.ehr.patient.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.patient.ArchiveRelationModel;
 import com.yihu.ehr.agModel.patient.UserCardsModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -71,7 +71,7 @@ public class UserCardsController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(UserCardsController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -109,9 +109,8 @@ public class UserCardsController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -127,7 +126,7 @@ public class UserCardsController extends BaseUIController {
     public Object updateUserCards(String userCardsModelJsonData, HttpServletRequest request) throws IOException{
         String resultStr = "";
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         UserCardsModel detailModel = objectMapper.readValue(userCardsModelJsonData, UserCardsModel.class);
         RestTemplates templates = new RestTemplates();
@@ -180,9 +179,8 @@ public class UserCardsController extends BaseUIController {
                 resultStr = templates.doPost(comUrl + url, params, username, password);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -209,7 +207,7 @@ public class UserCardsController extends BaseUIController {
         model.addAttribute("auditStatus",auditStatus);
         model.addAttribute("userCards",userCardsModel);
         model.addAttribute("contentPage", "/patient/userCards/userCardsDetail");
-        return "simpleView";
+        return "emptyView";
     }
 
 
@@ -217,7 +215,7 @@ public class UserCardsController extends BaseUIController {
     @ResponseBody
     public Object auditUserCards(long id,String auditStatus,String reason, HttpServletRequest request)throws Exception {
 
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         String url = "/patientCards/manager/verify";
         Map<String, Object> params = new HashMap<>();
         params.put("id", Long.valueOf(id));
@@ -307,9 +305,8 @@ public class UserCardsController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -328,10 +325,10 @@ public class UserCardsController extends BaseUIController {
                 envelopStr = HttpClientUtil.doPost(comUrl + url, par, username, password);
             }
             model.addAttribute("allData",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserCardsController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -386,9 +383,8 @@ public class UserCardsController extends BaseUIController {
                 resultStr = templates.doPost(comUrl + url, params, username, password);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -415,13 +411,12 @@ public class UserCardsController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

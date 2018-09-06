@@ -11,7 +11,7 @@
             var urls = {
                 list: "${contextRoot}/template/list",
                 gotoModify: "${contextRoot}/template/gotoModify",
-                delete: "${contextRoot}/template/lsit",
+                delete: "${contextRoot}/template/delete",
                 uploadTplFile: "${contextRoot}/template/update_tpl_content"
             }
             var selectRow = null;
@@ -20,6 +20,7 @@
             var retrieve = null;
             var master = null;
             var dataModel = '${dataModel}';
+            debugger
             var staged;
             try {
                 dataModel = eval('(' + dataModel + ')');
@@ -110,27 +111,38 @@
                         parms: this.formatParms(values),
                         columns: [
                             {display: 'id', name: 'id', hide: true, isAllowHide: false},
-                            {display: '模板', name: 'title', width: '15%', isAllowHide: false, align: 'left'},
+                            {display: '模板', name: 'title', width: '20%', isAllowHide: false, align: 'left'},
                             {
-                                display: '医疗机构',
+                                display: '类别',
                                 name: 'organizationName',
                                 width: '30%',
                                 isAllowHide: false,
-                                align: 'left'
+                                align: 'left',
+                                render: function (row) {
+                                    if(row.type == 'clinic'){
+                                        return "门诊";
+                                    }else if(row.type == 'resident'){
+                                        return "住院";
+                                    }else if(row.type == 'medicalExam'){
+                                        return "体检";
+                                    }else if(row.type == 'universal') {
+                                        return "通用";
+                                    }
+                                }
                             },
                             {display: 'CDA文档ID', name: 'cdaDocumentId', hide: true, isAllowHide: false},
-                            {
-                                display: 'CDA文档',
-                                name: 'cdaDocumentName',
-                                width: '25%',
-                                minColumnWidth: 60,
-                                align: 'left'
-                            },
+//                            {
+//                                display: 'CDA文档',
+//                                name: 'cdaDocumentName',
+//                                width: '25%',
+//                                minColumnWidth: 60,
+//                                align: 'left'
+//                            },
                             {display: 'CDA版本ID', name: 'cdaVersion', hide: true, isAllowHide: false},
                             {
                                 display: '导入模版',
                                 name: 'checkStatus',
-                                width: '10%',
+                                width: '20%',
                                 minColumnWidth: 20,
                                 render: function (row) {
                                     var html = ''
@@ -142,11 +154,11 @@
                                 }
                             },
                             {
-                                display: '复制模版', name: 'operator', width: '10%', render: function (row) {
+                                display: '复制模版', name: 'operator', width: '20%', render: function (row) {
 
                                 var html = ''
                                     <sec:authorize url="/template/updateCopy">
-                                    + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'copy') + '">复制</a>';
+                                    + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "tpl:tplInfo:open", row.id, 'copy', row.cdaVersion) + '">复制</a>';
                                 </sec:authorize>
 
                                 return html;
@@ -161,8 +173,10 @@
                                 render: function (row) {
                                     var html = ''
                                         <sec:authorize url="/template/update">
-                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'modify') + '">修改</a>';
+                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "tpl:tplInfo:open", row.id, 'modify', row.cdaVersion) + '">修改</a>' + "/"
+                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "tpl:tplInfo:delete", row.id) + '">删除</a>';
                                     </sec:authorize>
+
                                     return html;
                                 }
                             }
@@ -181,7 +195,6 @@
                             }
                         }
                     }));
-
                     this.$filePickerBtn.instance = this.$filePickerBtn.webupload({
                         auto: true,
                         server: urls.uploadTplFile,
@@ -214,7 +227,7 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    $.subscribe('tpl:tplInfo:open', function (event, id, mode) {
+                    $.subscribe('tpl:tplInfo:open', function (event, id, mode, verId) {
                         var urlParms = {};
                         if (!Util.isStrEmpty(id))
                             urlParms['id'] = id;
@@ -227,6 +240,8 @@
                         urlParms['extParms'] = JSON.stringify(extParms);
 
                         urlParms['mode'] = mode;
+
+                        urlParms['myFlag'] = !!dataModel.orgType;
                         var title = '新增模板';
                         if (mode == 'copy') {
                             title = '复制模板';
@@ -234,7 +249,12 @@
                             isSaveSelectStatus = true;
                             title = '修改模板';
                         }
-                        self.archiveTplInfoDialog = $.ligerDialog.open({
+                        urlParms['orgCode'] = dataModel.orgCode;
+                        urlParms['versionNum'] = $('#inp_searchVersion').val();
+                        urlParms['versionCode'] = $('#inp_searchVersion_val').val();
+
+
+                        self.archiveTplInfoDialog = parent._LIGERDIALOG.open({
                             height: 370,
                             width: 450,
                             title: title,
@@ -245,7 +265,27 @@
                             load: true
                         });
                     });
-
+                    $.subscribe('tpl:tplInfo:delete', function (event, id) {
+                        var dataModel = $.DataModel.init();
+                        $.ligerDialog.confirm('确认删除？', function (yes) {
+                            if (yes) {
+                                dataModel.updateRemote("${contextRoot}/template/delete", {
+                                    data: {ids:id},
+                                    success: function (data) {
+                                        if (data.successFlg) {
+                                            parent._LIGERDIALOG.success('删除成功');
+                                            master.reloadGrid();
+                                        } else {
+                                            parent._LIGERDIALOG.error(data.errorMsg);
+                                        }
+                                    },
+                                    error:function (data) {
+                                        parent._LIGERDIALOG.error(data.errorMsg);
+                                    }
+                                });
+                            }
+                        });
+                    });
                     var uploader = self.$filePickerBtn.instance;
                     var templateId = '';
                     var tplMode = '';
@@ -255,21 +295,21 @@
                     });
                     uploader.on('success', function (file, data, b) {
                         if (data.successFlg)
-                            $.Notice.success('导入成功');
+                            parent._LIGERDIALOG.success('导入成功');
                         else if (data.errorMsg)
-                            $.Notice.error(data.errorMsg);
+                            parent._LIGERDIALOG.error(data.errorMsg);
                         else
-                            $.Notice.error('导入失败');
+                            parent._LIGERDIALOG.error('导入失败');
                     });
                     uploader.on('error', function (file, data) {
                         if (file == 'Q_TYPE_DENIED')
-                            $.Notice.error('请上传html文件，并且文件大小不能为空！');
+                            parent._LIGERDIALOG.error('请上传html文件，并且文件大小不能为空！');
                         else
-                            $.Notice.error('导入失败');
+                            parent._LIGERDIALOG.error('导入失败');
                     });
                     $.subscribe('tpl:tplUpload:open', function (event, id, mode) {
                         if (!staged) {
-                            return $.Notice.error("已发布版本不可导入");
+                            return parent._LIGERDIALOG.error("已发布版本不可导入");
                         }
                         templateId = id;
                         tplMode = mode;
@@ -280,20 +320,20 @@
             };
 
             /* *************************** 页面功能 **************************** */
-            win.getVersion = function () {
+            win.parent.getVersion = function () {
                 var mgr = retrieve.$searchVersionDDL.ligerGetComboBoxManager();
                 return {
                     v: mgr.getValue(),
                     n: mgr.getText()
                 };
             }
-            win.reloadGrids = function () {
+            win.parent.reloadGrids = function () {
                 master.reloadGrid();
             };
-            win.closeDialog = function (msg) {
+            win.parent.closeDialog = function (msg) {
                 master.archiveTplInfoDialog.close();
                 if (msg)
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
             };
             pageInit();
         });

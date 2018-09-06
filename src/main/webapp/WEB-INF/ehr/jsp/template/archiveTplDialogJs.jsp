@@ -2,11 +2,12 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <script type="text/javascript">
-
     (function ($, win) {
-        $(function () {
+//        $(function () {
             /* ************************** 变量定义 ******************************** */
-            var versionNum = $('#inp_searchVersion_val').val();
+            var versionNum = '${versionNum}';
+            var versionCode = '${versionCode}';
+            var orgCode = '${orgCode}';
             // 通用工具类库
             var Util = $.Util;
 
@@ -38,12 +39,15 @@
             addArchiveTplInfo = {
                 $form: $("#div_addArchiveTpl_form"),
                 $versionNo: $("#inp_versionNo"),
-                $org: $("#inp_org"),
+                $type: $("#inp_type"),
                 $title: $("#inp_title"),
 
                 versionNo: '',
                 orgCode: '',
                 cda: '',
+                category:'',
+                name:'',
+
 
                 $dataset: $("#inp_dataset"),
                 $addBtn: $("#div_add_btn"),
@@ -56,80 +60,76 @@
                     var self = this;
                     self.$title.ligerTextBox({width: 240});
                     <%--self.versionNo = self.$versionNo.ligerComboBox({--%>
-                        <%--url: '${contextRoot}/adapter/versions',--%>
-                        <%--valueField: 'version',--%>
-                        <%--textField: 'versionName',--%>
-                        <%--dataParmName: 'detailModelList',--%>
-                        <%--width: 240,--%>
-                        <%--onSelected: function (value) {--%>
-                            <%--var parms = {--%>
-                                <%--version: value,--%>
-                                <%--searchName: ""--%>
-                            <%--}--%>
-                            <%--self.cda.reload(parms);--%>
-                            <%--if(firstInit){--%>
-                                <%--if(model.cdaDocumentId){--%>
-                                    <%--self.cda.setValue(model.cdaDocumentId);--%>
-                                    <%--self.cda.setText(model.cdaDocumentName);--%>
-                                <%--}--%>
-                                <%--firstInit = false;--%>
-                            <%--}--%>
-                        <%--}--%>
+                    <%--url: '${contextRoot}/adapter/versions',--%>
+                    <%--valueField: 'version',--%>
+                    <%--textField: 'versionName',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--width: 240,--%>
+                    <%--onSelected: function (value) {--%>
+                    <%--var parms = {--%>
+                    <%--version: value,--%>
+                    <%--searchName: ""--%>
+                    <%--}--%>
+                    <%--self.cda.reload(parms);--%>
+                    <%--if(firstInit){--%>
+                    <%--if(model.cdaDocumentId){--%>
+                    <%--self.cda.setValue(model.cdaDocumentId);--%>
+                    <%--self.cda.setText(model.cdaDocumentName);--%>
+                    <%--}--%>
+                    <%--firstInit = false;--%>
+                    <%--}--%>
+                    <%--}--%>
                     <%--});--%>
                     self.versionNo = self.$versionNo.ligerTextBox({width: 240,disabled:true});
                     self.versionNo.setValue(versionNum);
 
-
                     this.initCombo(self.$dataset, urls.cdaDocument, {
-                        version: versionNum
+                        version: versionCode
                     });
-
-                    this.$org.addressDropdown({
-                        lazyLoad: mode!='new' || (mode=='new' && !Util.isStrEmpty(model.organizationCode)),
-                        width: 240,
-                        selectBoxWidth: 240,
-                        tabsData: [
-                            {name: '省份', code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},
-                            {name: '城市', code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
-                            {
-                                name: '医院', code:'orgCode',value:'fullName', url: '${contextRoot}/address/getOrgs', beforeAjaxSend: function (ds, $options) {
-                                var province = $options.eq(0).attr('title'),
-                                        city = $options.eq(1).attr('title');
-                                ds.params = $.extend({}, ds.params, {
-                                    province: province,
-                                    city: city
-                                });
-                            }
-                            }
-                        ]
+                    self.$type.ligerComboBox({
+                        width : 240,
+                        valueField: 'id',
+                        textField: 'text',
+                        data:[
+                            { text: '门诊', id: 'clinic' },
+                            { text: '住院', id: 'resident'},
+                            { text: '体检', id: 'medicalExam'},
+                            { text: '通用', id : 'universal'}
+                        ],
+                        onSelected: function (value ,text){
+                           this.category = value;
+                        }
                     });
-debugger
                     $('#inp_versionNo_wrap').addClass('u-ui-readonly');
-                    if(mode=='new' && !Util.isStrEmpty(model.organizationCode))
+                    if(mode=='new' && !Util.isStrEmpty(model.type))
 //                        $('#inp_org_wrap').addClass('u-ui-readonly');
 //                    this.$form.liger.get('div_addArchiveTpl_form');
-                    this.$form.ligerForm();//初始化表单
+                        this.$form.ligerForm();//初始化表单
                     this.$form.attrScan();
                     this.$form.Fields.fillValues({
                         id: model.id,
-                        title: mode=='copy'? '': model.title,
+                        title: mode == 'copy'? '': model.title,
 //                            cdaVersion: model.cdaVersion,
-                        organizationCode: [model.province, model.city, model.organizationCode]
+                        type: model.type
                     });
+                    $("#inp_dataset").ligerGetComboBoxManager().setValue(model.cdaDocumentId);
+                    $("#inp_dataset").ligerGetComboBoxManager().setText(model.cdaDocumentName);
 
+                    self.name = model.cdaDocumentName;
 //                    var versionMgr = this.$versionNo.ligerGetTextBoxManager();
 //                    versionMgr.selectValue(version.v);
 //                    versionMgr.setText(version.n);
 
                     $('#oldTitle').val(model.title);
                     $('#inp_versionNo').focus();
-
                     if (!${staged}){
                         this.$addBtn.hide();
                     }
                 },
                 initCombo : function (target, url, parms, value, text, parentValue){
-                    this.cda = target.customCombo(url, parms);
+                    this.cda = target.customCombo(url, parms,function (value,text) {
+                        addArchiveTplInfo.name = text;
+                    });
                     if(!Util.isStrEmpty(value)){
                         this.cda.setValue(value);
                         this.cda.setText(text);
@@ -143,23 +143,23 @@ debugger
                             var values = addArchiveTplInfo.$form.Fields.getValues();
                             var newTitle = values.title;
                             var version = values.cdaVersion;
-                            var orgCode = values.organizationCode.keys[2];
+                            var orgCode = values.type;
                             if(mode=='modify'&&Util.isStrEquals(oldTitle,newTitle)){
                                 return true;
                             }else{
                                 if(Util.isStrEmpty(orgCode))
                                     return true;
-                                return checkTitle(elm, version, newTitle, orgCode);
+                                return checkTitle(elm, version, newTitle);
                             }
                         }
                     })
 
-                    function checkTitle(elm,version,newTitle,orgCode){
+                    function checkTitle(elm,version,newTitle){
                         if(Util.isStrEquals($(elm).attr('id'),'inp_title')){
                             var result = new jValidation.ajax.Result();
                             var dataModel = $.DataModel.init();
                             dataModel.fetchRemote("${contextRoot}/template/validateTitle", {
-                                data: {version:version,title: newTitle, orgCode: orgCode},
+                                data: {version:version,title: newTitle},
                                 async: false,
                                 success: function (data) {
                                     if (data.successFlg) {
@@ -177,13 +177,15 @@ debugger
                         debugger
                         if (validator.validate()) {
                             var TemplateModel = self.$form.Fields.getValues();
-                            TemplateModel.organizationCode = TemplateModel.organizationCode.keys[2];
+                            TemplateModel.type = TemplateModel.type;
                             var dataModel = $.DataModel.init();
-
+//                            TemplateModel['type'] = TemplateModel.type;
+                            TemplateModel.cdaVersion = versionCode;
+                            var parmes = $.extend({},TemplateModel,{cdaDocumentName:addArchiveTplInfo.name});
                             dataModel.createRemote(urls.update, {
                                 data: {
                                     id: TemplateModel.id,
-                                    model: JSON.stringify(TemplateModel),
+                                    model: JSON.stringify(parmes),
                                     extParms: '{"mode":"'+mode+'"}'
                                 },
                                 async: false,
@@ -219,6 +221,6 @@ debugger
             pageInit();
 
             /* ************************* 页面初始化结束 ************************** */
-        });
+//        });
     })(jQuery, window);
 </script>

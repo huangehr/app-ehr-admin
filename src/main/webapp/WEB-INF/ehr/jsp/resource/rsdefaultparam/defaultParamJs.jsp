@@ -29,8 +29,8 @@
 						},
 						columns: [
 							{display:'id',name:'id',hide:true},
-							{display: '资源id', name: 'resourcesId',hide:true},
-							{display: '资源code', name: 'resourcesCode',hide:true},
+							{display: '视图id', name: 'resourcesId',hide:true},
+							{display: '视图code', name: 'resourcesCode',hide:true},
 							{display: '参数名', name: 'paramKey', width: '40%', align: 'center'},
 							{display: '参数值', name: 'paramValue', width: '40%',align:'center'},
 							{display: '操作', name: 'operator', width: '20%', align: 'center',render: function(row){
@@ -54,9 +54,9 @@
 					$.subscribe("resource:param:info:open",function(event,id,mode,rowIndex){
 						var title = '';
 						if(mode == 'new'){
-							title = '新增资源接口'
+							title = '新增视图接口'
 						}else{
-							title = '修改资源接口';
+							title = '修改视图接口';
 						};
 						ParamMasters.infoDialog = $.ligerDialog.open({
 							height: 250,

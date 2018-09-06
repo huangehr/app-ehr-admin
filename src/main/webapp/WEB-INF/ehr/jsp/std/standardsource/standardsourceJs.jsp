@@ -45,7 +45,7 @@
                         if(!ids){
                             var rows = master.grid.getSelectedRows();
                             if(rows.length==0){
-                                $.Notice.warn('请选择要删除的数据行！');
+                                parent._LIGERDIALOG.warn('请选择要删除的数据行！');
                                 return;
                             }
                             delRowLen = rows.length;
@@ -55,17 +55,17 @@
                             ids = ids.length>0 ? ids.substring(1, ids.length) : ids;
                         }
 
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
                             if(r){
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote('${contextRoot}/standardsource/delStdSource',{
                                     data:{id:ids},
                                     success:function(data){
 										if(data.successFlg){
-											$.Notice.success( '操作成功！');
+											parent._LIGERDIALOG.success( '操作成功！');
 											master.reloadGrid(Util.checkCurPage.call(master.grid, delRowLen));
 										}else{
-											$.Notice.error(data.errorMsg);
+											parent._LIGERDIALOG.error(data.errorMsg);
 										}
                                     }
                                 });
@@ -88,13 +88,13 @@
                             searchNm: searchNm
                         },
                         columns: [
-                            { display: 'id', name: 'id', hide:true },
-                            { display: '类型代码', name: 'sourceType',hide:true, isAllowHide: false },
+                            { display: 'id', name: 'id', width: '0.1%', hide:true },
+                            { display: '类型代码', name: 'sourceType',hide:true, width: '0.1%', isAllowHide: false },
                             { display: '类型', name: 'sourceValue',width: '13%', isAllowHide: false },
                             { display: '编码', name: 'code',width: '20%',align:'left', isAllowHide: false },
                             { display: '名称',name: 'name', width: '35%',align:'left',isAllowHide: false },
                             { display: '创建时间',name: 'createDate', width: '20%',isAllowHide: false },
-                            { display: '操作', name: 'operator', width: '12%', render: function (row) {
+                            { display: '操作', name: 'operator', minWidth: 120, render: function (row) {
 //								var html ='<div class="grid_edit"  style="" title="修改" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "std:stdInfo:open", row.id,'modify') + '"></div>'
 //										+'<div class="grid_delete"  style="" title="删除"' +
 //										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "stdInfo:stdInfoGrid:delete", row.id) + '"></div>';
@@ -116,7 +116,7 @@
                         checkbox : true,
                         onDblClickRow : function (row){
                             <%--var mode = 'view';--%>
-                            <%--this.stdInfoDialog = $.ligerDialog.open({--%>
+                            <%--this.stdInfoDialog = parent._LIGERDIALOG.open({--%>
                                 <%--height:440,--%>
                                 <%--width: 400,--%>
                                 <%--title : '标准来源基本信息',--%>
@@ -155,7 +155,7 @@
                             title = '新增标准来源';
                         }
 
-                        self.stdInfoDialog = $.ligerDialog.open({
+                        self.stdInfoDialog = parent._LIGERDIALOG.open({
                             height:440,
                             width: 460,
                             title : title,
@@ -173,13 +173,13 @@
             };
 
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadMasterGrid = function () {
+            win.parent.reloadMasterGrid = function () {
                 master.reloadGrid();
             };
-            win.closeDialog = function (msg) {
+            win.parent.closeDialog = function (msg) {
                 master.stdInfoDialog.close();
                 if(msg)
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
             };
             /* *************************** 页面功能 **************************** */
             pageInit();

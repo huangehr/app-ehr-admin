@@ -34,8 +34,8 @@
 	</div>
 	<div class="m-form-group">
 		<label><spring:message code="lbl.doctor.portal"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_portal" class="required useTitle max-length-256 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="workPortal"/>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="inp_portal" class="useTitle max-length-256 validate-special-char" data-attr-scan="workPortal"/>
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -51,12 +51,15 @@
 	</div>
 	<div class="m-form-group">
 		<label><spring:message code="lbl.doctor.officeTel"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_officeTel" class="required useTitle validate-phone"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="officeTel"/>
-		</div>
-		<label><spring:message code="lbl.doctor.xzzc"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="inp_zxzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xzzc"/>
+			<input type="text" id="inp_officeTel" class=" useTitle validate-phone" data-attr-scan="officeTel"/>
+		</div>
+		<label>是否制证</label>
+		<div class="l-text-wrapper m-form-control">
+			<div class="l-text-wrapper m-form-control f-pr0">
+				<input type="text" id="inp_jxzc" data-type="select" class="useTitle max-length-50"
+					   placeholder="请选是否制证" data-attr-scan="jxzc"/>
+			</div>
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -64,31 +67,30 @@
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_phone" class="required useTitle ajax validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="phone"/>
 		</div>
+		<label>技术职称</label>
+		<div class="l-text-wrapper m-form-control">
+			<div class="l-text-wrapper m-form-control f-pr0">
+				<input type="text" id="inp_lczc" data-type="select" class="useTitle max-length-50"
+					   placeholder="请选技术职称" data-attr-scan="lczc"/>
+			</div>
+		</div>
+	</div>
+	<div class="m-form-group">
 		<label><spring:message code="lbl.doctor.secondPhone"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
 			<input type="text" id="inp_secondPhone" class="useTitle validate-mobile-phone" data-attr-scan="secondPhone"/>
 		</div>
-	</div>
-	<div class="m-form-group">
-		<label>机构:</label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_org" data-type="select" class="required useTitle max-length-50"
-				   placeholder="请选择机构" data-attr-scan="inp_org"/>
-		</div>
-		<label><spring:message code="lbl.doctor.jxzc"/><spring:message code="spe.colon"/></label>
+		<label><spring:message code="lbl.doctor.xlzc"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="inp_jxzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="jxzc"/>
+			<input type="text" id="inp_xlzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xlzc"/>
 		</div>
 	</div>
 	<div class="m-form-group">
-		<label>部门:</label>
+		<label>选择机构部门:</label>
 		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_dept" data-type="select" class="required useTitle max-length-50"
-				   placeholder="请选择部门" data-attr-scan="inp_dept"/>
-		</div>
-		<label><spring:message code="lbl.doctor.lczc"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="inp_lczc" class="useTitle max-length-50 validate-special-char" data-attr-scan="lczc"/>
+			<div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10 required" style="width: 238px !important;    height: 30px;line-height: 30px;margin-right: 0px;" id="divBtnShow">
+				<span>选择机构部门</span>
+			</div>
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -96,9 +98,9 @@
 		<div class="l-text-wrapper m-form-control">
 			<input type="text" id="inp_familyTel" class="useTitle validate-phone" data-attr-scan="familyTel"/>
 		</div>
-		<label><spring:message code="lbl.doctor.xlzc"/><spring:message code="spe.colon"/></label>
+		<label><spring:message code="lbl.doctor.xzzc"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="inp_xlzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xlzc"/>
+			<input type="text" id="inp_zxzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xzzc"/>
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -107,6 +109,35 @@
             <input type="text" id="inp_roleType" data-type="select" class="useTitle max-length-50"
                    placeholder="请选择类别" data-attr-scan="roleType"/>
         </div>
+		<label>执业类别</label>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="inp_jobType" data-type="select" class="useTitle max-length-20"
+				   placeholder="请选择执业类别" data-attr-scan="jobType"/>
+		</div>
+	</div>
+	<div class="m-form-group">
+		<label>从事专业类别代码</label>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="inp_jobLevel" data-type="select" class="useTitle max-length-20"
+				   placeholder="请选择从事专业类别代码" data-attr-scan="jobLevel"/>
+		</div>
+		<label>执业范围</label>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="inp_jobScope" data-type="select" class="useTitle max-length-20"
+				   placeholder="请选择执业范围" data-attr-scan="jobScope"/>
+		</div>
+	</div>
+	<div class="m-form-group">
+		<label>执业状态</label>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="inp_jobState" data-type="select" class="useTitle max-length-20"
+				   placeholder="请选择执业状态" data-attr-scan="jobState"/>
+		</div>
+		<label>考试库连带注册</label>
+		<div class="u-checkbox-wrap m-form-control">
+			<input type="radio" value="0" name="registerFlag" data-attr-scan>是
+			<input type="radio" value="1" name="registerFlag" data-attr-scan>否
+		</div>
 	</div>
 	<div class="m-form-group" id="inp_introduction_div">
 		<label><spring:message code="lbl.doctor.introduction"/><spring:message code="spe.colon"/></label>

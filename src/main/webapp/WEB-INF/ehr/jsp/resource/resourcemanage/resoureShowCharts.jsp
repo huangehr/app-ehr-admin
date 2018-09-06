@@ -1,36 +1,46 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/static-dev/base/avalon/avalon2.js"></script>
 
-<div class="charts-main">
-    <ul class="tab-list">
-        <%--Tabs--%>
-    </ul>
-    <%--content--%>
-</div>
-<%--template--%>
-<script type="text/html" id="tabTmp">
-    <div class="tab-con {{class}}" data-id="{{id}}">
-        <div class="con-tab" style="display: none">
-            <ul class="con-t-t">
-                <li class="con-t-i c-t-lef active">展示</li>
-                <li class="con-t-i c-t-right">查询</li>
-            </ul>
+<div class="charts-main" ms-controller="nrsApp">
+    <div class="tab-con " data-id="">
+        <%--上卷下砖--%>
+        <div class="drill-list">
+            <div class="dirll-item" id="dirllUp" ms-click="cUp" :class="downValArr.length > 0 ? 'active' : ''">
+                <div class="triangle up-triangle"></div>上卷
+                <div class="hover-show" ms-text="upVal()"></div>
+            </div>
+            <div class="dirll-item" id="dimensionName">
+                <span ms-text="selVal == '' ? '分类' : selVal"></span>
+                <div class="hover-show" ms-text="selVal == '' ? '分类' : selVal"></div>
+            </div>
+            <div class="dirll-item" id="dirllDown" ms-click="cSH" :class="downClass">
+                <div class="triangle down-triangle"></div>下钻
+                <div class="hover-show" :class="downClass" ms-text="dimensionMap.length != downValArr.length ? '请选择下钻数据' : '无下钻项'"></div>
+                <ul class="dimension-list" ms-if="showDown && dimensionMap.length > 0">
+                    <li class="dimension-item"
+                        ms-for="($index, item) in @dimensionMap"
+                        ms-if="item.isShow"
+                        ms-text="item.value"
+                        ms-click="cDown(item.key, item.value, $index)"
+                    ></li>
+                </ul>
+            </div>
         </div>
+
         <div class="con-t-con">
             <%--goback--%>
-            <div class="condition" data-quota-filter="" data-list="{{dimension}}" data-num="0">
-                <a href="javascript:;" class="go-back un-show">&lt; &nbsp;上卷</a>
-            </div>
-            <%--charts--%>
-            <div id="{{idOne}}" style="width:748px;height: 403px"></div>
-        </div>
-        <div class="con-t-con un-show">
-            <%--checkedbox--%>
             <div class="condition">
-                {{checkboxs}}
+                <div class="nav ">下钻项：</div>
+                <div class="nav ">
+                    <ul>
+                        <li id="cDropDown" ms-attr="{key:nowDimension[0]}"><a href="#" ms-text="getFirstVal()"></a></li>
+                        <li ms-for="($index, item) in downKeyArr">&gt;<a href="#" ms-text="dimensionMap[item].value" ms-click="cLink(dimensionMap[item].key, $index)"></a> </li>
+                    </ul>
+                </div>
             </div>
             <%--charts--%>
-            <div id="{{idTwo}}" style="width:748px;height: 403px"></div>
+            <div id="chart" style="width:748px;height: 403px"></div>
         </div>
     </div>
-</script>
+</div>

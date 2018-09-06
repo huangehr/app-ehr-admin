@@ -3,7 +3,7 @@ package com.yihu.ehr.patient.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.agModel.patient.MedicalCardsModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -117,9 +117,8 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -137,7 +136,7 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
 
         String resultStr = "";
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         MedicalCardsModel detailModel = objectMapper.readValue(medicalCardsModelJsonData, MedicalCardsModel.class);
         RestTemplates templates = new RestTemplates();
@@ -202,9 +201,8 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
                 resultStr = templates.doPost(comUrl + url, params, username, password);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -230,13 +228,12 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -245,8 +242,8 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         try {
+            UsersModel user = getCurrentUserRedis(request);
             writerResponse(response, 1+"", "l_upd_progress");//进度条
             request.setCharacterEncoding("UTF-8");
             AExcelReader excelReader = new RsMedicalCardModelReader();

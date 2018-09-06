@@ -3,7 +3,10 @@ package com.yihu.ehr.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.DoctorDetailModel;
-import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
+import com.yihu.ehr.common.constants.AuthorityKey;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -30,6 +33,7 @@ import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,8 +51,10 @@ public class DoctorController extends BaseUIController {
 
     @Autowired
     private GetInfoService getInfoService;
+
     /**
      * 医生列表页
+     *
      * @param model
      * @return
      */
@@ -60,17 +66,34 @@ public class DoctorController extends BaseUIController {
 
     /**
      * 新增页面
+     *
      * @param model
      * @return
      */
     @RequestMapping("addDoctorInfoDialog")
     public String addUser(Model model) {
         model.addAttribute("contentPage", "user/doctor/addDoctorInfoDialog");
-        return "generalView";
+        return "emptyView";
+    }
+
+    /**
+     * 选择机构部门
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("selectOrgDept")
+    public String selectOrgDept(String idCardNo, String type,String origin, Model model) {
+        model.addAttribute("idCardNo", idCardNo);
+        model.addAttribute("type", type);
+        model.addAttribute("origin", origin);
+        model.addAttribute("contentPage", "user/doctor/selectOrgDept");
+        return "emptyView";
     }
 
     /**
      * 查找医生
+     *
      * @param searchNm
      * @param page
      * @param rows
@@ -78,7 +101,7 @@ public class DoctorController extends BaseUIController {
      */
     @RequestMapping("searchDoctor")
     @ResponseBody
-    public Object searchDoctor(String searchNm, int page, int rows) {
+    public Object searchDoctor(String searchNm, int page, int rows, HttpServletRequest request) {
         String url = "/doctors";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -89,30 +112,44 @@ public class DoctorController extends BaseUIController {
         if (!StringUtils.isEmpty(searchNm)) {
             stringBuffer.append("name?" + searchNm + ";");
         }
-       /* String userId = getInfoService.getUserId();
-        if (!StringUtils.isEmpty(userId)) {
-            stringBuffer.append("userId=" + userId + ";");
-        } else {
-            stringBuffer.append("userId=" + "-1" + ";");
-        }*/
-        String filters = stringBuffer.toString();
-        if (!StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
-        }
-        params.put("page", page);
-        params.put("size", rows);
+
         try {
+            List<String> userOrgList = getUserOrgSaasListRedis(request);
+            if (null != userOrgList && userOrgList.size() > 0 && AuthorityKey.NoUserOrgSaas.equalsIgnoreCase(userOrgList.get(0))) {
+                UsersModel user = (UsersModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+                if (null == user) {
+                    result.setSuccessFlg(true);
+                    return result;
+                }
+                Map<String, Object> userParam = new HashMap<>();
+                userParam.put("login_code", user.getLoginCode());
+                String userInfo = HttpClientUtil.doGet(comUrl + "/users/" + user.getLoginCode(), userParam);
+                Envelop envelop = (Envelop) this.objectMapper.readValue(userInfo, Envelop.class);
+                String ex = this.objectMapper.writeValueAsString(envelop.getObj());
+                UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
+                stringBuffer.append("idCardNo=" + userDetailModel.getIdCardNo() + ";");
+            } else if (null != userOrgList && userOrgList.size() > 0) {
+                String orgCode = String.join(",", userOrgList);
+                params.put("orgCode", orgCode);
+            }
+            String filters = stringBuffer.toString();
+            if (!StringUtils.isEmpty(filters)) {
+                params.put("filters", filters);
+            }
+            params.put("sorts", "-insertTime");
+            params.put("page", page);
+            params.put("size", rows);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     /**
      * 验证code是否存在
+     *
      * @param existenceType
      * @param existenceNm
      * @return
@@ -124,31 +161,31 @@ public class DoctorController extends BaseUIController {
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("existenceType",existenceType);
-        params.put("existenceNm",existenceNm);
+        params.put("existenceType", existenceType);
+        params.put("existenceNm", existenceNm);
 
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
 
     /**
      * 新增修改
+     *
      * @param doctorModelJsonData
      * @param request
      * @param response
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "updateDoctor", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "updateDoctor")
     @ResponseBody
-    public Object updateDoctor(String doctorModelJsonData, String orgId, String deptId, HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public Object updateDoctor(String doctorModelJsonData, String jsonModel, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String url = "/doctor/";
         String resultStr = "";
@@ -156,7 +193,11 @@ public class DoctorController extends BaseUIController {
         Envelop result = new Envelop();
         ObjectMapper mapper = new ObjectMapper();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        //% 在URL中是特殊字符，需要特殊转义一下
+        doctorModelJsonData = doctorModelJsonData.replaceAll("%(?![0-9a-fA-F]{2})", "%25");
         String[] strings = URLDecoder.decode(doctorModelJsonData, "UTF-8").split(";");
+
+        jsonModel = URLDecoder.decode(jsonModel, "UTF-8");
         DoctorDetailModel doctorDetailModel = toModel(strings[0], DoctorDetailModel.class);
         RestTemplates templates = new RestTemplates();
 
@@ -201,12 +242,18 @@ public class DoctorController extends BaseUIController {
                     updateDoctor.setXzzc(doctorDetailModel.getXzzc());
                     updateDoctor.setIdCardNo(doctorDetailModel.getIdCardNo());
                     updateDoctor.setRoleType(doctorDetailModel.getRoleType());
-                    imageId = fileUpload(String.valueOf(doctorId),restStream,imageName);
-                    if (!StringUtils.isEmpty(imageId))
+                    updateDoctor.setJobType(doctorDetailModel.getJobType());
+                    updateDoctor.setJobLevel(doctorDetailModel.getJobLevel());
+                    updateDoctor.setJobScope(doctorDetailModel.getJobScope());
+                    updateDoctor.setJobState(doctorDetailModel.getJobState());
+                    updateDoctor.setRegisterFlag(doctorDetailModel.getRegisterFlag());
+                    if (!StringUtils.isEmpty(restStream)) {
+                        imageId = fileUpload(String.valueOf(doctorId), restStream, imageName);
                         updateDoctor.setPhoto(imageId);
+                    }
 
                     params.add("doctor_json_data", toJson(updateDoctor));
-
+                    params.add("model", jsonModel);
                     resultStr = templates.doPut(comUrl + url, params);
                 } else {
                     result.setSuccessFlg(false);
@@ -215,30 +262,29 @@ public class DoctorController extends BaseUIController {
                 }
             } else {
                 params.add("doctor_json_data", toJson(doctorDetailModel));
-                params.add("orgId", orgId);
-                params.add("deptId", deptId);
+                params.add("model", jsonModel);
                 resultStr = templates.doPost(comUrl + url, params);
-                result = toModel(resultStr,Envelop.class);
-                DoctorDetailModel addDoctorModel = toModel(toJson(result.getObj()),DoctorDetailModel.class);
-                imageId = fileUpload(String.valueOf(addDoctorModel.getId()),restStream,imageName);
-
-                if (!StringUtils.isEmpty(imageId)){
-                    addDoctorModel.setPhoto(imageId);
-
-                    String doctorData = templates.doGet(comUrl + "/doctors/admin/"+addDoctorModel.getId());
-                    result = mapper.readValue(doctorData,Envelop.class);
-                    String doctorJsonModel = mapper.writeValueAsString(result.getObj());
-                    DoctorDetailModel doctorModel = mapper.readValue(doctorJsonModel,DoctorDetailModel.class);
-                    doctorModel.setPhoto(imageId);
-
-                    params.remove("doctor_json_data");
-                    params.add("doctor_json_data",toJson(doctorModel));
-                    resultStr = templates.doPut(comUrl + url, params);
+                result = toModel(resultStr, Envelop.class);
+                if (result.isSuccessFlg()) {
+                    DoctorDetailModel doctorModel = toModel(toJson(result.getObj()), DoctorDetailModel.class);
+                    if (!StringUtils.isEmpty(restStream)) {
+                        imageId = fileUpload(String.valueOf(doctorModel.getId()), restStream, imageName);
+                    }
+                    if (!StringUtils.isEmpty(imageId)) {
+                        doctorModel.setPhoto(imageId);
+                        params.remove("doctor_json_data");
+                        params.add("doctor_json_data", toJson(doctorModel));
+                        params.add("model", jsonModel);
+                        resultStr = templates.doPut(comUrl + url, params);
+                    }
+                } else {
+                    return failed(result.getErrorMsg());
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(e.getMessage());
             return result;
         }
         return resultStr;
@@ -246,6 +292,7 @@ public class DoctorController extends BaseUIController {
 
     /**
      * 删除医生
+     *
      * @param doctorId
      * @return
      */
@@ -266,18 +313,18 @@ public class DoctorController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     /**
      * 根据id获取医生
+     *
      * @param model
      * @param doctorId
      * @param mode
@@ -287,7 +334,7 @@ public class DoctorController extends BaseUIController {
      */
     @RequestMapping("getDoctor")
     public Object getDoctor(Model model, Long doctorId, String mode, HttpSession session) throws IOException {
-        String url = "/doctors/admin/"+doctorId;
+        String url = "/doctors/admin/" + doctorId;
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -298,36 +345,35 @@ public class DoctorController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
 
             Envelop ep = getEnvelop(resultStr);
-            DoctorDetailModel detailModel = toModel(toJson(ep.getObj()),DoctorDetailModel.class);
+            DoctorDetailModel detailModel = toModel(toJson(ep.getObj()), DoctorDetailModel.class);
 
             String imageOutStream = "";
             if (!StringUtils.isEmpty(detailModel.getPhoto())) {
 
-                params.put("object_id",detailModel.getId());
-                imageOutStream = HttpClientUtil.doGet(comUrl + "/files",params,username, password);
-                envelop = toModel(imageOutStream,Envelop.class);
+                params.put("object_id", detailModel.getId());
+                imageOutStream = HttpClientUtil.doGet(comUrl + "/files", params, username, password);
+                envelop = toModel(imageOutStream, Envelop.class);
 
-                if (envelop.getDetailModelList().size()>0){
+                if (envelop.getDetailModelList().size() > 0) {
                     session.removeAttribute("doctorImageStream");
-                    session.setAttribute("doctorImageStream",imageOutStream == null ? "" :envelop.getDetailModelList().get(envelop.getDetailModelList().size()-1));
+                    session.setAttribute("doctorImageStream", imageOutStream == null ? "" : envelop.getDetailModelList().get(envelop.getDetailModelList().size() - 1));
                 }
             }
 
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "user/doctor/doctorInfoDialog");
-            return "simpleView";
+            return "emptyView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     @RequestMapping("updDoctorStatus")
     @ResponseBody
     public Object updDoctorStatus(Long doctorId, String status) {
-        String url = "/doctors/admin/"+doctorId;
+        String url = "/doctors/admin/" + doctorId;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -339,19 +385,19 @@ public class DoctorController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                result.setErrorMsg("更新失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
 
     /**
      * 显示图片
+     *
      * @param timestamp
      * @param session
      * @param response
@@ -359,7 +405,7 @@ public class DoctorController extends BaseUIController {
      */
     @RequestMapping("showImage")
     @ResponseBody
-    public void showImage(String timestamp,HttpSession session, HttpServletResponse response) throws Exception {
+    public void showImage(String timestamp, HttpSession session, HttpServletResponse response) throws Exception {
 
         response.setContentType("text/html; charset=UTF-8");
         response.setContentType("image/jpeg");
@@ -381,12 +427,13 @@ public class DoctorController extends BaseUIController {
 
     /**
      * 图片上传
+     *
      * @param doctorId
      * @param inputStream
      * @param fileName
      * @return
      */
-    public String fileUpload(String doctorId,String inputStream,String fileName){
+    public String fileUpload(String doctorId, String inputStream, String fileName) {
 
         RestTemplates templates = new RestTemplates();
         Map<String, Object> params = new HashMap<>();
@@ -394,18 +441,53 @@ public class DoctorController extends BaseUIController {
         String fileId = null;
         if (!StringUtils.isEmpty(inputStream)) {
 
-            FileResourceModel fileResourceModel = new FileResourceModel(doctorId,"doctor","");
+            FileResourceModel fileResourceModel = new FileResourceModel(doctorId, "doctor", "");
             String fileResourceModelJsonData = toJson(fileResourceModel);
 
             params.put("file_str", inputStream);
             params.put("file_name", fileName);
-            params.put("json_data",fileResourceModelJsonData);
+            params.put("json_data", fileResourceModelJsonData);
             try {
-                fileId = HttpClientUtil.doPost(comUrl + "/files", params,username,password);
-            }catch (Exception e){
+                fileId = HttpClientUtil.doPost(comUrl + "/files", params, username, password);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return fileId;
+    }
+
+    @RequestMapping(value = "/getOrgDeptsDate", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object getOrgDeptByOrgId(String orgId) {
+        String url = "/org/getOrgDeptsDate";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> param = new HashMap<>();
+        param.put("orgId", orgId);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, param, username, password);
+            List<Object> data = toModel(resultStr, Envelop.class).getDetailModelList();
+            return toJson(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    @RequestMapping(value = "/getOrgDeptInfoList", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object getOrgDeptInfoList(String idCardNo) {
+        String url = "/org/userId/getOrgDeptInfoList";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> param = new HashMap<>();
+        param.put("idCardNo", idCardNo);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, param, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
+        }
     }
 }

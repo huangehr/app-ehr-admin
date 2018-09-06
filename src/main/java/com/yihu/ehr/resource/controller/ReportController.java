@@ -5,27 +5,33 @@ import com.yihu.ehr.agModel.resource.RsCategoryTypeTreeModel;
 import com.yihu.ehr.agModel.resource.RsReportModel;
 import com.yihu.ehr.agModel.resource.RsReportViewModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.model.resource.MChartInfoModel;
+import com.yihu.ehr.resource.service.ReportService;
 import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.datetime.DateTimeUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.*;
 
 import static com.yihu.ehr.util.HttpClientUtil.doGet;
 
@@ -45,6 +51,9 @@ public class ReportController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+
+    @Autowired
+    private ReportService reportService;
 
     @RequestMapping("/index")
     public String index(Model model) {
@@ -70,6 +79,16 @@ public class ReportController extends BaseUIController {
         }
         model.addAttribute("detailModel", toJson(detailModel));
         model.addAttribute("contentPage", "resource/report/detail");
+        return "emptyView";
+    }
+
+    /**
+     *
+     */
+    @RequestMapping(value = "selView")
+    public String selView(Model model, Integer id) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "resource/report/selView");
         return "simpleView";
     }
 
@@ -82,6 +101,17 @@ public class ReportController extends BaseUIController {
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "resource/report/setting");
         return "simpleView";
+    }
+
+    /**
+     *
+     */
+    @RequestMapping(value = "tmpViewSetting")
+    public String tmpViewSetting(Model model, Integer id, String code) {
+        model.addAttribute("id", id);
+        model.addAttribute("code", code);
+        model.addAttribute("contentPage", "resource/report/tmpViewSetting");
+        return "emptyView";
     }
 
     /**
@@ -130,8 +160,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReports, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -140,24 +169,36 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("/getViewsTreeData")
     @ResponseBody
-    public Object getViewsTreeData(String codeName, Integer reportId) {
+    public Object getViewsTreeData(String codeName, Integer reportId, HttpServletRequest request) {
         try {
-            String rsCategoryTreeStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.CategoryTree, username, password);
+            //从Session中获取用户的角色和和授权视图列表作为查询参数
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            List<String> userResourceList  = getUserResourceListRedis(request);
+            if (!isAccessAll) {
+                if (null == userResourceList || userResourceList.size() <= 0) {
+                    return failed("无权访问");
+                }
+            }
+            Map<String, Object> params = new HashMap<>();
+            if (isAccessAll) {
+                params.put("userResource", "*");
+            } else {
+                params.put("userResource", "auth");
+            }
+            String rsCategoryTreeStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.CategoryTree, params, username, password);
             List<Object> treeModelList = objectMapper.readValue(rsCategoryTreeStr, Envelop.class).getDetailModelList();
             List<RsCategoryTypeTreeModel> rsCategoryTypeTreeModelList = (List<RsCategoryTypeTreeModel>) this.getEnvelopList(treeModelList, new ArrayList<RsCategoryTypeTreeModel>(), RsCategoryTypeTreeModel.class);
-
-            this.setRsCategoryViews(rsCategoryTypeTreeModelList, reportId);
-
+            this.setRsCategoryViews(rsCategoryTypeTreeModelList, reportId, userResourceList, isAccessAll);
             return rsCategoryTypeTreeModelList;
         } catch (Exception e) {
             e.printStackTrace();
             LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(e.getMessage());
         }
     }
 
     // 设置视图类别拥有的视图
-    private void setRsCategoryViews(List<RsCategoryTypeTreeModel> rsCategoryTypeTreeModelList, Integer reportId) throws Exception {
+    private void setRsCategoryViews(List<RsCategoryTypeTreeModel> rsCategoryTypeTreeModelList, Integer reportId, List<String> userResourceList, boolean isAccessAll) throws Exception {
         Map<String, Object> params;
         RsCategoryTypeTreeModel rsCategoryTypeTreeModel;
         for (RsCategoryTypeTreeModel rsCategory : rsCategoryTypeTreeModelList) {
@@ -166,23 +207,23 @@ public class ReportController extends BaseUIController {
             String rsResourcesStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.NoPageResources, params, username, password);
             List<Object> rsResourcesList = objectMapper.readValue(rsResourcesStr, Envelop.class).getDetailModelList();
             List<RsResourcesModel> rsResourcesModelList = (List<RsResourcesModel>) this.getEnvelopList(rsResourcesList, new ArrayList<RsResourcesModel>(), RsResourcesModel.class);
-
             for (RsResourcesModel rsResources : rsResourcesModelList) {
-                rsCategoryTypeTreeModel = new RsCategoryTypeTreeModel();
-                rsCategoryTypeTreeModel.setId(rsResources.getId());
-                rsCategoryTypeTreeModel.setName(rsResources.getName());
-                rsCategoryTypeTreeModel.setPid(rsCategory.getId());
-                params = new HashMap<>();
-                params.put("reportId", reportId);
-                params.put("resourceId", rsResources.getId());
-                String ischeckedStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViewExist, params, username, password);
-                boolean ischecked = (Boolean) objectMapper.readValue(ischeckedStr, Envelop.class).getObj();
-                rsCategoryTypeTreeModel.setIschecked(ischecked);
-                rsCategory.getChildren().add(rsCategoryTypeTreeModel);
+                if (isAccessAll || (rsResources.getGrantType().equals("0") || userResourceList.contains(rsResources.getId()))) {
+                    rsCategoryTypeTreeModel = new RsCategoryTypeTreeModel();
+                    rsCategoryTypeTreeModel.setId(rsResources.getId());
+                    rsCategoryTypeTreeModel.setName(rsResources.getName());
+                    rsCategoryTypeTreeModel.setPid(rsCategory.getId());
+                    params = new HashMap<>();
+                    params.put("reportId", reportId);
+                    params.put("resourceId", rsResources.getId());
+                    String ischeckedStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViewExist, params, username, password);
+                    boolean ischecked = (Boolean) objectMapper.readValue(ischeckedStr, Envelop.class).getObj();
+                    rsCategoryTypeTreeModel.setIschecked(ischecked);
+                    rsCategory.getChildren().add(rsCategoryTypeTreeModel);
+                }
             }
-
             if (rsCategory.getChildren() != null && rsCategory.getChildren().size() != 0) {
-                setRsCategoryViews(rsCategory.getChildren(), reportId);
+                setRsCategoryViews(rsCategory.getChildren(), reportId, userResourceList, isAccessAll);
             }
         }
     }
@@ -199,8 +240,7 @@ public class ReportController extends BaseUIController {
             return doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -239,14 +279,14 @@ public class ReportController extends BaseUIController {
                 updateModel.setStatus(model.getStatus());
                 updateModel.setRemark(model.getRemark());
                 updateModel.setTemplatePath(model.getTemplatePath());
+                updateModel.setShowType(model.getShowType());
 
                 params.put("rsReport", objectMapper.writeValueAsString(updateModel));
                 return HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -262,8 +302,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doDelete(comUrl + ServiceApi.Resources.RsReportDelete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -281,8 +320,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportIsUniqueCode, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -300,8 +338,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportIsUniqueName, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -310,40 +347,35 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("upload")
     @ResponseBody
-    public Object upload(@RequestParam MultipartFile file, @RequestParam Integer id) {
+    public Object upload(Integer id, String name, HttpServletRequest request) {
         try {
             Envelop result = new Envelop();
 
-            Map<String, Object> uploadFileParams = FileUploadUtil.getParams(file.getInputStream(), file.getOriginalFilename());
+            Map<String, Object> uploadFileParams = FileUploadUtil.getParams(request.getInputStream(), name);
             String storagePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
 
-            if (!StringUtils.isEmpty(storagePath)) {
-                String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + id;
-                String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
-                Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
-                RsReportModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportModel.class);
-                updateModel.setTemplatePath(storagePath);
+            String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + id;
+            String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
+            Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
+            RsReportModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportModel.class);
+            updateModel.setTemplatePath(storagePath);
 
-                Map<String, Object> params = new HashMap<>();
-                params.put("rsReport", objectMapper.writeValueAsString(updateModel));
-                String envelopUpdateStr = HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("rsReport", objectMapper.writeValueAsString(updateModel));
+            String envelopUpdateStr = HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
 
-                Envelop envelopUpdate = objectMapper.readValue(envelopUpdateStr, Envelop.class);
-                if (envelopUpdate.isSuccessFlg()) {
-                    result.setSuccessFlg(true);
-                    result.setObj(storagePath);
-                } else {
-                    result.setSuccessFlg(false);
-                    result.setErrorMsg("文件保存失败！");
-                }
+            Envelop envelopUpdate = objectMapper.readValue(envelopUpdateStr, Envelop.class);
+            if (envelopUpdate.isSuccessFlg()) {
+                result.setSuccessFlg(true);
+                result.setObj(storagePath);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg("请上传非空文件！");
+                result.setErrorMsg("文件保存失败！");
             }
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            return failed("上传文件发生异常");
+            return failed("导入模版发生异常");
         }
     }
 
@@ -369,20 +401,22 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("getTemplateData")
     @ResponseBody
-    public Object getTemplateData(@RequestParam String reportCode) {
+    public Object getTemplateData(@RequestParam String reportCode, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         Map<String, Object> resultMap = new HashMap<>();
         List<Map<String, Object>> viewInfos = new ArrayList<>();
-        List<Map<String, Object>> options = new ArrayList<>();
         try {
+            List<String> userRolesList  = getUserRolesListRedis(request);
+            String roleId = objectMapper.writeValueAsString(userRolesList);
+
             // 获取报表模版内容
             params.put("reportCode", reportCode);
             String tcEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportTemplateContent, params, username, password);
             String templateContent = objectMapper.readValue(tcEnvelopStr, Envelop.class).getObj().toString();
             resultMap.put("templateContent", templateContent);
 
-            // 获取报表模版中图形option
+            // 获取报表视图
             params.clear();
             params.put("code", reportCode);
             String reportEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportFindByCode, params, username, password);
@@ -391,40 +425,63 @@ public class ReportController extends BaseUIController {
             params.put("reportId", rsReportModel.getId());
             String viewListEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
             String viewListStr = objectMapper.writeValueAsString(objectMapper.readValue(viewListEnvelopStr, Envelop.class).getDetailModelList());
-            List<RsReportViewModel> rsReportViewList = objectMapper.readValue(viewListStr, new TypeReference<List<RsReportViewModel>>(){});
+            List<RsReportViewModel> rsReportViewList = objectMapper.readValue(viewListStr, new TypeReference<List<RsReportViewModel>>() {
+            });
+
+            // 获取图形配置
             for (RsReportViewModel view : rsReportViewList) {
                 String resourceEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.Resources + "/" + view.getResourceId(), params, username, password);
                 RsResourcesModel rsResourcesModel = getEnvelopModel(objectMapper.readValue(resourceEnvelopStr, Envelop.class).getObj(), RsResourcesModel.class);
-                params.clear();
-                params.put("resourceId", view.getResourceId());
-                String queryEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.QueryByResourceId, params, username, password);
-                String queryStr = objectMapper.readValue(queryEnvelopStr, Envelop.class).getObj().toString();
-
-                if(rsResourcesModel.getDataSource() == 1) {
-                    // 档案数据的视图场合
-                    // todo
-                } else if (rsResourcesModel.getDataSource() == 2) {
-                    // 指标数据的视图场合
+                if (rsResourcesModel.getEchartType().equals("twoDimensional")){//特殊二维表报表
+                    //数据另外查询
+                } else {
                     params.clear();
-                    params.put("resourceId", view.getResourceId());
-                    String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
-                    List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {
-                    });
-                    for (MChartInfoModel chartInfo : chartInfoList) {
-                        Map<String, Object> option = new HashMap<>();
-                        option.put("quotaCode", chartInfo.getQuotaCode());
-                        option.put("option", chartInfo.getOption());
-                        options.add(option);
-                    }
+                    params.put("filters", "resourcesId=" + view.getResourceId() + ";paramKey=q");
+                    String queryStr = HttpClientUtil.doGet(adminInnerUrl + "/resource/api/v1.0/resources/params/no_paging", params, username, password);
+                    List<Map<String, String>> queryList = objectMapper.readValue(queryStr, List.class);
                     Map<String, Object> viewInfo = new HashMap<>();
-                    viewInfo.put("options", options); // 视图包含的指标echart图形的option。
-                    Map filter = objectMapper.readValue(queryStr, Map.class);
-                    viewInfo.put("filter", filter); // 视图数据过滤条件。
-                    viewInfos.add(viewInfo);
+                    Map<String, Object> conditions = translateViewCondition(rsResourcesModel.getDataSource(), queryList);
+                    viewInfo.put("conditions", conditions); // 视图数据过滤条件。
+                    List<Map<String, Object>> options = new ArrayList<>();
+                    if (rsResourcesModel.getDataSource() == 1) {
+                        // 档案视图场合
+                        viewInfo.put("type", "record");
+                        viewInfo.put("resourceCode", rsResourcesModel.getCode());
+                        viewInfo.put("searchParams", queryList.size() > 0 ? queryList.get(0).get("paramValue") : "[]");
+                        // 获取展示的列名
+                        params.clear();
+                        params.put("resourcesCode", rsResourcesModel.getCode());
+                        params.put("roleId", roleId);
+                        String rowsEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.ResourceBrowseResourceMetadata, params, username, password);
+                        List columns = objectMapper.readValue(rowsEnvelopStr, Envelop.class).getDetailModelList();
+                        viewInfo.put("columns", columns);
+                        viewInfos.add(viewInfo);
+                    } else if (rsResourcesModel.getDataSource() == 2) {
+                        // 指标视图场合
+                        viewInfo.put("type", "quota");
+                        viewInfo.put("resourceId", view.getResourceId());
+                        params.clear();
+                        params.put("resourceId", view.getResourceId());
+                        List<String> userOrgList  = getUserOrgSaasListRedis(request);
+                        params.put("userOrgList", userOrgList);
+                        params.put("quotaFilter", "");
+                        params.put("dimension", "");
+                        String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+                        Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
+                        String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());
+                        MChartInfoModel chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
+                        Map<String, Object> option = new HashMap<>();
+                        option.put("resourceCode", chartInfoModel.getResourceCode());
+                        option.put("resourceId", chartInfoModel.getResourceId());
+                        option.put("dimensionList", chartInfoModel.getDimensionMap());
+                        option.put("option", chartInfoModel.getOption());
+                        options.add(option);
+                        viewInfo.put("options", options); // 视图包含的指标echart图形的option。
+                        viewInfos.add(viewInfo);
+                    }
                 }
             }
             resultMap.put("viewInfos", viewInfos);
-
             envelop.setObj(resultMap);
             envelop.setSuccessFlg(true);
             return envelop;
@@ -434,4 +491,196 @@ public class ReportController extends BaseUIController {
         }
     }
 
+
+    @RequestMapping("getRsQuotaPreview")
+    @ResponseBody
+    public Object getRsQuotaPreview(@RequestParam String resourceId, HttpServletRequest request) {
+        Envelop envelop = new Envelop();
+        List<Map<String, Object>> options = new ArrayList<>();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.clear();
+            params.put("resourceId", resourceId);
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
+            params.put("userOrgList", userOrgList);
+            params.put("quotaFilter", "");
+            String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+            Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
+            String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());
+            MChartInfoModel chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
+
+            Map<String, Object> option = new HashMap<>();
+            option.put("resourceCode", chartInfoModel.getResourceCode());
+            option.put("resourceId", chartInfoModel.getResourceId());
+            option.put("option", chartInfoModel.getOption());
+            options.add(option);
+            envelop.setSuccessFlg(true);
+            envelop.setDetailModelList(options);
+        }catch (Exception e){
+            e.printStackTrace();
+            return failed("获取报表数据发生异常");
+        }
+        return envelop;
+    }
+
+    /**
+     * 获取报表 联动图形数据
+     * @param reportCode 报表code
+     * @param linkageResourceIdStr 联动视图Id串，多个用;拼接    改为只用于一个视图查询
+     * @param linkageFilter  联动视图条件，多个用;拼接 town=361102;quotaDate >= '2018-03-01' and quotaDate <= '2018-03-31'
+     * @param linkageDimension  联动维度
+     */
+    @RequestMapping("/getLinkageTemplateData")
+    @ResponseBody
+    public Object getLinkageTemplateData(@RequestParam(name="reportCode",required=false) String reportCode,
+                                         @RequestParam(name="linkageResourceIdStr",required=true) String linkageResourceIdStr,
+                                         @RequestParam(name="linkageFilter",required=false) String linkageFilter,
+                                         @RequestParam(name="linkageDimension",required=false)String linkageDimension,
+                                         @RequestParam(name="limitCondition",required=false)String limitCondition) {
+        String filter = "";
+
+        if(StringUtils.isNotEmpty(linkageFilter)){
+            String [] quotaFilters = linkageFilter.split(";");
+            for(int i = 0;i < quotaFilters.length; i++){
+                if(i == 0){
+                    filter = quotaFilters[0];
+                }else{
+                    filter += " and " + quotaFilters[i];
+                }
+            }
+        }
+        return reportService.getTemplateData(reportCode,linkageResourceIdStr,filter,linkageDimension, limitCondition);
+    }
+
+    /**
+     * 转换视图数据筛选条件
+     */
+    private Map<String, Object> translateViewCondition(Integer type, List<Map<String, String>> queryList) throws IOException, ParseException {
+        Map<String, Object> conditions = new HashMap<>();
+        if (type == 1) {
+            // 档案视图场合
+            for (int i = 0; i < queryList.size(); i++) {
+                List<Map<String, String>> paramList = objectMapper.readValue(queryList.get(i).get("paramValue"), List.class);
+                for (Map<String, String> filter : paramList) {
+                    String field = filter.get("field").toString();
+                    String condition = filter.get("condition").toString();
+                    String value = filter.get("value").toString();
+                    if ("event_date".equals(field)) {
+                        // 期间
+                        String date = DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(value));
+                        if (condition.contains(">")) {
+                            conditions.put("startDate", date);
+                        } else if (condition.contains("<")) {
+                            conditions.put("endDate", date);
+                        }
+                    }
+                    if ("EHR_000241".equals(field)) {
+                        // 地区
+                        conditions.put("area", value);
+                    }
+                }
+            }
+        } else if (type == 2) {
+            // 指标视图场合
+            for (int i = 0; i < queryList.size(); i ++) {
+                Map<String, String> filter = objectMapper.readValue(queryList.get(i).get("paramValue"), Map.class);
+                if (filter.get("startTime") != null) {
+                    // 起始日期
+                    String date = filter.get("startTime").toString();
+                    conditions.put("startDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
+                }
+                if (filter.get("endTime") != null) {
+                    // 终止日期
+                    String date = filter.get("endTime").toString();
+                    conditions.put("endDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
+                }
+                // 地区
+                String area = "";
+                if (filter.get("province") != null) {
+                    area += filter.get("province").toString();
+                }
+                if (filter.get("city") != null) {
+                    area += filter.get("city").toString();
+                }
+                if (filter.get("town") != null) {
+                    area += filter.get("town").toString();
+                }
+                conditions.put("area", area);
+            }
+        }
+        return conditions;
+    }
+
+    /**
+     * 生成模板
+     * @param id
+     * @param content
+     * @return
+     */
+    @RequestMapping("/uploadTemplate")
+    @ResponseBody
+    public Object uploadTemplate(Integer id, String content, String reportData, String position) {
+        try {
+            saveSetting(id, reportData);
+            Envelop result = new Envelop();
+            String filePath = this.getClass().getResource("/").getPath() + "temp/";
+            String fileName = System.currentTimeMillis() + "template.js";
+            // 生成模板
+            FileUploadUtil.createFile(filePath, fileName, content);
+            FileInputStream inputStream = new FileInputStream(filePath + fileName);
+            Map<String, Object> uploadFileParams = FileUploadUtil.getParams(inputStream, fileName);
+            String storagePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
+
+            String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + id;
+            String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
+            Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
+            RsReportModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportModel.class);
+            updateModel.setTemplatePath(storagePath);
+            // 设置报表中视图和位置的关系
+            updateModel.setPosition(position);
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("rsReport", objectMapper.writeValueAsString(updateModel));
+            String envelopUpdateStr = HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
+            // 删除临时文件
+            FileUploadUtil.delDir(filePath);
+
+            Envelop envelopUpdate = objectMapper.readValue(envelopUpdateStr, Envelop.class);
+            if (envelopUpdate.isSuccessFlg()) {
+                result.setSuccessFlg(true);
+                result.setObj(storagePath);
+            } else {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("保存失败！");
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed("生成模版发生异常");
+        }
+    }
+
+    @RequestMapping("/getPositionMapByCode")
+    @ResponseBody
+    public Object getPositionByCode(String code) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        params.put("code", code);
+        String chartInfoStr = HttpClientUtil.doGet(comUrl + "/resources/report/getPositionMapByCode", params, username, password);
+        return chartInfoStr;
+    }
+
+    @RequestMapping("/getTemplateContent")
+    @ResponseBody
+    public Object getTemplateContent(String reportCode) {
+        Map<String, Object> params = new HashMap<>();
+        try {
+            // 获取报表模版内容
+            params.put("reportCode", reportCode);
+            String templateContent = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportTemplateContent, params, username, password);
+            return templateContent ;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
 }

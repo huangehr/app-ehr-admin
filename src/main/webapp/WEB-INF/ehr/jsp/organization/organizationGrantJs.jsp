@@ -82,7 +82,7 @@
                         master.reloadGrid();
                     });
                     self.$newRecordBtn.click(function () {
-                        self.addOrgInfoDialog = $.ligerDialog.open({
+                        self.addOrgInfoDialog = parent._LIGERDIALOG.open({
                             height: 580,
                             width: 1050,
                             title: '新增机构信息',
@@ -98,7 +98,7 @@
                     this.grid = $("#div_org_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/organization/searchOrgs',
                         parms: {
-                            searchNm: '',
+                            searchParm: '',
                             searchType: '',
                             orgType: '',
                             province: '',
@@ -115,7 +115,7 @@
                             {
                                 display: '是否生/失效',
                                 name: 'activityFlagName',
-                                width: '8%',
+                                minWidth: 70,
                                 isAllowHide: false,
                                 render: function (row) {
                                     var html = '';
@@ -129,16 +129,16 @@
                                     return html;
                                 }
                             },
-                            {display: '入驻方式', name: 'settledWayName', width: '10%',hide: true, isAllowHide: false},
+                            {display: '入驻方式', name: 'settledWayName', width: '0.1%',hide: true, isAllowHide: false},
                             {
-                                display: '操作', name: 'operator', width: '15%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 130, render: function (row) {
                                 var html = '';
                                 html += '<sec:authorize url="/organization/dialog/orgDataGrant"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:orgDataGrant", row.orgCode, row.orgTypeName, row.fullName) + '">机构数据授权</a></sec:authorize>';
                                 return html;
                             }
                             },
-                            {name: 'activityFlag', hide: true, align: "center"},
-                            {name: 'settledWay', hide: true, align: "center"}
+                            {name: 'activityFlag', hide: true,width: '0.1%', align: "center"},
+                            {name: 'settledWay', hide: true,width: '0.1%', align: "center"}
                         ],
                         enabledEdit: true,
                         validate: true,
@@ -146,7 +146,7 @@
                         onDblClickRow: function (row) {
                             var mode = 'view';
                             var wait = $.Notice.waitting("请稍后...");
-                            row.orgInfoDialog = $.ligerDialog.open({
+                            row.orgInfoDialog = parent._LIGERDIALOG.open({
                                 height: 600,
                                 width: 1050,
                                 title: '机构基本信息',
@@ -208,7 +208,7 @@
                 bindEvents: function () {
                     var self = this;
                     $.subscribe('org:orgInfoDialog:activityFlg', function (event, orgCode, activityFlg,msg) {
-                        $.ligerDialog.confirm('是否对该机构进行'+msg+'操作', function (yes) {
+                        parent._LIGERDIALOG.confirm('是否对该机构进行'+msg+'操作', function (yes) {
                             if (yes) {
                                 self.activity(orgCode, activityFlg);
                             }
@@ -216,7 +216,7 @@
 
                     });
                     $.subscribe('org:orgInfoDialog:orgDataGrant', function (event, orgCode, orgTypeName, fullName) {
-                        self.orgDataGrantDialog= $.ligerDialog.open({
+                        self.orgDataGrantDialog= parent._LIGERDIALOG.open({
                             height: 600,
                             width: 800,
                             title: "机构数据授权",
@@ -235,10 +235,10 @@
             };
 
             /* ************************* Dialog页面回调接口 ************************** */
-            win.reloadMasterGrid = function () {
+            win.parent.reloadMasterGrid = win.reloadMasterGrid = function () {
                 master.reloadGrid();
             };
-            win.closeDialog = function () {
+            win.parent.closeDialog = function () {
                 master.orgInfoDialog.close();
             };
 

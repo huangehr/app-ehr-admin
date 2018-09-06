@@ -29,8 +29,23 @@ public class RsDictionaryMsgReader extends AExcelReader {
                 correct = true;
                 if ((rows = sheet.getRows()) == 0) continue;
                 p = new RsDictionaryMsg();
-                p.setCode(getCellCont(sheet, 0, 1));
-                p.setName(getCellCont(sheet, 1, 1));
+                //标识
+                if(null != getCellCont(sheet, 0, 1)){
+                    //replaceBlank去除空格、回车、换行、制表符
+                    p.setCode(replaceBlank(getCellCont(sheet, 0, 1)));
+                }else{
+                    p.setCode(getCellCont(sheet, 0, 1));
+                }
+
+                //名称
+                if(null != getCellCont(sheet, 1, 1)){
+                    //replaceBlank去除空格、回车、换行、制表符
+                    p.setName(replaceBlank(getCellCont(sheet, 1, 1)));
+                }else{
+                    p.setName(getCellCont(sheet, 1, 1));
+                }
+
+
                 p.setExcelSeq(j);
                 if (p.validate(repeat) == 0)
                     correct = false;
@@ -39,8 +54,23 @@ public class RsDictionaryMsgReader extends AExcelReader {
                 for (int i = 0; i < rows; i++) {
                     child = new RsDictionaryEntryMsg();
                     child.setDictCode(p.getCode());
-                    child.setCode(getCellCont(sheet, i, 3));
-                    child.setName(getCellCont(sheet, i, 4));
+                    //编码
+                    if(null != getCellCont(sheet, i, 3)){
+                        //replaceBlank去除空格、回车、换行、制表符
+                        child.setCode(replaceBlank(getCellCont(sheet, i, 3)));
+                    }else{
+                        child.setCode(getCellCont(sheet, i, 3));
+                    }
+
+                    //名称
+                    if(null != getCellCont(sheet, i, 4)){
+                        //replaceBlank去除空格、回车、换行、制表符
+                        child.setName(replaceBlank(getCellCont(sheet, i, 4)));
+                    }else{
+                        child.setName(getCellCont(sheet, i, 4));
+                    }
+
+
                     child.setExcelSeq(i);
                     int vrs = child.validate(childRepeat);
                     if (vrs == -1)

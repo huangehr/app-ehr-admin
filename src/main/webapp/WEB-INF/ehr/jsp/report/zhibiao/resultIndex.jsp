@@ -6,11 +6,6 @@
 <!-- ####### 页面部分 ####### -->
 
 <div id="div_wrapper" >
-  <div id="conditionArea" class="f-ml10" >
-    <div class="body-head f-h40" align="left">
-      <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/zhibiao/initial?quotaTypeNo=${quotaType}&name=${name}');"  class="f-fwb">返回上一层 </a>
-    </div>
-  </div>
   <!-- ####### 查询条件部分 ####### -->
   <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
     <div class="m-form-group f-mt10">
@@ -21,8 +16,8 @@
           <div class="m-form-control">
               <input type="text" id="inp_start_time" class="f-h28 f-w160" placeholder="起始时间"  data-attr-scan="startTime">
           </div>
-          <div class="m-form-control" style="margin-top: -15px;font-weight:bold;font-size:35px;"> ~ </div>
-          <div class="m-form-control">
+          <div class="m-form-control" style="margin-top: -2px;font-weight:bold;font-size:22px;vertical-align: middle;margin-right: 10px;margin-left: 10px;display: inline-block;"> ~ </div>
+          <div class="m-form-control" style="margin-right: 10px">
               <input type="text" id="inp_end_time" class="f-h28 f-w160" placeholder="截止时间" data-attr-scan="endTime">
           </div>
 
@@ -32,9 +27,12 @@
 
           <div class="m-form-control f-ml10 f-mb10">
             <!--下拉框-->
-            <input type="text" id="inp_location" data-type="comboSelect" data-attr-scan="location"/>
+            <input type="text" id="inp_location"placeholder="请输入地区" data-type="comboSelect" data-attr-scan="location"/>
           </div>
-
+          <div class="m-form-control f-ml10 f-mb10">
+            <!--下拉框-->
+            <input type="text" id="select" />
+          </div>
           <div class="m-form-control f-ml10 f-mb10">
             <sec:authorize url="/quota/searchResult">
               <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
@@ -46,7 +44,7 @@
         </div>
       </div>
 
+      <div id="div_quotaResult_grid" >
+      </div>
     </div>
 
-<div id="div_quotaResult_grid" >
-</div>

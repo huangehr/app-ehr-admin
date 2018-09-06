@@ -19,13 +19,13 @@
         {display: '名称', name: 'name',width: "43%", align: 'left', id: 'tree_id'},
         {display: '说明', name: 'description',width: "43%", align: 'left'},
         {
-          name: 'id', hide: true, render: function (rowdata) {
+          name: 'id', hide: true,width: "0.1%", render: function (rowdata) {
           var html = "<div id='" + rowdata.id + "' pid='" + rowdata.pid + "'></div>";
           return html;
         }
         },
         {
-          display: '操作', isSort: false, width: "14%", align: 'center', render: function (rowdata, rowindex, value) {
+          display: '操作', isSort: false, minWidth: 120, align: 'center', render: function (rowdata, rowindex, value) {
           var html = '';
           <sec:authorize url="/rscategory/typeupdate">
           html += "<a class='grid_edit' title='编辑' name='edit_click' style='' onclick='cateType.list.add(\"" + rowdata.id + "\", \"modify\")'></a> " ;
@@ -76,7 +76,7 @@
       // window.grid=u.grid=null;
       if (u.grid == null) {
         //$.LigerGridEx.config(
-        u.grid = $("#div_cate_type_grid").ligerGrid({
+        u.grid = $("#div_cate_type_grid").ligerGrid($.LigerGridEx.config({
           record: 'totalCount',
           root: 'detailModelList',
           pageSize: 15,
@@ -95,7 +95,8 @@
           checkbox: false,
           root: 'Rows',
           tree: {columnId: 'tree_id', height: '100%'}
-        });
+        }));
+        u.grid.adjustToWidth();
       }
       else {
         u.grid.reload(gridData);
@@ -106,27 +107,6 @@
       this.expandcateType();
       window.grid = u.grid;
     },
-
-    // expandcateType: function () {
-    //
-    //     var cateTypePid = sessionStorage.getItem('cateTypePid');
-    //     if ($.Util.isStrEmpty(cateTypePid)){
-    //         return;
-    //     }
-    //     var Pid = $("#" + cateTypePid).attr('pid');
-    //     var clickEle = $($($("#" + cateTypePid).parents('tr').children('td')[0]).find('.l-grid-tree-space'));
-    //     if (!$.Util.isStrEquals($(clickEle[clickEle.length-1]).attr('class').indexOf('l-grid-tree-link-close'), -1)) {
-    //         clickEle[clickEle.length-1].click();
-    //     }
-    //     while (Pid) {
-    //         clickEle = $($($("#" + Pid).parents('tr').children('td')[0]).find('.l-grid-tree-space'));
-    //         if (!$.Util.isStrEquals($(clickEle[clickEle.length-1]).attr('class').indexOf('l-grid-tree-link-close'), -1)) {
-    //             clickEle[clickEle.length-1].click();
-    //         }
-    //         Pid = $("#" + Pid).attr('pid');
-    //     }
-    //     sessionStorage.removeItem('cateTypePid');
-    // },
     expandcateType: function () {
       var Pid = sessionStorage.getItem('cateTypePid');
       if ($.Util.isStrEmpty(Pid)) return;
@@ -142,7 +122,7 @@
     },
 
     showDialog: function (_tital, _url, _height, _width, callback) {
-      cateType.list.dialog_cateType_detail = $.ligerDialog.open({
+      cateType.list.dialog_cateType_detail = parent._LIGERDIALOG.open({
         title: _tital,
         url: _url,
         height: _height,
@@ -151,7 +131,7 @@
       });
     },
     add: function (id, type) {
-      var _tital = type == "modify" ? "修改资源分类" : "新增资源分类";
+      var _tital = type == "modify" ? "修改视图分类" : "新增视图分类";
       var _url = cateType.list._url + "/rscategory/typeupdate?id=" + id;
       var callback = function () {
         cateType.list.getTypeList();
@@ -168,13 +148,13 @@
           if (data == null || data.length == 0) {
             cateType.list.doDeleted(id, "是否确定删除数据！");
           } else {
-            $.Notice.error("存在子节点不允许删除!");
+              parent._LIGERDIALOG.error("存在子节点不允许删除!");
           }
         }
       })
     },
     doDeleted: function (id, _text) {
-      $.Notice.confirm(_text, function (confirm) {
+        parent._LIGERDIALOG.confirm(_text, function (confirm) {
         if (confirm) {
           $.ajax({
             url: cateType.list._url + "/rscategory/delteCateTypeInfo",
@@ -186,15 +166,15 @@
 
                 var _res = eval(data);
                 if (_res.successFlg) {
-                  $.Notice.success("删除成功!");
+                    parent._LIGERDIALOG.success("删除成功!");
                   cateType.list.getTypeList();
                 }
                 else {
-                  $.Notice.error(_res.errorMsg);
+                    parent._LIGERDIALOG.error(_res.errorMsg);
                 }
               }
               else {
-                $.Notice.error('删除失败!');
+                  parent._LIGERDIALOG.error('删除失败!');
               }
             }
           })
@@ -218,7 +198,7 @@
           case 'btn_Delete_relation':
             var rows = cateType.list.grid.getSelecteds();
             if (rows.length == 0) {
-              $.Notice.error("请选择要删除的内容！");
+                parent._LIGERDIALOG.error("请选择要删除的内容！");
               return;
             }
             else {
@@ -293,7 +273,7 @@
             cateType.attr.getParentType(initValue, initText);
           }
           else {
-            $.Notice.error(result.errorMsg);
+              parent._LIGERDIALOG.error(result.errorMsg);
           }
         }
       })
@@ -322,16 +302,16 @@
             if (_res.successFlg) {
               var cateTypePid = dataJson.pid.getValue();
               sessionStorage.setItem("cateTypePid", cateTypePid);
-              $.ligerDialog.alert("保存成功", "提示", "success", function () {
+                parent._LIGERDIALOG.alert("保存成功", "提示", "success", function () {
                 cateType.list.dialog_cateType_detail.close();
               }, null);
             }
             else {
-              $.Notice.error(_res.errorMsg);
+                parent._LIGERDIALOG.error(_res.errorMsg);
             }
           }
           else {
-            $.Notice.error("保存失败！")
+              parent._LIGERDIALOG.error("保存失败！")
           }
         }
       })

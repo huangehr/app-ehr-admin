@@ -14,7 +14,6 @@
     /**
      * Created by AndyCai on 2015/11/19.
      */
-    debugger
     var cda = {};
     var Util = $.Util;
     cda.list = {
@@ -40,7 +39,7 @@
                 {display: '名称', name: 'name', align: 'left'},
                 {display: '说明', name: 'description', align: 'left'},
                 {
-                    display: '操作', isSort: false, width: 180, render: function (rowdata, rowindex, value) {
+                    display: '操作', isSort: false, minWidth: 180, render: function (rowdata, rowindex, value) {
 
                     var html = '';
                     <sec:authorize url="/cda/cdaRelationship">
@@ -125,18 +124,11 @@
 
                 "height": _height
             });
-            var _leftHeight = $(".l-layout-content").outerHeight() - $("#div_nav_breadcrumb_bar").outerHeight() * 2 - 19;
-            $("#div_left_tree").css({
-                "height": _leftHeight
-            });
             $("#div_left .l-text").css({
                 "margin-left": 50, "margin-top": -20
             });
             $("#div_right .l-text").css({
                 "margin-left": 100, "margin-top": -20
-            });
-            $("#div_right").css({
-                "width": $("#div_wrapper").width() - $("#div_left").width() - 10
             });
         },
         getVersionList: function () {
@@ -204,7 +196,7 @@
 
                     }
                 }));
-
+                u.grid.adjustToWidth();
                 window.grid = u.grid;
                 $(".l-grid-body2").css({
                     'overflow-x': 'hidden'
@@ -302,21 +294,13 @@
 
         showDialog: function (_tital, _url, _height, _width, callback) {
 
-            cda.list.dialog_cda_detail = $.ligerDialog.open({
+            cda.list.dialog_cda_detail = parent._LIGERDIALOG.open({
                 title: _tital,
                 url: _url,
                 height: _height,
                 width: _width,
                 onClosed: callback
             });
-//
-//        cda.list.top.dialog_cda_detail = $.ligerDialog.open({
-//            title: _tital,
-//            url: _url,
-//            height: _height,
-//            width: _width,
-//            onClosed: callback
-//        });
         },
 
         addCdaInfo: function () {
@@ -353,17 +337,17 @@
         deleteCda: function (ids) {
 
             if (!cda.list.versionStage) {
-                $.Notice.error("已发布版本不可删除，请确认!");
+                parent._LIGERDIALOG.error("已发布版本不可删除，请确认!");
                 return;
             }
 
             if (ids == null || ids == "") {
-                $.Notice.error("请先选择需要删除的CDA!");
+                parent._LIGERDIALOG.error("请先选择需要删除的CDA!");
                 return;
             }
             var strVersionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
 
-            $.Notice.confirm('删除CDA将连同一起删除CDA数据集关系,是否确定删除该CDA?', function (confirm) {
+            parent._LIGERDIALOG.confirm('删除CDA将连同一起删除CDA数据集关系,是否确定删除该CDA?', function (confirm) {
                 if (confirm) {
                     $.ajax({
                         url: cda.list._url + "/cda/deleteCdaInfo",
@@ -375,15 +359,15 @@
 
                                 var _res = eval(data);
                                 if (_res.successFlg) {
-                                    $.Notice.success("删除成功!");
+                                    parent._LIGERDIALOG.success("删除成功!");
                                     cda.list.getCDAList(Util.checkCurPage.call(cda.list.grid, ids.split(',').length));
                                 }
                                 else {
-                                    $.Notice.error(_res.errorMsg);
+                                    parent._LIGERDIALOG.error(_res.errorMsg);
                                 }
                             }
                             else {
-                                $.Notice.error('删除失败!');
+                                parent._LIGERDIALOG.error('删除失败!');
                             }
                         }
                     })
@@ -395,7 +379,7 @@
 
             $("#btn_create").click(function () {
                 if (!cda.list.versionStage) {
-                    $.Notice.error("已发布版本不可新增，请确认!");
+                    parent._LIGERDIALOG.error("已发布版本不可新增，请确认!");
                     return;
                 }
                 cda.list.addCdaInfo();
@@ -404,13 +388,13 @@
 
                 console.log(cda.list.versionStage);
                 if (!cda.list.versionStage) {
-                    $.Notice.error("已发布版本不可删除，请确认!");
+                    parent._LIGERDIALOG.error("已发布版本不可删除，请确认!");
                     return;
                 }
 
                 var rows = cda.list.grid.getSelecteds();
                 if (rows.length == 0) {
-                    $.Notice.error("请选择要删除的内容！");
+                    parent._LIGERDIALOG.error("请选择要删除的内容！");
                     return;
                 }
                 else {
@@ -433,14 +417,14 @@
 
                             var _res = eval(data);
                             if (_res.successFlg) {
-                                $.Notice.success("操作成功！");
+                                parent._LIGERDIALOG.success("操作成功！");
                             }
                             else {
-                                $.Notice.error(_res.errorMsg);
+                                parent._LIGERDIALOG.error(_res.errorMsg);
                             }
                         }
                         else {
-                            $.Notice.error('删除失败!');
+                            parent._LIGERDIALOG.error('删除失败!');
                         }
                     }
                 })
@@ -581,7 +565,7 @@
                         cda.attr.cda_form.Fields.fillValues(info);
                     }
                     else {
-                        $.Notice.error(result.errorMsg);
+                        parent._LIGERDIALOG.error(result.errorMsg);
                     }
                 }
             })
@@ -605,13 +589,13 @@
                     if (data != null) {
                         var _res = eval(data);
                         if (_res.successFlg) {
-                            $.ligerDialog.alert("保存成功!", "提示", "success", function () {
+                            parent._LIGERDIALOG.alert("保存成功!", "提示", "success", function () {
                                 cda.list.dialog_cda_detail.close();
 //                  cda.list.top.dialog_cda_detail.close();
                             }, null);
                         }
                         else {
-                            $.Notice.error(_res.errorMsg);
+                            parent._LIGERDIALOG.error(_res.errorMsg);
                         }
                     }
                     else {
@@ -646,13 +630,13 @@
                 data: {strDatasetIds: u.relationIds, strCdaId: cdaId, strVersionCode: strVersionCode, xmlInfo: xmlInfo},
                 success: function (data) {
                     if (data.successFlg) {
-                        $.ligerDialog.alert("保存成功!", "提示", "success", function () {
+                        parent._LIGERDIALOG.alert("保存成功!", "提示", "success", function () {
                             cda.list.dialog_cda_detail.close();
 //                cda.list.top.dialog_cda_detail.close();
                         }, null);
                     }
                     else {
-                        $.Notice.error("保存失败");
+                        parent._LIGERDIALOG.error("保存失败");
                     }
                 }
             });
@@ -719,7 +703,7 @@
                     wait.close();
                 },
                 error: function (request) {
-                    $.Notice.error("请求数据错误!");
+                    parent._LIGERDIALOG.error("请求数据错误!");
                     wait.close();
                 }
 
@@ -739,7 +723,7 @@
                     }
                 },
                 error: function (requert) {
-                    $.Notice.error("请求数据错误!");
+                    parent._LIGERDIALOG.error("请求数据错误!");
                 }
             })
         },

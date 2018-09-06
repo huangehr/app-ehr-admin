@@ -3,14 +3,19 @@ package com.yihu.ehr.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
+import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.dict.controller.SystemDictController;
 import com.yihu.ehr.geography.controller.AddressController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.http.HttpResponse;
+import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -22,12 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,10 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author zlf
@@ -64,10 +61,18 @@ public class UserController extends BaseUIController {
 
     @Autowired
     private AddressController addressController;
+    @Autowired
+    private UserRolesController userRolesController;
 
     @RequestMapping("initial")
     public String userInitial(Model model) {
         model.addAttribute("contentPage", "user/user");
+        return "pageView";
+    }
+
+    @RequestMapping("userType")
+    public String userTypeInitial(Model model) {
+        model.addAttribute("contentPage", "user/roles/userType");
         return "pageView";
     }
 
@@ -80,44 +85,50 @@ public class UserController extends BaseUIController {
     @RequestMapping("addUserInfoDialog")
     public String addUser(Model model) {
         model.addAttribute("contentPage", "user/addUserInfoDialog");
-        return "generalView";
+        return "emptyView";
     }
 
     @RequestMapping("searchUsers")
     @ResponseBody
-    public Object searchUsers(String searchNm,String searchOrg, String searchType, int page, int rows) {
+    public Object searchUsers(String searchNm,String searchOrg, String searchType, int page, int rows, HttpServletRequest request) {
 
         String url = "/users";
         String resultStr = "";
         Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-
-        StringBuffer stringBuffer = new StringBuffer();
-        if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName"+ PageParms.LIKE + searchNm );
-        }
-        if (!StringUtils.isEmpty(searchOrg)) {
-            stringBuffer.append("organization=" + searchOrg);
-        }
-        if (!StringUtils.isEmpty(searchType)) {
-            stringBuffer.append("userType=" + searchType);
-        }
-
-        params.put("filters", "");
-        String filters = stringBuffer.toString();
-        if (!StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
-        }
-
-        params.put("page", page);
-        params.put("size", rows);
         try {
+            Map<String, Object> params = new HashMap<>();
+
+            StringBuffer stringBuffer = new StringBuffer();
+            if (!StringUtils.isEmpty(searchNm)) {
+                stringBuffer.append("realName"+ PageParms.LIKE + searchNm + ";");
+            }
+            if (!StringUtils.isEmpty(searchOrg)) {
+                stringBuffer.append("organization=" + searchOrg + ";");
+            }
+            if (!StringUtils.isEmpty(searchType)) {
+                stringBuffer.append("userType=" + searchType + ";");
+            }
+
+            params.put("filters", "");
+            String filters = stringBuffer.toString();
+            if (!StringUtils.isEmpty(filters)) {
+                params.put("filters", filters);
+            }
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
+            if (null != userOrgList && userOrgList.size() > 0 && "-NoneOrg".equalsIgnoreCase(userOrgList.get(0))) {
+                envelop.setSuccessFlg(true);
+                return envelop;
+            } else if (null != userOrgList && userOrgList.size() > 0) {
+                String orgCode = String.join(",", userOrgList);
+                params.put("orgCode", orgCode);
+            }
+            params.put("page", page);
+            params.put("size", rows);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            LogService.getLogger(UserController.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -138,14 +149,12 @@ public class UserController extends BaseUIController {
             if (result.isSuccessFlg()) {
                 result.setSuccessFlg(true);
             } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                return failed("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            LogService.getLogger(UserController.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -164,14 +173,12 @@ public class UserController extends BaseUIController {
             if (Boolean.parseBoolean(resultStr)) {
                 result.setSuccessFlg(true);
             } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                return failed("更新失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -179,7 +186,6 @@ public class UserController extends BaseUIController {
     @RequestMapping(value = "updateUser", produces = "text/html;charset=UTF-8")
     @ResponseBody
     public Object updateUser(String userModelJsonData,HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String url = "/user/";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -190,6 +196,7 @@ public class UserController extends BaseUIController {
         String userJsonDataModel = URLDecoder.decode(userModelJsonData,"UTF-8");
         UserDetailModel userDetailModel = mapper.readValue(userJsonDataModel, UserDetailModel.class);
 
+        // 个人头象图片信息上传
         request.setCharacterEncoding("UTF-8");
         InputStream inputStream = request.getInputStream();
         String imageName = request.getParameter("name");
@@ -201,9 +208,9 @@ public class UserController extends BaseUIController {
             fileBuffer = ArrayUtils.addAll(fileBuffer,ArrayUtils.subarray(tempBuffer,0,temp));
         }
         inputStream.close();
-
         String restStream = Base64.getEncoder().encodeToString(fileBuffer);
 
+        // 用户信息新增开始
         try {
             if (!StringUtils.isEmpty(userDetailModel.getId())) {
                 //修改
@@ -236,7 +243,7 @@ public class UserController extends BaseUIController {
                 userModel.setAreaId(userDetailModel.getAreaId());
                 userModel.setAreaName(userDetailModel.getAreaName());
                 userModel.setStreet(userDetailModel.getStreet());
-                if(userDetailModel.getUserType().equals("Doctor")){
+                if("Doctor".equals(userDetailModel.getUserType())){
                     userModel.setMajor(userDetailModel.getMajor());
                 }
                 String imageId = fileUpload(userModel.getId(),restStream,imageName);
@@ -255,17 +262,13 @@ public class UserController extends BaseUIController {
             }else{
 
                 params.add("user_json_data", userJsonDataModel);
-
                 resultStr = templates.doPost(comUrl + url, params);
-
                 envelop = toModel(resultStr,Envelop.class);
                 UserDetailModel addUserModel = toModel(toJson(envelop.getObj()),UserDetailModel.class);
-
                 String imageId = fileUpload(addUserModel.getId(),restStream,imageName);
 
                 if (!StringUtils.isEmpty(imageId)){
                     addUserModel.setImgRemotePath(imageId);
-
                     String userData = templates.doGet(comUrl + "/users/admin/"+addUserModel.getId());
                     envelop = mapper.readValue(userData,Envelop.class);
                     String userJsonModel = mapper.writeValueAsString(envelop.getObj());
@@ -278,14 +281,108 @@ public class UserController extends BaseUIController {
                     resultStr = templates.doPut(comUrl + url, params);
 
                 }
-
             }
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
 
+    }
+
+    @RequestMapping(value = "updateUserAndInitRoles")
+    @ResponseBody
+    public Object updateUserAndInitRoles(String userModelJsonData, String orgModel, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // 1、参数初始化
+        String url = "/user/";
+        String resultStr = "";
+        String userId = "";
+        Envelop envelop = new Envelop();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        RestTemplates templates = new RestTemplates();
+
+        // 2、界面数据获取
+        String userJsonDataModel = URLDecoder.decode(userModelJsonData,"UTF-8");
+        UserDetailModel userDetailModel = mapper.readValue(userJsonDataModel, UserDetailModel.class);
+        String userType = userDetailModel.getUserType().toString();
+
+        // 3、个人头象图片信息上传
+        request.setCharacterEncoding("UTF-8");
+        InputStream inputStream = request.getInputStream();
+        String imageName = request.getParameter("name");
+
+        int temp = 0;
+        byte[] tempBuffer = new byte[1024];
+        byte[] fileBuffer = new byte[0];
+        while ((temp = inputStream.read(tempBuffer)) != -1) {
+            fileBuffer = ArrayUtils.addAll(fileBuffer,ArrayUtils.subarray(tempBuffer,0,temp));
+        }
+        inputStream.close();
+        String restStream = Base64.getEncoder().encodeToString(fileBuffer);
+
+        // 4、更新用户信息
+        try {
+            // 4-1、当用户信息存在的情况，调用修改方法
+            if (!StringUtils.isEmpty(userDetailModel.getId())) {
+                // 获取现有的用户数据
+                userId = userDetailModel.getId().toString();
+                String getUser = templates.doGet(comUrl + "/users/admin/"+userDetailModel.getId());
+                envelop = mapper.readValue(getUser,Envelop.class);
+                String userJsonModel = mapper.writeValueAsString(envelop.getObj());
+                UserDetailModel userModel = mapper.readValue(userJsonModel,UserDetailModel.class);
+                // 将界面上的维护信息维护到现有的数据中
+                userModel.setRealName(userDetailModel.getRealName());
+                userModel.setIdCardNo(userDetailModel.getIdCardNo());
+                userModel.setGender(userDetailModel.getGender());
+                userModel.setEmail(userDetailModel.getEmail());
+                userModel.setTelephone(userDetailModel.getTelephone());
+                userModel.setUserType(userType);
+                userModel.setImgLocalPath("");
+                // 基于传入的角色列表进行授权的维护，更新role_user,user_app表
+                userModel.setRole(userDetailModel.getRole());
+                String imageId = fileUpload(userModel.getId(),restStream,imageName);
+                if (!StringUtils.isEmpty(imageId)){
+                    userModel.setImgRemotePath(imageId);
+                }
+                userJsonDataModel = toJson(userModel);
+                params.add("user_json_data", userJsonDataModel);
+
+                resultStr = templates.doPut(comUrl + url, params);
+            }else{
+                //4-2、当用户信息不存在的情况，调用新增的方法
+                params.add("user_json_data", userJsonDataModel);
+                resultStr = templates.doPost(comUrl + url, params);
+                envelop = toModel(resultStr,Envelop.class);
+                UserDetailModel addUserModel = toModel(toJson(envelop.getObj()),UserDetailModel.class);
+                String imageId = fileUpload(addUserModel.getId(),restStream,imageName);
+                userId = addUserModel.getId().toString();
+
+                if (!StringUtils.isEmpty(imageId)){
+                    addUserModel.setImgRemotePath(imageId);
+                    String userData = templates.doGet(comUrl + "/users/admin/"+addUserModel.getId());
+                    envelop = mapper.readValue(userData,Envelop.class);
+                    String userJsonModel = mapper.writeValueAsString(envelop.getObj());
+                    UserDetailModel userModel = mapper.readValue(userJsonModel,UserDetailModel.class);
+                    userModel.setImgRemotePath(imageId);
+                    params.remove("user_json_data");
+                    params.add("user_json_data",toJson(userModel));
+
+                    resultStr = templates.doPut(comUrl + url, params);
+                }
+            }
+            //4-3、进行用户机构关联关系维护
+            envelop = userRolesController.initUserOrgRelation( userId, orgModel);
+            if(!envelop.isSuccessFlg()){
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("初始化授权失败，请联系管理员进行手动授权操作！");
+                return envelop.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
+        }
+        return resultStr;
     }
 
     public String fileUpload(String userId,String inputStream,String fileName){
@@ -315,7 +412,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("resetPass")
     @ResponseBody
-    public Object resetPass(String userId,@ModelAttribute(SessionAttributeKeys.CurrentUser) UserDetailModel userDetailModel) {
+    public Object resetPass(String userId,@ModelAttribute(SessionAttributeKeys.CurrentUser) UsersModel userDetailModel) {
         String url = "/users/password/"+userId;
         String resultStr = "";
         Envelop result = new Envelop();
@@ -327,25 +424,22 @@ public class UserController extends BaseUIController {
                 result.setSuccessFlg(true);
                 result.setObj(userDetailModel.getId()); //重置到当前用户时需重登
             } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                return failed("更新失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     @RequestMapping("getUser")
-    public Object getUser(Model model, String userId, String mode, HttpSession session) throws IOException {
+    public Object getUser(Model model, String userId, String mode, HttpSession session,HttpServletRequest request) throws IOException {
         String url = "/users/admin/"+userId;
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
-
         params.put("userId", userId);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -365,11 +459,10 @@ public class UserController extends BaseUIController {
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "user/userInfoDialog");
-            return "simpleView";
+            return "emptyView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -387,39 +480,35 @@ public class UserController extends BaseUIController {
             if (Boolean.parseBoolean(resultStr)) {
                 result.setSuccessFlg(true);
             } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                return failed("更新失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     @RequestMapping("distributeKey")
     @ResponseBody
-    public Object distributeKey(String loginCode) {
-        String getUserUrl = "/users/key/"+loginCode;
+    public Object distributeKey(String loginCode, HttpServletRequest request) throws IOException{
+        String getUserUrl = "/user/key";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-
-        params.put("loginCode", loginCode);
+        UsersModel user = getCurrentUserRedis(request);
+        params.put("userId", user.getId());
         try {
             resultStr = HttpClientUtil.doPut(comUrl + getUserUrl, params, username, password);
             if (!StringUtils.isEmpty(resultStr)) {
                 envelop.setObj(resultStr);
                 envelop.setSuccessFlg(true);
             } else {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                return failed("更新失败");
             }
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
         return envelop;
@@ -439,11 +528,9 @@ public class UserController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + getUserUrl, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-
     }
 
     @RequestMapping("showImage")
@@ -454,20 +541,17 @@ public class UserController extends BaseUIController {
         response.setContentType("image/jpeg");
         OutputStream outputStream = null;
         String fileStream = (String) session.getAttribute("userImageStream");
-
-//        String imageStream = URLDecoder.decode(fileStream,"UTF-8");
-
         try {
             outputStream = response.getOutputStream();
-
             byte[] bytes = Base64.getDecoder().decode(fileStream);
             outputStream.write(bytes);
             outputStream.flush();
         } catch (IOException e) {
             LogService.getLogger(UserController.class).error(e.getMessage());
         } finally {
-            if (outputStream != null)
+            if (outputStream != null){
                 outputStream.close();
+              }
         }
     }
 
@@ -478,7 +562,7 @@ public class UserController extends BaseUIController {
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("user_id",userId);
+        params.put("userId",userId);
         params.put("password",passWord);
 
         try {
@@ -514,6 +598,21 @@ public class UserController extends BaseUIController {
         return "simpleView";
     }
 
+
+    /**
+     * 选择机构部门
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("appRoleGroup")
+    public String appRoleGroup(String roles, String type, Model model) {
+        model.addAttribute("roles", roles);
+        model.addAttribute("type", type);
+        model.addAttribute("contentPage", "app/approle/appRoleGroup");
+        return "emptyView";
+    }
+
     //获取应用-用户角色组关系列表,用于查看权限
     @RequestMapping("/appRoles")
     @ResponseBody
@@ -530,9 +629,9 @@ public class UserController extends BaseUIController {
             params.put("user_id",userId);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -561,7 +660,7 @@ public class UserController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -585,7 +684,7 @@ public class UserController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -602,9 +701,8 @@ public class UserController extends BaseUIController {
             Envelop envelop = objectMapper.readValue(resultStr,Envelop.class);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -628,68 +726,174 @@ public class UserController extends BaseUIController {
         return false;
     }
 
+    /**
+     * 通过系统设置字典获取准确的位置信息
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/getDistrictByUserId")
     @ResponseBody
-    public Object getDistrictByUserId() {
-       /* HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpSession session = request.getSession();
-        UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
-        String url = "/getDistrictByUserId";
-        String resultStr = "";
-        Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId",user.getId());
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
-        } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
-        }*/
-        String url = "/geography_entries/pid/350200";
-        String resultStr = "";
-        Envelop result = new Envelop();
-        try{
-            resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
-            ObjectMapper mapper = new ObjectMapper();
-            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
-            if (envelop.isSuccessFlg()) {
-                result.setObj(envelop.getDetailModelList());
-                result.setSuccessFlg(true);
-                return result;
-            }else{
-                result.setSuccessFlg(false);
-                return result;
-            }
-        } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+    public Envelop getDistrictByUserId() throws Exception {
+        Integer systemSettingId = getSystemSettingId();
+        if (null == systemSettingId) {
+            return failed("获取系统设置信息失败");
         }
+        String currentCityUrl = "/dictionaries/entries";
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("filters", "dictId=" + systemSettingId + ";code=CITY");
+        params.put("page", 1);
+        params.put("size", 1);
+        HttpResponse httpResponse = HttpUtils.doGet(comUrl + currentCityUrl,  params, null);
+        if(httpResponse.isSuccessFlg()) {
+            Envelop envelop = objectMapper.readValue(httpResponse.getContent(), Envelop.class);
+            if (envelop.isSuccessFlg() && envelop.getDetailModelList().size() > 0) {
+                List<Map<String, Object>> systemDictEntryModelList = envelop.getDetailModelList();
+                String cityId = systemDictEntryModelList.get(0).get("value").toString();
+                String url = "/geography_entries/pid/" + cityId;
+                Envelop result = new Envelop();
+                HttpResponse httpResponse1 = HttpUtils.doGet(comUrl + url, null);
+                if (httpResponse1.isSuccessFlg()) {
+                    Envelop envelop2 = objectMapper.readValue(httpResponse1.getContent(), Envelop.class);
+                    if (envelop2.isSuccessFlg()) {
+                        result.setSuccessFlg(true);
+                        result.setObj(envelop2.getDetailModelList());
+                        return result;
+                    }else{
+                        return  failed(envelop.getErrorMsg());
+                    }
+                }else {
+                    failed(httpResponse1.getErrorMsg());
+                }
+            }else {
+                return failed(envelop.getErrorMsg());
+            }
+        }
+        return failed(httpResponse.getErrorMsg());
     }
+
 
     @RequestMapping(value = "/getOrgByUserId")
     @ResponseBody
-    public Object getOrgByUserId() {
-        /*HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpSession session = request.getSession();
-        UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
-        String url = "/getOrgByUserId";
+    public Envelop getOrgByUserId() throws Exception {
+        Integer systemSettingId = getSystemSettingId();
+        if (null == systemSettingId) {
+            return failed("获取系统设置信息失败");
+        }
+        String currentCityUrl = "/dictionaries/entries";
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("filters", "dictId=" + systemSettingId + ";code=CITY");
+        params.put("page", 1);
+        params.put("size", 1);
+        HttpResponse httpResponse = HttpUtils.doGet(comUrl + currentCityUrl,  params, null);
+        if(httpResponse.isSuccessFlg()) {
+            Envelop envelop = objectMapper.readValue(httpResponse.getContent(), Envelop.class);
+            if (envelop.isSuccessFlg() && envelop.getDetailModelList().size() > 0) {
+                List<Map<String, Object>> systemDictEntryModelList = envelop.getDetailModelList();
+                String cityId = systemDictEntryModelList.get(0).get("value").toString();
+                params.clear();
+                params.put("pid", cityId);
+                String orgUrl = "/organizations/getOrgListByAddressPid";
+                HttpResponse httpResponse1 = HttpUtils.doGet(comUrl + orgUrl, params);
+                if (httpResponse1.isSuccessFlg()) {
+                    Envelop envelop2 = objectMapper.readValue(httpResponse1.getContent(), Envelop.class);
+                    envelop2.setObj(envelop2.getDetailModelList());
+                    return envelop2;
+                }else {
+                    return failed(httpResponse1.getErrorMsg());
+                }
+            }else {
+                return failed(envelop.getErrorMsg());
+            }
+        }
+        return failed(httpResponse.getErrorMsg());
+    }
+
+    @RequestMapping("searchDictEntry")
+    @ResponseBody
+    public String searchDictEntryList(Long dictId, Integer page, Integer rows) {
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("userId",user.getId());
+
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!org.springframework.util.StringUtils.isEmpty(dictId)) {
+            stringBuffer.append("dictId=" + dictId);
+        }
+        String filters = stringBuffer.toString();
+        params.put("filters", "");
+        if (!org.springframework.util.StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        params.put("page", page);
+        params.put("size", rows);
+
         try {
+            String url ="/dictionaries/entries";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
-        } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
-        }*/
-        Envelop envelop = new Envelop();
-        envelop = (Envelop)addressController.getOrgs("福建省", "厦门市");
-        return envelop;
+            result = objectMapper.readValue(resultStr, Envelop.class);
+            SystemDictEntryModel systemDictEntryModel = new SystemDictEntryModel();
+            if(null != result.getDetailModelList() && result.getDetailModelList().size()>0){
+                systemDictEntryModel = getEnvelopModel(result.getDetailModelList().get(0),SystemDictEntryModel.class);
+            }
+            return systemDictEntryModel.getCode();
+        } catch (Exception ex){
+            LogService.getLogger(SystemDictEntryModel.class).error(ex.getMessage());
+            return "查询字典项失败！";
+        }
     }
+
+    /**
+     * 获取城市
+     * @param pid
+     * @return
+     */
+    public String getAdressDictChildByParent(Integer pid) {
+        String url = "/geography_entries/pid/";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("pid",pid);
+        try{
+            resultStr = HttpClientUtil.doGet(comUrl + url + pid, params, username, password);
+            ObjectMapper mapper = new ObjectMapper();
+            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+            String str="";
+            if(null != envelop && envelop.getDetailModelList().size()>0){
+                for(Object object : envelop.getDetailModelList()){
+                    str = str + ((LinkedHashMap) object).get("id").toString()+",";
+                }
+               str = str.substring(0,str.length()-1)+"";
+            }
+            return str;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    public Envelop searchOrgs(String administrativeDivision) {
+        Envelop envelop = new Envelop();
+        try {
+            //分页查询机构列表
+            String url = "/organizations/combo";
+            String filters = "";
+            Map<String, Object> params = new HashMap<>();
+
+            if (!org.springframework.util.StringUtils.isEmpty(administrativeDivision)) {
+                filters += "administrativeDivision=" + administrativeDivision + ";";
+            }
+            params.put("fields", "");
+            params.put("filters", filters);
+            params.put("sorts", "-createDate");
+            params.put("size", 999);
+            params.put("page", 1);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = objectMapper.readValue(resultStr,Envelop.class);
+            envelop.setCurrPage(0);
+            return envelop;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
 }

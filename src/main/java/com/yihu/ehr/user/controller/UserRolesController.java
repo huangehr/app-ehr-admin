@@ -2,16 +2,17 @@ package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
-import com.yihu.ehr.agModel.resource.RsReportCategoryInfoModel;
 import com.yihu.ehr.agModel.resource.RsRolesResourceModel;
 import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
+import com.yihu.ehr.agModel.user.RoleOrgModel;
 import com.yihu.ehr.agModel.user.RoleUserModel;
 import com.yihu.ehr.agModel.user.RolesModel;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.model.resource.MRsRolesResource;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.http.HttpResponse;
+import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.url.URLQueryBuilder;
@@ -20,6 +21,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -57,69 +59,83 @@ public class UserRolesController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/rolesBatchAddInitial")
+    public String rolesBatchAddInitial(Model model, String appId) {
+        model.addAttribute("contentPage", "user/roles/rolesBatchAddDialog");
+        model.addAttribute("appId", appId);
+        Envelop envelop = new Envelop();
+        return "emptyView";
+    }
+
     @RequestMapping("/rolesInfoInitial")
-    public String rolesInfoInitial(Model model, String id, String mode,String appId) {
+    public String rolesInfoInitial(Model model, String id, String mode, String appId) {
         model.addAttribute("contentPage", "user/roles/rolesInfoDialog");
         model.addAttribute("mode", mode);
-        model.addAttribute("appId",appId);
+        model.addAttribute("appId", appId);
         Envelop envelop = new Envelop();
         String en = "";
-        try {
-            en = objectMapper.writeValueAsString(envelop);
-            String url = "/roles/role/" + id;
-            String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
-            model.addAttribute("envelop", envelopStr);
-        } catch (Exception ex) {
-            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            model.addAttribute("envelop", en);
+        if (mode.equals("new")) {
+            model.addAttribute("envelop", "{  \"obj\": \"\"}");
+        } else {
+            try {
+                en = objectMapper.writeValueAsString(envelop);
+                String url = "/roles/role/" + id;
+                String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
+                model.addAttribute("envelop", envelopStr);
+            } catch (Exception ex) {
+                LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+                model.addAttribute("envelop", en);
+            }
         }
-        return "simpleView";
+        return "emptyView";
     }
+
     //角色组增改
     @RequestMapping("/update")
     @ResponseBody
     public Object rolesUpdate(String dataJson, String mode) {
         String url = ServiceApi.Roles.Role;
-        try{
-            RolesModel model = objectMapper.readValue(dataJson,RolesModel.class);
-            if(StringUtils.isEmpty(model.getName())){
+        try {
+            RolesModel model = objectMapper.readValue(dataJson, RolesModel.class);
+            if (StringUtils.isEmpty(model.getName())) {
                 return failed("角色组名称不能为空！");
             }
-            if(StringUtils.isEmpty(model.getCode())){
+            if (StringUtils.isEmpty(model.getCode())) {
                 return failed("角色组编码不能为空！");
             }
-            if(StringUtils.isEmpty(model.getType())){
+            if (StringUtils.isEmpty(model.getType())) {
                 return failed("角色组类型不能为空！");
             }
-            if(StringUtils.isEmpty(model.getAppId())){
+            if (StringUtils.isEmpty(model.getAppId())) {
                 return failed("应用id不能为空！");
             }
-            if("new".equals(mode)){
-                Map<String,Object> args = new HashMap<>();
-                args.put("data_json",dataJson);
-                String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
+            if ("new".equals(mode)) {
+                Map<String, Object> args = new HashMap<>();
+                args.put("data_json", dataJson);
+                String envelopStr = HttpClientUtil.doPost(comUrl + url, args, username, password);
                 return envelopStr;
             }
-            String urlGet = url+"/"+model.getId();
-            String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
+            String urlGet = url + "/" + model.getId();
+            String envelopGetStr = HttpClientUtil.doGet(comUrl + urlGet, username, password);
             Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
-            if (!envelopGet.isSuccessFlg()){
+            if (!envelopGet.isSuccessFlg()) {
                 return failed("原角色组信息获取失败！");
             }
-            RolesModel updateModel = getEnvelopModel(envelopGet.getObj(),RolesModel.class);
-            updateModel.setCode(model.getCode());
-            updateModel.setName(model.getName());
+            RolesModel updateModel = getEnvelopModel(envelopGet.getObj(), RolesModel.class);
+            updateModel.setCode(model.getCode().replaceAll("\\s*", ""));
+            updateModel.setName(model.getName().replaceAll("\\s*", ""));
             updateModel.setAppId(model.getAppId());
             updateModel.setType(model.getType());
             updateModel.setDescription(model.getDescription());
+            updateModel.setOrgCode(model.getOrgCode());
             String updateModelJson = objectMapper.writeValueAsString(updateModel);
-            Map<String,Object> params = new HashMap<>();
-            params.put("data_json",updateModelJson);
-            String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("data_json", updateModelJson);
+            String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return envelopStr;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -127,33 +143,67 @@ public class UserRolesController extends BaseUIController {
     @RequestMapping("/delete")
     @ResponseBody
     public Object rolesDelete(String id) {
-        if(StringUtils.isEmpty(id)){
+        if (StringUtils.isEmpty(id)) {
             return failed("角色组id不能为空！");
         }
-        try{
-            String url = "/roles/role/"+id;
-            Map<String,Object> params = new HashMap<>();
-            params.put("id",id);
-            String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
+        try {
+            String url = "/roles/role/" + id;
+            Map<String, Object> params = new HashMap<>();
+            params.put("id", id);
+            String envelopStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
-    //角色组列表查询
-    @RequestMapping("/search")
+    //角色组批量添加
+    @RequestMapping("/batchAdd")
     @ResponseBody
+    public Object batchAdd(String dataJson, String orgCodes) {
+        String url = ServiceApi.Roles.RoleBatchAdd;
+        try {
+            RolesModel model = objectMapper.readValue(dataJson, RolesModel.class);
+            if (StringUtils.isEmpty(model.getName())) {
+                return failed("角色组名称不能为空！");
+            }
+            if (StringUtils.isEmpty(model.getCode())) {
+                return failed("角色组编码不能为空！");
+            }
+            if (StringUtils.isEmpty(model.getType())) {
+                return failed("角色组类型不能为空！");
+            }
+            if (StringUtils.isEmpty(model.getAppId())) {
+                return failed("应用id不能为空！");
+            }
+           /* if (StringUtils.isEmpty(orgCodes)) {
+                return failed("机构不能为空！");
+            }*/
+            Map<String, Object> args = new HashMap<>();
+            args.put("data_json", dataJson);
+            args.put("orgCodes", orgCodes);
+            String envelopStr = HttpClientUtil.doPost(comUrl + url, args, username, password);
+            return envelopStr;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+
+    //角色组列表查询
+    @ResponseBody
+    @RequestMapping("/search")
     public Object searchRoles(String searchNm, String appId, int page, int rows) {
-        if(StringUtils.isEmpty(appId)){
+        if (StringUtils.isEmpty(appId)) {
             return failed("应用id不能为空！");
         }
         StringBuffer buffer = new StringBuffer();
         //buffer.append("type=1;appId="+appId+";");
-        buffer.append("appId="+appId+";");
+        buffer.append("appId=" + appId + ";type=1;");
         if (!StringUtils.isEmpty(searchNm)) {
-            buffer.append("name?" + searchNm+" g0;code?"+searchNm+" g0");
+            buffer.append("name?" + searchNm + " g0;code?" + searchNm + " g0");
         }
         String filters = buffer.toString();
         try {
@@ -166,120 +216,192 @@ public class UserRolesController extends BaseUIController {
             String url = "/roles/roles";
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
-        } catch (Exception ex) {
-            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+        } catch (Exception e) {
+            LogService.getLogger(UserRolesController.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     //用户角色组列表查询，不分页，用于下拉列表框
     @RequestMapping("/rolesForForm")
     @ResponseBody
-    public Object getRolesForForm(){
-        try{
+    public Object getRolesForForm() {
+        try {
             String url = ServiceApi.Roles.RoleUsersNoPage;
-            Map<String,Object> params = new HashMap<>();
+            Map<String, Object> params = new HashMap<>();
             //type=1,为用户角色
             //params.put("filters","type=1");
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     @RequestMapping("/isNameExistence")
     @ResponseBody
-    public Object isNameExistence(String appId,String name){
-        try{
-            Map<String,Object> params = new HashMap<>();
-            params.put("name",name);
-            params.put("app_id",appId);
+    public Object isNameExistence(String appId, String name, String orgCode) {
+        try {
             String url = ServiceApi.Roles.RoleNameExistence;
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-            return envelopStr;
-        }catch (Exception ex){
+            Map<String, Object> params = new HashMap<>();
+            params.put("name", name);
+            params.put("app_id", appId);
+            params.put("type", 1);
+            List<Envelop> envelops = new ArrayList<>();
+            if (StringUtils.isNotEmpty(orgCode)) {
+                String[] orgs = orgCode.split(";");
+                for (int i = 0; i < orgs.length; i++) {
+                    params.put("orgCode", orgs[i]);
+                    String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                    Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
+                    if (envelop.isSuccessFlg()) {
+                        envelops.add(envelop);
+                    }
+                }
+            } else {
+                params.put("orgCode", "");
+                String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
+                if (envelop.isSuccessFlg()) {
+                    envelops.add(envelop);
+                }
+            }
+
+            Envelop result = new Envelop();
+            if (envelops != null && envelops.size() > 0) {
+                String message = "";
+                for (Envelop envelop : envelops) {
+                    message = message + envelop.getObj() + ";";
+                }
+                result.setErrorMsg(message.length() > 1 ? message.substring(0, message.length() - 1) : message);
+                result.setSuccessFlg(true);
+            } else {
+                result.setSuccessFlg(false);
+            }
+            return result;
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
+
     @RequestMapping("/isCodeExistence")
     @ResponseBody
-    public Object isCodeExistence(String appId,String code){
-        try{
-            Map<String,Object> params = new HashMap<>();
-            params.put("code",code);
-            params.put("app_id",appId);
+    public Object isCodeExistence(String appId, String code, String orgCode) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("code", code);
+            params.put("app_id", appId);
+            params.put("orgCode", orgCode);
+            params.put("type", 1);
             String url = ServiceApi.Roles.RoleCodeExistence;
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-            return envelopStr;
-        }catch (Exception ex){
+            List<Envelop> envelops = new ArrayList<>();
+            if (StringUtils.isNotEmpty(orgCode)) {
+                String[] orgs = orgCode.split(";");
+                for (int i = 0; i < orgs.length; i++) {
+                    params.put("orgCode", orgs[i]);
+                    String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                    Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
+                    if (envelop.isSuccessFlg()) {
+                        envelops.add(envelop);
+                    }
+                }
+            } else {
+                params.put("orgCode", "");
+                String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
+                if (envelop.isSuccessFlg()) {
+                    envelops.add(envelop);
+                }
+            }
+
+            Envelop result = new Envelop();
+            if (envelops != null && envelops.size() > 0) {
+                String message = "";
+                for (Envelop envelop : envelops) {
+                    message = message + envelop.getObj() + ";";
+                }
+                result.setErrorMsg(message.length() > 1 ? message.substring(0, message.length() - 1) : message);
+                result.setSuccessFlg(true);
+            } else {
+                result.setSuccessFlg(false);
+            }
+            return result;
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
+    }
+
+    @RequestMapping("/orgDialog")
+    public String orgDialog(Model model, String obj, String dialogType) {
+        String dialogUrl = dialogType.equals("users") ? "user/roles/rolesUsers" : "user/roles/rolesOrg";
+        model.addAttribute("obj", obj);
+        model.addAttribute("contentPage", dialogUrl);
+        return "emptyView";
     }
 
     @RequestMapping("/configDialog")
     public String configDialog(Model model, String obj, String dialogType) {
-        String dialogUrl = dialogType.equals("users")?"user/roles/rolesUsers":"user/roles/rolesFeature";
+        String dialogUrl = dialogType.equals("users") ? "user/roles/rolesUsers" : "user/roles/rolesFeature";
         model.addAttribute("obj", obj);
         model.addAttribute("contentPage", dialogUrl);
-        return "simpleView";
+        return "emptyView";
     }
 
     //用户角色组添加人员
     @RequestMapping("/userCreate")
     @ResponseBody
-    public Object roleUserCreate(String userId,String roleId) {
-        if(StringUtils.isEmpty(userId)){
+    public Object roleUserCreate(String userId, String roleId) {
+        if (StringUtils.isEmpty(userId)) {
             return failed("人员id不能为空！");
         }
-        if(StringUtils.isEmpty(roleId)){
+        if (StringUtils.isEmpty(roleId)) {
             return failed("角色组id不能为空！");
         }
         RoleUserModel model = new RoleUserModel();
         model.setRoleId(Long.parseLong(roleId));
         model.setUserId(userId);
-        try{
+        try {
             String url = ServiceApi.Roles.RoleUser;
-            Map<String,Object> params = new HashMap<>();
-            params.put("data_json",objectMapper.writeValueAsString(model));
-            String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("data_json", objectMapper.writeValueAsString(model));
+            String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     //用户角色组删除人员
     @RequestMapping("/userDelete")
     @ResponseBody
-    public Object roleUserDelete(String userId,String roleId) {
-        if(StringUtils.isEmpty(userId)){
+    public Object roleUserDelete(String userId, String roleId) {
+        if (StringUtils.isEmpty(userId)) {
             return failed("人员id不能为空！");
         }
-        if(StringUtils.isEmpty(roleId)){
+        if (StringUtils.isEmpty(roleId)) {
             return failed("角色组id不能为空！");
         }
-        try{
-            Map<String,Object> params = new HashMap<>();
-            params.put("user_id",userId);
-            params.put("role_id",roleId);
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("user_id", userId);
+            params.put("role_id", roleId);
             String url = ServiceApi.Roles.RoleUser;
-            String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            String envelopStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     //获取所有有效用户列表
     @RequestMapping("/searchUsers")
     @ResponseBody
-    public Object searchUsers(String searchNm,int page, int rows) {
+    public Object searchUsers(String searchNm, int page, int rows) {
         String url = "/users";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -290,8 +412,8 @@ public class UserRolesController extends BaseUIController {
         }
         stringBuffer.append("activated=true;");
         String filters = stringBuffer.toString();
-        params.put("fields","");
-        params.put("sorts","");
+        params.put("fields", "");
+        params.put("sorts", "");
         params.put("filters", filters);
         params.put("page", page);
         params.put("size", rows);
@@ -299,9 +421,8 @@ public class UserRolesController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            LogService.getLogger(UserRolesController.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -309,90 +430,90 @@ public class UserRolesController extends BaseUIController {
     //用户角色组人员配置列表查询
     @RequestMapping("/roleUserList")
     @ResponseBody
-    public Object getRoleUserList(String searchNm,int page,int rows){
-        if(StringUtils.isEmpty(searchNm)){
+    public Object getRoleUserList(String searchNm, int page, int rows) {
+        if (StringUtils.isEmpty(searchNm)) {
             return failed("角色组id不能为空");
         }
-        try{
+        try {
             String url = ServiceApi.Roles.RoleUsers;
-            Map<String,Object> params = new HashMap<>();
-            params.put("fields","");
-            params.put("filters","roleId="+searchNm);
-            params.put("sorts","");
-            params.put("page",page);
-            params.put("size",rows);
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("fields", "");
+            params.put("filters", "roleId=" + searchNm);
+            params.put("sorts", "");
+            params.put("page", page);
+            params.put("size", rows);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     //获取用户角色组配置的所有人员
     @RequestMapping("/roleUsersByRoleId")
     @ResponseBody
-    public Object getRoleUserListNoPage(String roleId){
-        if(StringUtils.isEmpty(roleId)){
+    public Object getRoleUserListNoPage(String roleId) {
+        if (StringUtils.isEmpty(roleId)) {
             return failed("角色组id不能为空");
         }
-        try{
+        try {
             String url = ServiceApi.Roles.RoleUsersNoPage;
-            Map<String,Object> params = new HashMap<>();
-            params.put("filters","roleId="+roleId);
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("filters", "roleId=" + roleId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     //角色组权限配置（增加）
     @RequestMapping("/featureCreate")
     @ResponseBody
-    public Object roleFeatureCreate(String roleId,String featureId) {
-        if(StringUtils.isEmpty(featureId)){
+    public Object roleFeatureCreate(String roleId, String featureId) {
+        if (StringUtils.isEmpty(featureId)) {
             return failed("人员id不能为空！");
         }
-        if(StringUtils.isEmpty(roleId)){
+        if (StringUtils.isEmpty(roleId)) {
             return failed("角色组id不能为空！");
         }
         RoleFeatureRelationModel model = new RoleFeatureRelationModel();
         model.setRoleId(Long.parseLong(roleId));
         model.setFeatureId(Long.parseLong(featureId));
-        try{
+        try {
             String url = ServiceApi.Roles.RoleFeature;
-            Map<String,Object> params = new HashMap<>();
-            params.put("data_json",objectMapper.writeValueAsString(model));
-            String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("data_json", objectMapper.writeValueAsString(model));
+            String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
     //角色组权限配置（删除）
     @RequestMapping("/featureDelete")
     @ResponseBody
-    public Object roleFeatureDelete(String roleId,String featureId){
-        if(StringUtils.isEmpty(roleId)){
+    public Object roleFeatureDelete(String roleId, String featureId) {
+        if (StringUtils.isEmpty(roleId)) {
             return failed("角色组id不能为空！");
         }
-        if(StringUtils.isEmpty(featureId)){
+        if (StringUtils.isEmpty(featureId)) {
             return failed("权限id不能为空！");
         }
-        try{
+        try {
             String url = ServiceApi.Roles.RoleFeature;
-            Map<String,Object> params = new HashMap<>();
-            params.put("role_id",roleId);
-            params.put("feature_id",featureId);
-            String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("role_id", roleId);
+            params.put("feature_id", featureId);
+            String envelopStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             return envelopStr;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -403,7 +524,7 @@ public class UserRolesController extends BaseUIController {
         URLQueryBuilder builder = new URLQueryBuilder();
         //builder.addFilter("sourceType","=","1","");
         if (!StringUtils.isEmpty(searchNm)) {
-            builder.addFilter("name", "?", searchNm,"");
+            builder.addFilter("name", "?", searchNm, "");
         }
         builder.setPageNumber(page)
                 .setPageSize(rows);
@@ -412,7 +533,7 @@ public class UserRolesController extends BaseUIController {
         String resultStr = "";
         try {
             RestTemplates template = new RestTemplates();
-            resultStr = template.doGet(comUrl+url+"?"+param);
+            resultStr = template.doGet(comUrl + url + "?" + param);
         } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
         }
@@ -421,21 +542,20 @@ public class UserRolesController extends BaseUIController {
 
     @RequestMapping("/searchFeatrueTree")
     @ResponseBody
-    public Object searchFeatrueTree(String treeType,String roleId){
+    public Object searchFeatrueTree(String treeType, String roleId) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "";
         String filters = "";
-        if (treeType.equals("configFeatrueTree")){
+        if (treeType.equals("configFeatrueTree")) {
             url = "/role_app_feature/no_paging";
             params.put("role_id", roleId);
-        }else {
+        } else {
             url = ServiceApi.AppFeature.FilterFeatureNoPage;
             params.put("filters", filters);
             params.put("roleId", roleId);
         }
         String resultStr = "";
-
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
@@ -447,18 +567,18 @@ public class UserRolesController extends BaseUIController {
 
     @RequestMapping("/updateFeatureConfig")
     @ResponseBody
-    public String updateFeatureConfig(String userFeatureId,String roleId,boolean updateType){
+    public String updateFeatureConfig(String userFeatureId, String roleId, boolean updateType) {
         Map<String, Object> params = new HashMap<>();
-        String url = updateType?ServiceApi.Roles.RoleFeature:ServiceApi.Roles.RoleFeature;
+        String url = updateType ? ServiceApi.Roles.RoleFeature : ServiceApi.Roles.RoleFeature;
         String resultStr = "";
         try {
-            if (updateType){
+            if (updateType) {
                 RoleFeatureRelationModel Model = new RoleFeatureRelationModel();
                 Model.setFeatureId(Long.valueOf(userFeatureId));
                 Model.setRoleId(Long.valueOf(roleId));
                 params.put("data_json", toJson(Model));
                 resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
-            }else{
+            } else {
                 params.put("feature_id", userFeatureId);
                 params.put("role_id", roleId);
                 resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
@@ -469,20 +589,18 @@ public class UserRolesController extends BaseUIController {
         return resultStr;
     }
 
-
-
     //-------------------------------------------------------角色组---资源授权管理---开始----------------
     @RequestMapping("/resource/initial")
-    public String resourceInitial(Model model, String backParams){
-        model.addAttribute("backParams",backParams);
+    public String resourceInitial(Model model, String backParams) {
+        model.addAttribute("backParams", backParams);
         model.addAttribute("contentPage", "user/roles/resource");
-        return "pageView";
+        return "emptyView";
     }
 
     //获取角色组已授权资源ids集合
     @RequestMapping("/rolesResourceIds")
     @ResponseBody
-    public  Object getRolesResourceIds(String rolesId){
+    public Object getRolesResourceIds(String rolesId) {
         Envelop envelop = new Envelop();
         List<String> list = new ArrayList<>();
         envelop.setSuccessFlg(false);
@@ -499,11 +617,11 @@ public class UserRolesController extends BaseUIController {
         String resultStr = "";
         try {
             RestTemplates template = new RestTemplates();
-            resultStr = template.doGet(comUrl+url+"?"+param);
-            Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
-            if(resultGet.isSuccessFlg()&&resultGet.getDetailModelList().size()!=0){
-                List<RsRolesResourceModel> rsRolesModels = (List<RsRolesResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsRolesResourceModel>(),RsRolesResourceModel.class);
-                for(RsRolesResourceModel m : rsRolesModels){
+            resultStr = template.doGet(comUrl + url + "?" + param);
+            Envelop resultGet = objectMapper.readValue(resultStr, Envelop.class);
+            if (resultGet.isSuccessFlg() && resultGet.getDetailModelList().size() != 0) {
+                List<RsRolesResourceModel> rsRolesModels = (List<RsRolesResourceModel>) getEnvelopList(resultGet.getDetailModelList(), new ArrayList<RsRolesResourceModel>(), RsRolesResourceModel.class);
+                for (RsRolesResourceModel m : rsRolesModels) {
                     list.add(m.getResourceId());
                 }
                 envelop.setSuccessFlg(true);
@@ -518,14 +636,14 @@ public class UserRolesController extends BaseUIController {
 
     @RequestMapping("/roles")
     @ResponseBody
-    public Object getRolesById(String rolesId){
+    public Object getRolesById(String rolesId) {
         Envelop envelop = new Envelop();
-        try{
-            String url = "/roles/"+rolesId;
+        try {
+            String url = "/roles/" + rolesId;
             RestTemplates template = new RestTemplates();
-            String envelopStr = template.doGet(comUrl+url);
+            String envelopStr = template.doGet(comUrl + url);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
         }
         envelop.setSuccessFlg(false);
@@ -535,11 +653,11 @@ public class UserRolesController extends BaseUIController {
     //资源授权rolesId+resourceIds
     @RequestMapping("/resource/rolesGrant")
     @ResponseBody
-    public Object resourceGrant(String rolesId,String resourceIds){
+    public Object resourceGrant(String rolesId, String resourceIds) {
         Envelop envelop = new Envelop();
         try {
-            String url = "/resources/roles/"+rolesId+"/grant";
-            Map<String,Object> params = new HashMap<>();
+            String url = "/resources/roles/" + rolesId + "/grant";
+            Map<String, Object> params = new HashMap<>();
             params.put("rolesId", rolesId);
             params.put("resourceIds", resourceIds);
             String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
@@ -554,68 +672,67 @@ public class UserRolesController extends BaseUIController {
     //批量、单个取消资源授权
     @RequestMapping("/resource/cancel")
     @ResponseBody
-    public Object resourceGrantCancel(String rolesId,String resourceIds){
+    public Object resourceGrantCancel(String rolesId, String resourceIds) {
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
-        if(org.springframework.util.StringUtils.isEmpty(rolesId)){
+        if (org.springframework.util.StringUtils.isEmpty(rolesId)) {
             envelop.setErrorMsg("角色组id不能为空！");
             return envelop;
         }
-        if(org.springframework.util.StringUtils.isEmpty(resourceIds)){
+        if (org.springframework.util.StringUtils.isEmpty(resourceIds)) {
             envelop.setErrorMsg("资源id不能为空！");
             return envelop;
         }
         try {
             //先获取授权关系表的ids
             String url = "/resources/rolesGrants/no_paging";
-            Map<String,Object> params = new HashMap<>();
-            params.put("filters","rolesId="+rolesId+";resourceId="+resourceIds);
-            String envelopStrGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
-            Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
+            Map<String, Object> params = new HashMap<>();
+            params.put("filters", "rolesId=" + rolesId + ";resourceId=" + resourceIds);
+            String envelopStrGet = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrGet, Envelop.class);
             String ids = "";
-            if(envelopGet.isSuccessFlg()&&envelopGet.getDetailModelList().size()!=0){
-                List<MRsRolesResource> list = (List<MRsRolesResource>)getEnvelopList(envelopGet.getDetailModelList(),
-                        new ArrayList<MRsRolesResource>(),MRsRolesResource.class);
-                for(MRsRolesResource m:list){
-                    ids += m.getId()+",";
+            if (envelopGet.isSuccessFlg() && envelopGet.getDetailModelList().size() != 0) {
+                List<MRsRolesResource> list = (List<MRsRolesResource>) getEnvelopList(envelopGet.getDetailModelList(),
+                        new ArrayList<MRsRolesResource>(), MRsRolesResource.class);
+                for (MRsRolesResource m : list) {
+                    ids += m.getId() + ",";
                 }
-                ids = ids.substring(0,ids.length()-1);
+                ids = ids.substring(0, ids.length() - 1);
             }
             //取消资源授权
-            if(!org.springframework.util.StringUtils.isEmpty(ids)){
+            if (!org.springframework.util.StringUtils.isEmpty(ids)) {
                 String urlCancel = "/resources/rolesGrants";
-                Map<String,Object> args = new HashMap<>();
-                args.put("ids",ids);
-                String result = HttpClientUtil.doDelete(comUrl+urlCancel,args,username,password);
+                Map<String, Object> args = new HashMap<>();
+                args.put("ids", ids);
+                String result = HttpClientUtil.doDelete(comUrl + urlCancel, args, username, password);
                 return result;
             }
         } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
 
-
     /**
      * 资源文件上传
+     *
      * @param
      * @return
      */
     @RequestMapping("rolesIconFileUpload")
     @ResponseBody
-    public Object orgLogoFileUpload(
-            @RequestParam("iconFile") MultipartFile file) throws IOException {
+    public Object orgLogoFileUpload( @RequestParam("iconFile") MultipartFile file) throws IOException {
         Envelop result = new Envelop();
         InputStream inputStream = file.getInputStream();
         String fileName = file.getOriginalFilename(); //获取文件名
         if (!file.isEmpty()) {
-            return  uploadFile(inputStream,fileName);
+            return uploadFile(inputStream, fileName);
         }
         return "fail";
     }
 
-    public String uploadFile(InputStream inputStream,String fileName){
+    public String uploadFile(InputStream inputStream, String fileName) {
         try {
             //读取文件流，将文件输入流转成 byte
             int temp = 0;
@@ -628,11 +745,11 @@ public class UserRolesController extends BaseUIController {
             inputStream.close();
             String restStream = Base64.getEncoder().encodeToString(fileBuffer);
             String url = "";
-            url = fileUpload(restStream,fileName);
-            if (!org.springframework.util.StringUtils.isEmpty(url)){
+            url = fileUpload(restStream, fileName);
+            if (!org.springframework.util.StringUtils.isEmpty(url)) {
                 System.out.println("上传成功");
                 return url;
-            }else{
+            } else {
                 System.out.println("上传失败");
             }
 
@@ -644,11 +761,12 @@ public class UserRolesController extends BaseUIController {
 
     /**
      * 图片上传
+     *
      * @param inputStream
      * @param fileName
      * @return
      */
-    public String fileUpload(String inputStream,String fileName){
+    public String fileUpload(String inputStream, String fileName) {
 
         RestTemplates templates = new RestTemplates();
         Map<String, Object> params = new HashMap<>();
@@ -657,16 +775,16 @@ public class UserRolesController extends BaseUIController {
         if (!org.springframework.util.StringUtils.isEmpty(inputStream)) {
 
             //mime  参数 doctor 需要改变  --  需要从其他地方配置
-            FileResourceModel fileResourceModel = new FileResourceModel("","org","");
+            FileResourceModel fileResourceModel = new FileResourceModel("", "org", "");
             String fileResourceModelJsonData = toJson(fileResourceModel);
 
             params.put("file_str", inputStream);
             params.put("file_name", fileName);
-            params.put("json_data",fileResourceModelJsonData);
+            params.put("json_data", fileResourceModelJsonData);
             try {
-                url = HttpClientUtil.doPost(comUrl + "/filesReturnUrl", params,username,password);
+                url = HttpClientUtil.doPost(comUrl + "/filesReturnUrl", params, username, password);
                 return url;
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -674,26 +792,26 @@ public class UserRolesController extends BaseUIController {
     }
 
 
-
     //修改、查看授权资源
     //-------------------------------------------------------角色组---资源授权管理---结束----------------
 
     //-------------------------------------------------------角色组----资源----数据元--管理开始--------------
     @RequestMapping("/resourceManage/initial")
-    public String resourceManageInitial(Model model,String rolesId,String resourceId, String dataModel){
-        model.addAttribute("dataModel",dataModel);
-        model.addAttribute("rolesRsId",getRolesResId(rolesId,resourceId));
+    public String resourceManageInitial(Model model, String rolesId, String resourceId, String dataModel) {
+        model.addAttribute("dataModel", dataModel);
+        model.addAttribute("rolesRsId", getRolesResId(rolesId, resourceId));
         model.addAttribute("contentPage", "user/roles/resourceManage");
-        return "pageView";
+        return "emptyView";
     }
+
     //获取角色组-资源关联关系id
-    public String getRolesResId(String rolesId,String resourceId) {
+    public String getRolesResId(String rolesId, String resourceId) {
         URLQueryBuilder builder = new URLQueryBuilder();
-        if (org.springframework.util.StringUtils.isEmpty(rolesId)|| org.springframework.util.StringUtils.isEmpty(resourceId)) {
+        if (org.springframework.util.StringUtils.isEmpty(rolesId) || org.springframework.util.StringUtils.isEmpty(resourceId)) {
             return "";
         }
         builder.addFilter("rolesId", "=", rolesId, null);
-        builder.addFilter("resourceId", "=", resourceId,null);
+        builder.addFilter("resourceId", "=", resourceId, null);
         builder.setPageNumber(1)
                 .setPageSize(1);
         String param = builder.toString();
@@ -701,10 +819,10 @@ public class UserRolesController extends BaseUIController {
         String resultStr = "";
         try {
             RestTemplates template = new RestTemplates();
-            resultStr = template.doGet(comUrl+url+"?"+param);
-            Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
-            if(resultGet.isSuccessFlg()){
-                List<RsRolesResourceModel> rsRolesModels = (List<RsRolesResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsRolesResourceModel>(),RsRolesResourceModel.class);
+            resultStr = template.doGet(comUrl + url + "?" + param);
+            Envelop resultGet = objectMapper.readValue(resultStr, Envelop.class);
+            if (resultGet.isSuccessFlg()) {
+                List<RsRolesResourceModel> rsRolesModels = (List<RsRolesResourceModel>) getEnvelopList(resultGet.getDetailModelList(), new ArrayList<RsRolesResourceModel>(), RsRolesResourceModel.class);
                 RsRolesResourceModel resourceModel = rsRolesModels.get(0);
                 return resourceModel.getId();
             }
@@ -713,23 +831,24 @@ public class UserRolesController extends BaseUIController {
         }
         return "";
     }
+
     @RequestMapping("/rfConfig")
     public String rfConfig(String id, Model model) {
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "user/roles/rfConfig");
-        return "pageView";
+        return "emptyView";
     }
 
     //资源报表分类树数据-获取所有分类及对应的资源的不分页方法
     @RequestMapping("/categoriesAndReport")
     @ResponseBody
-    public Object getCategoriesAndReport(String roleId, String name){
+    public Object getCategoriesAndReport(String roleId, String name) {
         Envelop envelop = new Envelop();
-        try{
+        try {
             String filters = "";
             String envelopStr = "";
             String url = "/roles/report/getCategoryAndReportNoPage";
-            Map<String,Object> params = new HashMap<>();
+            Map<String, Object> params = new HashMap<>();
             if (!StringUtils.isEmpty(name)) {
                 params.put("filters", "name?" + name);
             } else {
@@ -738,11 +857,9 @@ public class UserRolesController extends BaseUIController {
             params.put("roleId", roleId);
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -759,9 +876,8 @@ public class UserRolesController extends BaseUIController {
             try {
                 resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             } catch (Exception e) {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.SystemError.toString());
-                return result;
+                LogService.getLogger(UserRolesController.class).error(e.getMessage());
+                return failed(ERR_SYSTEM_DES);
             }
             return resultStr;
         }
@@ -771,10 +887,359 @@ public class UserRolesController extends BaseUIController {
         try {
             resultStr = templates.doPost(comUrl + url, params);
         } catch (RestClientException e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            LogService.getLogger(User.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
+    }
+
+    //获取所有有效机构列表
+    @RequestMapping("/searchOrgs")
+    @ResponseBody
+    public Object searchOrgs(String searchNm, int page, int rows) {
+        String url = "/organizations";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(searchNm)) {
+            stringBuffer.append("fullName?" + searchNm + ";");
+        }
+        String filters = stringBuffer.toString();
+        params.put("fields", "");
+        params.put("sorts", "");
+        params.put("filters", filters);
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            LogService.getLogger(UserRolesController.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+
+    }
+
+    //用户角色组添加机构
+    @RequestMapping("/orgCreate")
+    @ResponseBody
+    public Object roleOrgCreate(String orgCode, String roleId) {
+        /*if (StringUtils.isEmpty(orgCode)) {
+            return failed("机构不能为空！");
+        }*/
+        if (StringUtils.isEmpty(roleId)) {
+            return failed("角色组id不能为空！");
+        }
+        RoleOrgModel model = new RoleOrgModel();
+        model.setRoleId(Long.parseLong(roleId));
+        model.setOrgCode(orgCode);
+        try {
+            String url = ServiceApi.Roles.RoleOrg;
+            Map<String, Object> params = new HashMap<>();
+            params.put("data_json", objectMapper.writeValueAsString(model));
+            String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            return envelopStr;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    //用户角色组删除机构
+    @RequestMapping("/orgDelete")
+    @ResponseBody
+    public Object roleOrgDelete(String orgCode, String roleId) {
+       /* if (StringUtils.isEmpty(orgCode)) {
+            return failed("机构不能为空！");
+        }*/
+        if (StringUtils.isEmpty(roleId)) {
+            return failed("角色组id不能为空！");
+        }
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("org_code", orgCode);
+            params.put("role_id", roleId);
+            String url = ServiceApi.Roles.RoleOrg;
+            String envelopStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            return envelopStr;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    //角色组人员配置机构列表查询
+    @RequestMapping("/roleOrgList")
+    @ResponseBody
+    public Object getRoleOrgList(String searchNm, int page, int rows) {
+        if (StringUtils.isEmpty(searchNm)) {
+            return failed("角色组id不能为空");
+        }
+        try {
+            String url = ServiceApi.Roles.RoleOrgs;
+            Map<String, Object> params = new HashMap<>();
+            params.put("fields", "");
+            params.put("filters", "roleId=" + searchNm);
+            params.put("sorts", "");
+            params.put("page", page);
+            params.put("size", rows);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return envelopStr;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    //获取用户角色组配置的所有机构
+    @RequestMapping("/roleOrgByRoleId")
+    @ResponseBody
+    public Object getRoleOrgListNoPage(String roleId) {
+        if (StringUtils.isEmpty(roleId)) {
+            return failed("角色组id不能为空");
+        }
+        try {
+            String url = ServiceApi.Roles.RoleOrgsNoPage;
+            Map<String, Object> params = new HashMap<>();
+            params.put("filters", "roleId=" + roleId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return envelopStr;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    //基于用户，及用户类型、所属机构配置进行用户初始化授权，及机构部门关系维护
+    //主要用于新增用户、修改用户时调用，进行更新
+    public Envelop initUserRolesAndOrgRelation(String userId, int userType, int flag, String orgModel) {
+        String url = "/basic/api/v1.0/roles/roles/usertype/update";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userId",userId);
+            params.put("userType",userType);
+            params.put("flag",flag);
+            params.put("orgModel",orgModel);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    //基于用户，所属机构配置进行用户机构部门关系维护
+    public Envelop initUserOrgRelation(String userId, String orgModel) {
+        String url = "/basic/api/v1.0/user/org/relation";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userId",userId);
+            params.put("orgModel",orgModel);
+            HttpResponse response = HttpUtils.doPost(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    @RequestMapping("/user/usertype/create")
+    @ResponseBody
+    public Envelop updateUserType(String code, String name) {
+        String url = "/basic/api/v1.0/user/usertype";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("code",code);
+            params.put("name",name);
+            HttpResponse response = HttpUtils.doPost(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    /**
+     * 查询用户类别
+     * @param searchParm 用户类别名称
+     * @param activeFlag 用户类别是否有效
+     * @param page 当前页
+     * @param rows 分页大小
+     * @return
+     */
+    @RequestMapping("/user/searchUserType")
+    @ResponseBody
+    public Envelop searchUserType(String activeFlag,String searchParm, int page, int rows) {
+        String url = "/basic/api/v1.0/user/searchUserType";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("fields", "");
+            StringBuilder s=new StringBuilder();
+            if (!StringUtils.isEmpty(searchParm)) {
+                s.append("name?" + searchParm+";" );
+            }
+            if (!StringUtils.isEmpty(activeFlag)) {
+                s.append("activeFlag=" + activeFlag +";");
+            }
+            String filters = s.toString();
+            params.put("filters", filters);
+            params.put("sorts", "");
+            params.put("page", page);
+            params.put("size", rows);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+
+    /**
+     * 复制用户类别，及其下定义的角色组信息
+     * @param userTypeId 用户类别id
+     * @return
+     */
+    @RequestMapping("/user/getUserTypeById")
+    @ResponseBody
+    public Envelop getUserTypeById(int userTypeId) {
+        String url = "/basic/api/v1.0/user/getUserTypeById";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userTypeId", userTypeId);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    /**
+     * 新增、编辑、生失效用户类别关联的角色组信息
+     * @param userTypeJson 用户类别json串
+     * @return
+     */
+    @RequestMapping("/user/updateUserType")
+    @ResponseBody
+    public Envelop updateUserType(String userTypeJson) {
+        String url = "/basic/api/v1.0/user/updateUserType";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userTypeJson",userTypeJson);
+            String response = HttpClientUtil.doPost(adminInnerUrl + url, params);
+            envelop = toModel(response, Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    @RequestMapping("/user/usertype/roles")
+    @ResponseBody
+    public Envelop getUserTypeRolesByUserType(String userTypeId) {
+        String url = "/basic/api/v1.0/user/usertype/roles";
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userTypeId",userTypeId);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    @RequestMapping("/user/getOrgDepts")
+    @ResponseBody
+    public Envelop getOrgDeptByUserId(String userId) {
+        String url = "/users/getOrgAndDeptRelation";
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userId",userId);
+            HttpResponse response = HttpUtils.doGet(comUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    /**
+     * 新增、编辑用户类别-与角色组关联关系
+     * @param userTypeJson 用户类别json串
+     *  @param typeRolesJson 用户类别-与角色组关联关系json串
+     * @return
+     */
+    @RequestMapping("/user/saveUserTypeRoles")
+    @ResponseBody
+    public Envelop saveUserTypeRoles(String userTypeJson,String typeRolesJson) {
+        String url = "/basic/api/v1.0/user/saveUserTypeRoles";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userTypeJson",userTypeJson);
+            params.put("typeRolesJson",typeRolesJson);
+            HttpResponse response = HttpUtils.doPost(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+
+    /**
+     * 新增页面
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("addUserTypeInfoDialog")
+    public String addUserTypeInfoDialog(String json,Model model) {
+        model.addAttribute("userTypeJson", json);
+        model.addAttribute("contentPage", "user/roles/UserTypeDialog");
+        return "emptyView";
+    }
+
+
+    /**
+     * 根据用户类别获取关联居民，返回true表示关联居民（居民信息存在list中），返回false表示无关联居民
+     * @param userTypeId 用户类别id
+     * @return
+     */
+    @RequestMapping("/user/validateUserType")
+    @ResponseBody
+    public Envelop validateUserType(String userTypeId) {
+        String url = "/basic/api/v1.0/user/validateUserType";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userTypeId",userTypeId);
+            HttpResponse response = HttpUtils.doPost(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
     }
 }

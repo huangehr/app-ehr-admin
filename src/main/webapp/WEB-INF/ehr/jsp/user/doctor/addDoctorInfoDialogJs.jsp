@@ -8,25 +8,32 @@
         /* ************************** 变量定义 ******************************** */
         // 通用工具类库
         var Util = $.Util;
-
         // 表单校验工具类
         var jValidation = $.jValidation;
 
         var addDoctorInfo = null;
 
-        var dialog = frameElement.dialog;
+        var dialog = null;
 
         var source;
-		var trees;
+        var trees;
 
-		var roleTypeDictId = 13;
+        var jxzcDictId = 108; // 是否制证
+        var lczcDictId = 118; // 技术职称
+        var roleTypeDictId = 120; // 人员类别
+        var jobTypeDictId = 104; // 执业类别
+        var jobLevelDictId = 105; // 从事专业类别代码-执业级别
+        var jobScopeDictId = 103; // 执业范围
+        var jobStateDictId = 106; // 执业状态
         var orgId = "";
         var orgSelectedValue = "";
         var deptSelectedValue = "";
         /* ************************** 变量定义结束 **************************** */
-
+        win.orgDeptDio = null;
+        win.ORGDEPTVAL = '';
         /* *************************** 函数定义 ******************************* */
         /**
+         * 页面初始化。
          * 页面初始化。
          * @type {Function}
          */
@@ -49,26 +56,33 @@
             $addBtn: $("#div_btn_add"),
             $cancelBtn: $("#div_cancel_btn"),
             $imageShow: $("#div_file_list"),
-			$skill:$("#inp_skill"),
-            $idCardNo:$("#inp_idCardNo"),
-			$portal:$("#inp_portal"),
-			$email:$("#inp_email"),
-			$phone:$("#inp_phone"),
-			$secondPhone:$("#inp_secondPhone"),
-			$familyTel:$("#inp_familyTel"),
-			$officeTel:$("#inp_officeTel"),
-			$introduction:$("#inp_introduction"),
-			$jxzc:$("#inp_jxzc"),
-			$lczc:$("#inp_lczc"),
-			$xlzc:$("#inp_xlzc"),
-			$zxzc:$("#inp_zxzc"),
-            $roleType:$("#inp_roleType"),
-            $org:$("#inp_org"),
-            $dept:$("#inp_dept"),
+            $skill: $("#inp_skill"),
+            $idCardNo: $("#inp_idCardNo"),
+            $portal: $("#inp_portal"),
+            $email: $("#inp_email"),
+            $phone: $("#inp_phone"),
+            $secondPhone: $("#inp_secondPhone"),
+            $familyTel: $("#inp_familyTel"),
+            $officeTel: $("#inp_officeTel"),
+            $introduction: $("#inp_introduction"),
+            $jxzc: $("#inp_jxzc"),
+            $lczc: $("#inp_lczc"),
+            $xlzc: $("#inp_xlzc"),
+            $zxzc: $("#inp_zxzc"),
+            $roleType: $("#inp_roleType"),
+            $jobType: $("#inp_jobType"),
+            $jobLevel: $("#inp_jobLevel"),
+            $jobScope: $("#inp_jobScope"),
+            $jobState: $("#inp_jobState"),
+            $registerFlag: $('input[name="registerFlag"]', this.$form),
+            $divBtnShow: document.getElementById('divBtnShow'),
+//            $org:$("#inp_org"),
+//            $dept:$("#inp_dept"),
 
             init: function () {
                 var self = this;
                 self.$sex.eq(0).attr("checked", 'true');
+                self.$registerFlag.eq(0).attr("checked", 'true');
                 self.initForm();
                 self.bindEvents();
                 self.$uploader.instance = self.$uploader.webupload({
@@ -82,12 +96,13 @@
                     auto: false
                 });
                 self.$uploader.instance.on('uploadSuccess', function (file, resp) {
-                    if(!resp.successFlg)
+                    if (!resp.successFlg) {
                         $.Notice.error(resp.errorMsg);
-                    else
-                        $.Notice.success('新增成功');
-                        closeAddDoctorInfoDialog(function () {
-                        });
+                    }else {
+                        win.parent.reloadMasterUpdateGrid();
+                        win.parent.showAddSuccPop();
+                        win.parent.closeAddDoctorInfoDialog();
+                    }
                 });
             },
             initForm: function () {
@@ -102,52 +117,57 @@
                 me.$secondPhone.ligerTextBox({width: 240});
                 me.$familyTel.ligerTextBox({width: 240});
                 me.$officeTel.ligerTextBox({width: 240});
-                me.$jxzc.ligerTextBox({width: 240});
-                me.$lczc.ligerTextBox({width: 240});
+                me.initDDL(jxzcDictId, this.$jxzc);
+                me.initDDL(lczcDictId, this.$lczc);
                 me.$xlzc.ligerTextBox({width: 240});
                 me.$zxzc.ligerTextBox({width: 240});
-                me.$org.customCombo('${contextRoot}/organization/searchOrgs',{},null,null,null,{
-                    valueField: 'id',
-                    textField: 'fullName',
-                    onSelected: function (id) {
-                        var orgId = id;
-                        orgSelectedValue = id;
-                        me.$dept.ligerComboBox({
-                            url: '${contextRoot}/deptMember/getAllDeptByOrgId',
-                            ajaxType: 'post',
-                            valueField: 'id',
-                            textField: 'name',
-                            urlParms: {
-                                orgId: orgId
-                            },
-                            dataParmName: 'detailModelList'});
-                    }
-                },{
-                columns: [
-                    {display : '名称', name :'fullName',width : 210, align: 'left'}
-                ]});
-                me.$dept.ligerComboBox().setValue("");
-                me.$org.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
-                });
-                me.$dept.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
-                });
+                <%--me.$org.customCombo('${contextRoot}/organization/searchOrgs',{},null,null,null,{--%>
+                <%--valueField: 'id',--%>
+                <%--textField: 'fullName',--%>
+                <%--onSelected: function (id) {--%>
+                <%--var orgId = id;--%>
+                <%--orgSelectedValue = id;--%>
+                <%--me.$dept.ligerComboBox({--%>
+                <%--url: '${contextRoot}/deptMember/getAllDeptByOrgId',--%>
+                <%--ajaxType: 'post',--%>
+                <%--valueField: 'id',--%>
+                <%--textField: 'name',--%>
+                <%--urlParms: {--%>
+                <%--orgId: orgId--%>
+                <%--},--%>
+                <%--dataParmName: 'detailModelList'});--%>
+                <%--}--%>
+                <%--},{--%>
+                <%--columns: [--%>
+                <%--{display : '名称', name :'fullName',width : 210, align: 'left'}--%>
+                <%--]});--%>
+//                me.$dept.ligerComboBox().setValue("");
+//                me.$org.parent().css({
+//                    width:'240'
+//                }).parent().css({
+//                    display:'inline-block',
+//                    width:'240px'
+//                });
+//                me.$dept.parent().css({
+//                    width:'240'
+//                }).parent().css({
+//                    display:'inline-block',
+//                    width:'240px'
+//                });
                 <%--this.$org.ligerComboBox({--%>
-                    <%--url: '${contextRoot}/organization/searchOrgs',--%>
-                    <%--valueField: 'id',--%>
-                    <%--textField: 'fullName',--%>
-                    <%--dataParmName: 'detailModelList',--%>
-                    <%--urlParms: {page: 1, rows:10000}--%>
+                <%--url: '${contextRoot}/organization/searchOrgs',--%>
+                <%--valueField: 'id',--%>
+                <%--textField: 'fullName',--%>
+                <%--dataParmName: 'detailModelList',--%>
+                <%--urlParms: {page: 1, rows:10000}--%>
                 <%--});--%>
-                me.$introduction.ligerTextBox({width:600,height:100 });
+                me.$introduction.ligerTextBox({width: 600, height: 100});
                 me.initDDL(roleTypeDictId, this.$roleType);
+                me.initDDL(jobTypeDictId, this.$jobType);
+                me.initDDL(jobLevelDictId, this.$jobLevel);
+                me.initDDL(jobScopeDictId, this.$jobScope);
+                me.initDDL(jobStateDictId, this.$jobState);
+                me.$registerFlag.ligerRadio();
                 me.$sex.ligerRadio();
                 me.$form.attrScan();
             },
@@ -165,22 +185,22 @@
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
                     onElementValidateForAjax: function (elm) {
-                        var checkObj = { result:true, errorMsg: ''};
+                        var checkObj = {result: true, errorMsg: ''};
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_code')) {
                             var code = $("#inp_code").val();
-                            checkObj= checkDataSourceName('code', code, "该账号已存在");
+                            checkObj = checkDataSourceName('code', code, "该账号已存在");
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCardNo')) {
                             var CardNo = $("#inp_idCardNo").val();
-                            checkObj= checkDataSourceName('idCardNo', CardNo, "该身份证号已存在");
+                            checkObj = checkDataSourceName('idCardNo', CardNo, "该身份证号已存在");
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_phone')) {
                             var phone = $("#inp_phone").val();
-                            checkObj= checkDataSourceName('phone', phone, "该电话号码已存在");
+                            checkObj = checkDataSourceName('phone', phone, "该电话号码已存在");
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_email')) {
                             var email = $("#inp_email").val();
-                            checkObj= checkDataSourceName('email', email, "该邮箱已存在");
+                            checkObj = checkDataSourceName('email', email, "该邮箱已存在");
                         }
                         if (!checkObj.result) {
                             return checkObj;
@@ -210,19 +230,25 @@
 
                 //新增的点击事件
                 this.$addBtn.click(function () {
+                    var jsonModel = win.ORGDEPTVAL;
+                    if (jsonModel.length <= 0) {
+                        $.Notice.error('请选择机构部门');
+                        return;
+                    }
                     var imgHtml = self.$imageShow.children().length;
                     var addDoctor = self.$form.Fields.getValues();
                     if (validator.validate()) {
                         if (imgHtml == 0) {
-                            update(addDoctor);
+                            update(addDoctor, jsonModel);
                         } else {
                             var upload = self.$uploader.instance;
                             var image = upload.getFiles().length;
                             if (image) {
                                 upload.options.formData.doctorModelJsonData = encodeURIComponent(JSON.stringify(addDoctor));
+                                upload.options.formData.jsonModel = encodeURIComponent(JSON.stringify(jsonModel));
                                 upload.upload();
                             } else {
-                                update(addDoctor);
+                                update(addDoctor, jsonModel);
                             }
                         }
 
@@ -233,12 +259,14 @@
 
                 });
 
-                function update(doctorModel) {
+                function update(doctorModel, jsonModel) {
                     var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var doctorModelJsonData = JSON.stringify(doctorModel);
                     var dataModel = $.DataModel.init();
+                    jsonModel = JSON.stringify(jsonModel);
+                    win.ORGDEPTVAL = null;
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
-                        data: {doctorModelJsonData: doctorModelJsonData,orgId: orgSelectedValue, deptId: $("#inp_dept_val").val().trim()},
+                        data: {doctorModelJsonData: doctorModelJsonData, jsonModel: jsonModel},
                         success: function (data) {
                             waittingDialog.close();
                             if (data.successFlg) {
@@ -246,8 +274,13 @@
                                 win.parent.showAddSuccPop();
                                 win.parent.closeAddDoctorInfoDialog();
                             } else {
+                                waittingDialog.close();
                                 $.Notice.error(data.errorMsg);
                             }
+                        },
+                        error: function () {
+                            waittingDialog.close();
+                            $.Notice.error('请求失败！');
                         }
                     })
                 }
@@ -255,6 +288,28 @@
                 self.$cancelBtn.click(function () {
                     win.parent.closeAddDoctorInfoDialog();
                 });
+
+
+                self.$divBtnShow.onclick = function () {
+                    var wait = $.Notice.waitting("请稍后...");
+                    win.orgDeptDio = $.ligerDialog.open({
+                        height: 620,
+                        width: 800,
+                        title: '选择机构部门',
+                        url: '${contextRoot}/doctor/selectOrgDept',
+                        urlParms: {
+                            idCardNo: ''
+                        },
+                        isHidden: false,
+                        show: false,
+                        onLoaded: function () {
+                            wait.close();
+                            win.orgDeptDio.show();
+                        },
+                        load: true
+                    });
+                    win.orgDeptDio.hide();
+                }
             }
         };
         /* ************************* 模块初始化结束 ************************** */

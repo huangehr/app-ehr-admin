@@ -3,7 +3,7 @@ package com.yihu.ehr.portal.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.portal.PortalResourcesModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.user.controller.UserController;
@@ -95,15 +95,15 @@ public class ResourcesController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
+        params.put("sorts", "-uploadTime"); // 根据uploadTime排序，-：降序
         params.put("page", page);
         params.put("size", rows);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -114,17 +114,16 @@ public class ResourcesController extends BaseUIController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "updatePortalResources", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "updatePortalResources")
     @ResponseBody
     public Object updatePortalResources(String portalResourcesModelJsonData, HttpServletRequest request) throws IOException{
 
         String url = "/portalResources/";
         String resultStr = "";
         String imageId = "";
-        System.out.println();
         ObjectMapper mapper = new ObjectMapper();
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(portalResourcesModelJsonData, "UTF-8").split(";");
         PortalResourcesModel detailModel = toModel(strings[0], PortalResourcesModel.class);
@@ -198,8 +197,9 @@ public class ResourcesController extends BaseUIController {
 
             }
         } catch (Exception e) {
+            e.printStackTrace();
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(e.getMessage());
             return result;
         }
         return resultStr;
@@ -226,13 +226,12 @@ public class ResourcesController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -276,9 +275,8 @@ public class ResourcesController extends BaseUIController {
             model.addAttribute("contentPage", "portal/resources/portalResourcesInfoDialog");
             return "simpleView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

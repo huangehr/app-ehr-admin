@@ -59,6 +59,7 @@
         urlParms: null,     //传参
         load: false,     //是否以load()的方式加载目标页的内容 
         type: 'none',   //类型 warn、success、error、question
+        resType: 'GET',
         left: null,     //位置left
         top: null,      //位置top
         modal: true,    //是否模态对话框
@@ -145,6 +146,7 @@
                 g.dialog.addClass("l-dialog-win");
 
             }
+            p.loadSuccess && p.loadSuccess.call(this, g.dialog);
             if (p.cls) g.dialog.addClass(p.cls);
             if (p.id) g.dialog.attr("id", p.id);
 
@@ -183,8 +185,8 @@
                     urlParms = urlParms || {};
                     urlParms[p.timeParmName] = new Date().getTime();
                 }
-                if (urlParms)
-                { 
+                if (urlParms && p.resType === 'GET')
+                {
                     for (var name in urlParms)
                     {
                         url += url.indexOf('?') == -1 ? "?" : "&";
@@ -193,11 +195,19 @@
                 }
                 if (p.load)
                 {
-                    g.dialog.body.load(url, function ()
-                    {
-                        g._saveStatus();
-                        g.trigger('loaded');
-                    });
+                    if (p.resType === 'GET') {
+                        g.dialog.body.load(url, function ()
+                        {
+                            g._saveStatus();
+                            g.trigger('loaded');
+                        });
+                    } else {
+                        g.dialog.body.load(url, urlParms, function ()
+                        {
+                            g._saveStatus();
+                            g.trigger('loaded');
+                        });
+                    }
                 }
                 else
                 {

@@ -1,7 +1,7 @@
 /**
  * Created by AndyCai on 2015/11/25.
  */
-
+var parentDilog = frameElement.dialog;
 var Util = $.Util;
 var set = {};
 set.list = {
@@ -619,8 +619,8 @@ set.attr = {
                         //alert($.i18n.prop('message.save.success'));
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
                             debugger
-                            parent.set.list.isReload = true;
-                            parent.set.list.dialog_set_detail.close();
+                            // parent.set.list.isReload = true;
+                            parentDilog.close();
                         }, null);
                     }
                     else {
@@ -643,7 +643,7 @@ set.attr = {
             }
         });
         $("#btn_close").click(function () {
-            parent.set.list.dialog_set_detail.close();
+            parentDilog.close();
         });
     }
 };
@@ -740,11 +740,55 @@ set.elementAttr = {
             return options;
         }
 
+        var dtData = {
+            Rows:[
+                {'id': 'VARCHAR', 'name': 'VARCHAR'},
+                {'id': 'INT', 'name': 'INT'},
+                {'id': 'FLOAT', 'name': 'FLOAT'},
+                {'id': 'DOUBLE', 'name': 'DOUBLE'},
+                {'id': 'CHAR', 'name': 'CHAR'},
+                {'id': 'TEXT', 'name': 'TEXT'},
+                {'id': 'DATE', 'name': 'DATE'},
+            ]
+        };
+        // var dtData = [
+        //     {'id': 'VARCHAR', 'name': 'VARCHAR'},
+        //     {'id': 'INT', 'name': 'INT'},
+        //     {'id': 'FLOAT', 'name': 'FLOAT'},
+        //     {'id': 'DOUBLE', 'name': 'DOUBLE'},
+        //     {'id': 'CHAR', 'name': 'CHAR'},
+        //     {'id': 'TEXT', 'name': 'TEXT'},
+        //     {'id': 'DATE', 'name': 'DATE'},
+        // ];
+
 
         $("#datatype").ligerComboBox({
             height: 28,
-            width: 220
-        })
+            width: 227,
+            // data: dtData,
+            textField: 'name',
+            valueField: 'id',
+            alwayShowInTop: true,
+            selectBoxHeight : 150,
+            grid: {
+                columns: [
+                    {display : '名称', name :'name',width : 210}
+                ],
+                allowAdjustColWidth : true,
+                // editorTopDiff : 41,
+                headerRowHeight : 0,
+                heightDiff : 0,
+                pageSize: 15,
+                pagesizeParmName : 'rows',
+                record : "totalCount",
+                rowHeight : 30,
+                rownumbers :false,
+                switchPageSizeApplyComboBox: false,
+                width :"98%",
+                data: dtData,
+                usePager: false
+            }
+        });
 
     },
     getElementInfo: function () {
@@ -840,9 +884,8 @@ set.elementAttr = {
                     var _res = eval(data);
                     if (_res.successFlg) {
                         $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-                            debugger
-                            parent.set.list.isReload = true;
-                            parent.set.list.dialog_set_detail.close();
+                            // parent.set.list.isReload = true;
+                            parentDilog.close();
                         }, null);
                     }
                     else {
@@ -892,7 +935,7 @@ set.elementAttr = {
             }
         });
         $("#btn_close").click(function () {
-            parent.set.list.top.dialog_set_detail.close();
+            parentDilog.close();
         });
         //给数据元主键和是否空值的选择
         $("#primaryKey").click(function () {

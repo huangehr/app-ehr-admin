@@ -1,10 +1,12 @@
 package com.yihu.ehr.organization.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.agModel.org.RsOrgResourceModel;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.model.org.MRsOrgResource;
 import com.yihu.ehr.patient.controller.PatientController;
@@ -59,7 +61,7 @@ public class OrganizationController extends BaseUIController {
     @Autowired
     private GetInfoService getInfoService;
 
-    @RequestMapping("initial")
+    @RequestMapping("/initial")
     public String orgInitial(Model model) {
         model.addAttribute("contentPage", "organization/organization");
         return "pageView";
@@ -69,6 +71,11 @@ public class OrganizationController extends BaseUIController {
     public String organizationGrant(Model model) {
         model.addAttribute("contentPage", "organization/organizationGrant");
         return "pageView";
+    }
+    @RequestMapping("uploadOrgErrorDialog")
+    public String uploadOrgErrorDialog(Model model) {
+        model.addAttribute("contentPage", "organization/uploadOrgErrorDialog");
+        return "simpleView";
     }
 
     @RequestMapping("dialog/orgInfo")
@@ -88,20 +95,20 @@ public class OrganizationController extends BaseUIController {
             Envelop imageLop =   getEnvelop(envelopStr);
             session.setAttribute("imageLop",toJson(imageLop));
         } catch (Exception e) {
-             session.setAttribute("imageLop","");
+             session.setAttribute("imageLop","{\"successFlg\":false,\"pageSize\":10,\"currPage\":0,\"totalPage\":0,\"totalCount\":0,\"detailModelList\":null,\"obj\":null,\"errorMsg\":\"系统错误,请联系管理员!\",\"errorCode\":0}");
              LogService.getLogger(OrganizationController.class).error(e.getMessage());
         }
         model.addAttribute("mode", mode);
         model.addAttribute("envelop", resultStr);
         model.addAttribute("contentPage", "organization/organizationInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("dialog/create")
     public String createInitial(Model model, String mode) {
         model.addAttribute("mode", mode);
         model.addAttribute("contentPage", "organization/orgCreateDialog");
-        return "generalView";
+        return "emptyView";
     }
 
     @RequestMapping("dialog/orgDataGrant")
@@ -110,34 +117,14 @@ public class OrganizationController extends BaseUIController {
         model.addAttribute("orgTypeName", orgTypeName);
         model.addAttribute("fullName", fullName);
         model.addAttribute("contentPage", "organization/orgGrantInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping(value = "searchOrgs", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object searchOrgs(String searchParm, String searchWay, String orgType, String province, String city, String district, int page, int rows) {
+    public Object searchOrgs(String searchParm, String searchWay, String orgType, String province, String city, String district, int page, int rows,HttpServletRequest request) {
         Envelop envelop = new Envelop();
         try {
-            //获取地址的 ids
-          /*  String addrIds = "";
-            if (!"".equals(province)) {
-                String urlAddr = "/geographies";
-                Map<String, Object> args = new HashMap<>();
-                args.put("province", province);
-                args.put("city", city);
-                args.put("district", district);
-                String envelopStrAddr = HttpClientUtil.doGet(comUrl + urlAddr, args, username, password);
-                Envelop envelopAddr = getEnvelop(envelopStrAddr);
-                if (envelopAddr.isSuccessFlg()) {
-                    List<String> addrList = (List<String>) getEnvelopList(envelopAddr.getDetailModelList(), new ArrayList<String>(), String.class);
-                    for (String id : addrList) {
-                        addrIds += id + ",";
-                    }
-                    String[] addrIdsArrays = addrList.toArray(new String[addrList.size()]);
-                    addrIds = String.join(",", addrIdsArrays);
-                }
-            }*/
-
             //分页查询机构列表
             String url = "/organizations";
             String filters = "";
@@ -151,40 +138,22 @@ public class OrganizationController extends BaseUIController {
             if (!StringUtils.isEmpty(orgType)) {
                 filters += "orgType=" + orgType + ";";
             }
-
-           /* String orgCode = getInfoService.getOrgCode();*/
-           /* String districtList = getInfoService.getDistrictList();*/
-
-           /* if (!StringUtils.isEmpty(orgCode)) {
-                filters += "orgCode=" + orgCode + ";";
-            } else {
-                filters += "orgCode=" + null + ";";
-            }*/
-            /*filters += StringUtils.isEmpty(orgCode) ? "orgCode=" + null + " g2;" : "orgCode=" + orgCode + " g2;";*/
-            /*filters += StringUtils.isEmpty(districtList) ? "location=-1 g2;" : "location=" + districtList + " g2;";*/
-//            if (!StringUtils.isEmpty(districtList)) {
-//                filters += "location=" + districtList + ";";
-//            } else {
-//                filters += "location=-1;";
-//            }
-           /* //添加地址过滤条件
-            if (!"".equals(addrIds)) {
-                filters += "location=" + addrIds + ";";
-            }*/
+            //根据登录人的机构获取saas化机构
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("fields", "");
             params.put("filters", filters);
-            params.put("sorts", "");
+            params.put("sorts", "-createDate");
             params.put("size", rows);
             params.put("page", page);
             params.put("province", province);
             params.put("city", city);
             params.put("district", district);
+            params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -230,6 +199,35 @@ public class OrganizationController extends BaseUIController {
         }
     }
 
+    /**
+     * 获取所有机构代码下拉框
+     */
+    @RequestMapping("/getAllorgCodes")
+    @ResponseBody
+    public Object getAllorgCodes(){
+        Envelop envelop = new Envelop();
+        try{
+            String url = "/organizations";
+            Map<String,Object> params = new HashMap<>();
+            params.put("fields","");
+            params.put("filters","");
+            params.put("sorts","");
+            params.put("page",1);
+            params.put("size",1000);
+            String envelopStrFGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrFGet,Envelop.class);
+            if(envelopGet.isSuccessFlg()){
+                envelop.setObj(envelopGet.getDetailModelList());
+                envelop.setSuccessFlg(true);
+                return envelop;
+            }
+            return envelop;
+        }catch (Exception ex){
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+            return envelop;
+        }
+    }
+
     @RequestMapping("deleteOrg")
     @ResponseBody
     public Object deleteOrg(String orgCode) {
@@ -241,10 +239,9 @@ public class OrganizationController extends BaseUIController {
             resultStr = HttpClientUtil.doDelete(comUrl + getOrgUrl, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
 
     }
 
@@ -266,12 +263,12 @@ public class OrganizationController extends BaseUIController {
                 envelop.setSuccessFlg(true);
             } else {
                 envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                envelop.setErrorMsg("更新失败");
             }
             return envelop;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -359,6 +356,9 @@ public class OrganizationController extends BaseUIController {
                 orgForUpdate.setIng(org.getIng());
                 orgForUpdate.setLat(org.getLat());
                 orgForUpdate.setZxy(org.getZxy());
+                if ("Hospital".equalsIgnoreCase(org.getOrgType())) {
+                    orgForUpdate.setBerth(org.getBerth());
+                }
 
 
 
@@ -368,9 +368,8 @@ public class OrganizationController extends BaseUIController {
             }
             return envelopStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -388,9 +387,8 @@ public class OrganizationController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + getOrgUrl, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -407,9 +405,8 @@ public class OrganizationController extends BaseUIController {
             resultStr = HttpClientUtil.doPost(comUrl + getOrgUrl, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -426,13 +423,11 @@ public class OrganizationController extends BaseUIController {
                 envelop.setSuccessFlg(true);
             } else {
                 envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.InvalidUpdate.toString());
             }
             return envelop;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -448,7 +443,6 @@ public class OrganizationController extends BaseUIController {
 
         try {
             outputStream = response.getOutputStream();
-
             byte[] bytes = Base64.getDecoder().decode(imageStream);
             outputStream.write(bytes);
             outputStream.flush();
@@ -713,8 +707,8 @@ public class OrganizationController extends BaseUIController {
                 return result;
             }
         } catch (Exception ex) {
-            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -759,6 +753,25 @@ public class OrganizationController extends BaseUIController {
     }
 
 
-
+    @RequestMapping("/getOrgList")
+    @ResponseBody
+    public Object getOrgList(String searchParm) {
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params =  new HashMap<>();
+            params.put("pid", 361100);
+            if (!StringUtils.isEmpty(searchParm)) {
+                params.put("fullName", searchParm);
+            }
+            String url = "/organizations/getOrgListByAddressPid";
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = objectMapper.readValue(resultStr, Envelop.class);
+        }catch (Exception e){
+            e.getMessage();
+            envelop.setErrorMsg(e.getMessage());
+            envelop.setSuccessFlg(false);
+        }
+        return envelop;
+    }
 
 }

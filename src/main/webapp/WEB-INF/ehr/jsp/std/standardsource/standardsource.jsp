@@ -10,18 +10,18 @@
 <div id="div_wrapper" >
 
     <!-- ####### 查询条件部分 ####### -->
-    <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
+    <div class="m-retrieve-area f-dn f-pr m-form-inline" data-role-form>
         <div class="m-form-group f-mt10">
-            <div class="m-form-control">
+            <div class="m-form-control f-mb10">
                 <!--输入框-->
                 <input type="text" id="ipt_search" placeholder="请输入编码或名称" class="f-ml10" data-attr-scan="searchNm"/>
             </div>
-            <div class="m-form-control f-ml10">
+            <div class="m-form-control f-ml10 f-mb10">
                 <!--类别-->
                 <input type="text" id="ipt_search_type" placeholder="请选择类型" data-type="select" data-attr-scan="searchType">
             </div>
 
-            <div class="m-form-control f-ml10">
+            <div class="m-form-control f-ml10 f-mb10">
                 <!--按钮:搜索-->
                 <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
                     <span>搜索</span>
@@ -30,7 +30,7 @@
 
             <!--按钮: 新增 & 批量删除-->
             <sec:authorize url="/standardsource/delStdSource">
-            <div class="m-form-control m-form-control-fr">
+            <div class="m-form-control m-form-control-fr f-mb10">
                 <div onclick="javascript:$.publish('stdInfo:stdInfoGrid:delete',[''])" id="btn_del" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
                     <span ><spring:message code="btn.multi.delete"/></span>
                 </div>
@@ -38,7 +38,7 @@
             </sec:authorize>
 
             <sec:authorize url="/standardsource/updateStdSource">
-            <div class="m-form-control m-form-control-fr-10">
+            <div class="m-form-control m-form-control-fr-10 f-mb10">
                 <div onclick="javascript:$.publish('std:stdInfo:open',['','new'])" id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
                     <span ><spring:message code="btn.create"/></span>
                 </div>
