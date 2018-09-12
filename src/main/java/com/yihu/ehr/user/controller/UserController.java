@@ -90,7 +90,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("searchUsers")
     @ResponseBody
-    public Object searchUsers(String searchNm,String searchOrg, String searchType, int page, int rows, HttpServletRequest request) {
+    public Object searchUsers(String searchNm, String searchOrg, String searchType, int page, int rows, HttpServletRequest request) {
 
         String url = "/users";
         String resultStr = "";
@@ -100,7 +100,7 @@ public class UserController extends BaseUIController {
 
             StringBuffer stringBuffer = new StringBuffer();
             if (!StringUtils.isEmpty(searchNm)) {
-                stringBuffer.append("realName"+ PageParms.LIKE + searchNm + ";");
+                stringBuffer.append("realName" + PageParms.LIKE + searchNm + ";");
             }
             if (!StringUtils.isEmpty(searchOrg)) {
                 stringBuffer.append("organization=" + searchOrg + ";");
@@ -114,7 +114,7 @@ public class UserController extends BaseUIController {
             if (!StringUtils.isEmpty(filters)) {
                 params.put("filters", filters);
             }
-            List<String> userOrgList  = getUserOrgSaasListRedis(request);
+            List<String> userOrgList = getUserOrgSaasListRedis(request);
             if (null != userOrgList && userOrgList.size() > 0 && "-NoneOrg".equalsIgnoreCase(userOrgList.get(0))) {
                 envelop.setSuccessFlg(true);
                 return envelop;
@@ -162,7 +162,7 @@ public class UserController extends BaseUIController {
     @RequestMapping("activityUser")
     @ResponseBody
     public Object activityUser(String userId, boolean activated) {
-        String url = "/users/admin/"+userId;
+        String url = "/users/admin/" + userId;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -185,7 +185,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping(value = "updateUser", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object updateUser(String userModelJsonData,HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public Object updateUser(String userModelJsonData, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String url = "/user/";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -193,7 +193,7 @@ public class UserController extends BaseUIController {
         ObjectMapper mapper = new ObjectMapper();
         RestTemplates templates = new RestTemplates();
 
-        String userJsonDataModel = URLDecoder.decode(userModelJsonData,"UTF-8");
+        String userJsonDataModel = URLDecoder.decode(userModelJsonData, "UTF-8");
         UserDetailModel userDetailModel = mapper.readValue(userJsonDataModel, UserDetailModel.class);
 
         // 个人头象图片信息上传
@@ -205,7 +205,7 @@ public class UserController extends BaseUIController {
         byte[] tempBuffer = new byte[1024];
         byte[] fileBuffer = new byte[0];
         while ((temp = inputStream.read(tempBuffer)) != -1) {
-            fileBuffer = ArrayUtils.addAll(fileBuffer,ArrayUtils.subarray(tempBuffer,0,temp));
+            fileBuffer = ArrayUtils.addAll(fileBuffer, ArrayUtils.subarray(tempBuffer, 0, temp));
         }
         inputStream.close();
         String restStream = Base64.getEncoder().encodeToString(fileBuffer);
@@ -214,10 +214,10 @@ public class UserController extends BaseUIController {
         try {
             if (!StringUtils.isEmpty(userDetailModel.getId())) {
                 //修改
-                String getUser = templates.doGet(comUrl + "/users/admin/"+userDetailModel.getId());
-                envelop = mapper.readValue(getUser,Envelop.class);
+                String getUser = templates.doGet(comUrl + "/users/admin/" + userDetailModel.getId());
+                envelop = mapper.readValue(getUser, Envelop.class);
                 String userJsonModel = mapper.writeValueAsString(envelop.getObj());
-                UserDetailModel userModel = mapper.readValue(userJsonModel,UserDetailModel.class);
+                UserDetailModel userModel = mapper.readValue(userJsonModel, UserDetailModel.class);
                 userModel.setRealName(userDetailModel.getRealName());
                 userModel.setIdCardNo(userDetailModel.getIdCardNo());
                 userModel.setGender(userDetailModel.getGender());
@@ -227,9 +227,9 @@ public class UserController extends BaseUIController {
                 userModel.setUserType(userDetailModel.getUserType());
                 userModel.setOrganization(userDetailModel.getOrganization());
                 userModel.setMajor("");
-                if(null!=userDetailModel.getBirthday()&&!"".equals(userDetailModel.getBirthday())){
+                if (null != userDetailModel.getBirthday() && !"".equals(userDetailModel.getBirthday())) {
                     userModel.setBirthday(userDetailModel.getBirthday());
-                }else{
+                } else {
                     userModel.setBirthday(null);
                 }
 
@@ -243,11 +243,11 @@ public class UserController extends BaseUIController {
                 userModel.setAreaId(userDetailModel.getAreaId());
                 userModel.setAreaName(userDetailModel.getAreaName());
                 userModel.setStreet(userDetailModel.getStreet());
-                if("Doctor".equals(userDetailModel.getUserType())){
+                if ("Doctor".equals(userDetailModel.getUserType())) {
                     userModel.setMajor(userDetailModel.getMajor());
                 }
-                String imageId = fileUpload(userModel.getId(),restStream,imageName);
-                if (!StringUtils.isEmpty(imageId)){
+                String imageId = fileUpload(userModel.getId(), restStream, imageName);
+                if (!StringUtils.isEmpty(imageId)) {
                     userModel.setImgRemotePath(imageId);
                 }
                 userModel.setSecondPhone(userDetailModel.getSecondPhone());
@@ -259,24 +259,24 @@ public class UserController extends BaseUIController {
                 params.add("user_json_data", userJsonDataModel);
 
                 resultStr = templates.doPut(comUrl + url, params);
-            }else{
+            } else {
 
                 params.add("user_json_data", userJsonDataModel);
                 resultStr = templates.doPost(comUrl + url, params);
-                envelop = toModel(resultStr,Envelop.class);
-                UserDetailModel addUserModel = toModel(toJson(envelop.getObj()),UserDetailModel.class);
-                String imageId = fileUpload(addUserModel.getId(),restStream,imageName);
+                envelop = toModel(resultStr, Envelop.class);
+                UserDetailModel addUserModel = toModel(toJson(envelop.getObj()), UserDetailModel.class);
+                String imageId = fileUpload(addUserModel.getId(), restStream, imageName);
 
-                if (!StringUtils.isEmpty(imageId)){
+                if (!StringUtils.isEmpty(imageId)) {
                     addUserModel.setImgRemotePath(imageId);
-                    String userData = templates.doGet(comUrl + "/users/admin/"+addUserModel.getId());
-                    envelop = mapper.readValue(userData,Envelop.class);
+                    String userData = templates.doGet(comUrl + "/users/admin/" + addUserModel.getId());
+                    envelop = mapper.readValue(userData, Envelop.class);
                     String userJsonModel = mapper.writeValueAsString(envelop.getObj());
-                    UserDetailModel userModel = mapper.readValue(userJsonModel,UserDetailModel.class);
+                    UserDetailModel userModel = mapper.readValue(userJsonModel, UserDetailModel.class);
                     userModel.setImgRemotePath(imageId);
 
                     params.remove("user_json_data");
-                    params.add("user_json_data",toJson(userModel));
+                    params.add("user_json_data", toJson(userModel));
 //                    params.add("user_json_data",toJson(addUserModel));
                     resultStr = templates.doPut(comUrl + url, params);
 
@@ -303,7 +303,7 @@ public class UserController extends BaseUIController {
         RestTemplates templates = new RestTemplates();
 
         // 2、界面数据获取
-        String userJsonDataModel = URLDecoder.decode(userModelJsonData,"UTF-8");
+        String userJsonDataModel = URLDecoder.decode(userModelJsonData, "UTF-8");
         UserDetailModel userDetailModel = mapper.readValue(userJsonDataModel, UserDetailModel.class);
         String userType = userDetailModel.getUserType().toString();
 
@@ -316,7 +316,7 @@ public class UserController extends BaseUIController {
         byte[] tempBuffer = new byte[1024];
         byte[] fileBuffer = new byte[0];
         while ((temp = inputStream.read(tempBuffer)) != -1) {
-            fileBuffer = ArrayUtils.addAll(fileBuffer,ArrayUtils.subarray(tempBuffer,0,temp));
+            fileBuffer = ArrayUtils.addAll(fileBuffer, ArrayUtils.subarray(tempBuffer, 0, temp));
         }
         inputStream.close();
         String restStream = Base64.getEncoder().encodeToString(fileBuffer);
@@ -327,10 +327,10 @@ public class UserController extends BaseUIController {
             if (!StringUtils.isEmpty(userDetailModel.getId())) {
                 // 获取现有的用户数据
                 userId = userDetailModel.getId().toString();
-                String getUser = templates.doGet(comUrl + "/users/admin/"+userDetailModel.getId());
-                envelop = mapper.readValue(getUser,Envelop.class);
+                String getUser = templates.doGet(comUrl + "/users/admin/" + userDetailModel.getId());
+                envelop = mapper.readValue(getUser, Envelop.class);
                 String userJsonModel = mapper.writeValueAsString(envelop.getObj());
-                UserDetailModel userModel = mapper.readValue(userJsonModel,UserDetailModel.class);
+                UserDetailModel userModel = mapper.readValue(userJsonModel, UserDetailModel.class);
                 // 将界面上的维护信息维护到现有的数据中
                 userModel.setRealName(userDetailModel.getRealName());
                 userModel.setIdCardNo(userDetailModel.getIdCardNo());
@@ -341,39 +341,39 @@ public class UserController extends BaseUIController {
                 userModel.setImgLocalPath("");
                 // 基于传入的角色列表进行授权的维护，更新role_user,user_app表
                 userModel.setRole(userDetailModel.getRole());
-                String imageId = fileUpload(userModel.getId(),restStream,imageName);
-                if (!StringUtils.isEmpty(imageId)){
+                String imageId = fileUpload(userModel.getId(), restStream, imageName);
+                if (!StringUtils.isEmpty(imageId)) {
                     userModel.setImgRemotePath(imageId);
                 }
                 userJsonDataModel = toJson(userModel);
                 params.add("user_json_data", userJsonDataModel);
 
                 resultStr = templates.doPut(comUrl + url, params);
-            }else{
+            } else {
                 //4-2、当用户信息不存在的情况，调用新增的方法
                 params.add("user_json_data", userJsonDataModel);
                 resultStr = templates.doPost(comUrl + url, params);
-                envelop = toModel(resultStr,Envelop.class);
-                UserDetailModel addUserModel = toModel(toJson(envelop.getObj()),UserDetailModel.class);
-                String imageId = fileUpload(addUserModel.getId(),restStream,imageName);
+                envelop = toModel(resultStr, Envelop.class);
+                UserDetailModel addUserModel = toModel(toJson(envelop.getObj()), UserDetailModel.class);
+                String imageId = fileUpload(addUserModel.getId(), restStream, imageName);
                 userId = addUserModel.getId().toString();
 
-                if (!StringUtils.isEmpty(imageId)){
+                if (!StringUtils.isEmpty(imageId)) {
                     addUserModel.setImgRemotePath(imageId);
-                    String userData = templates.doGet(comUrl + "/users/admin/"+addUserModel.getId());
-                    envelop = mapper.readValue(userData,Envelop.class);
+                    String userData = templates.doGet(comUrl + "/users/admin/" + addUserModel.getId());
+                    envelop = mapper.readValue(userData, Envelop.class);
                     String userJsonModel = mapper.writeValueAsString(envelop.getObj());
-                    UserDetailModel userModel = mapper.readValue(userJsonModel,UserDetailModel.class);
+                    UserDetailModel userModel = mapper.readValue(userJsonModel, UserDetailModel.class);
                     userModel.setImgRemotePath(imageId);
                     params.remove("user_json_data");
-                    params.add("user_json_data",toJson(userModel));
+                    params.add("user_json_data", toJson(userModel));
 
                     resultStr = templates.doPut(comUrl + url, params);
                 }
             }
             //4-3、进行用户机构关联关系维护
-            envelop = userRolesController.initUserOrgRelation( userId, orgModel);
-            if(!envelop.isSuccessFlg()){
+            envelop = userRolesController.initUserOrgRelation(userId, orgModel);
+            if (!envelop.isSuccessFlg()) {
                 envelop.setSuccessFlg(false);
                 envelop.setErrorMsg("初始化授权失败，请联系管理员进行手动授权操作！");
                 return envelop.toString();
@@ -385,7 +385,7 @@ public class UserController extends BaseUIController {
         return resultStr;
     }
 
-    public String fileUpload(String userId,String inputStream,String fileName){
+    public String fileUpload(String userId, String inputStream, String fileName) {
 
         RestTemplates templates = new RestTemplates();
         Map<String, Object> params = new HashMap<>();
@@ -393,15 +393,15 @@ public class UserController extends BaseUIController {
         String fileId = null;
         if (!StringUtils.isEmpty(inputStream)) {
 
-            FileResourceModel fileResourceModel = new FileResourceModel(userId,"user","");
+            FileResourceModel fileResourceModel = new FileResourceModel(userId, "user", "");
             String fileResourceModelJsonData = toJson(fileResourceModel);
 
             params.put("file_str", inputStream);
             params.put("file_name", fileName);
-            params.put("json_data",fileResourceModelJsonData);
+            params.put("json_data", fileResourceModelJsonData);
             try {
-                fileId = HttpClientUtil.doPost(comUrl + "/files", params,username,password);
-            }catch (Exception e){
+                fileId = HttpClientUtil.doPost(comUrl + "/files", params, username, password);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -412,8 +412,8 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("resetPass")
     @ResponseBody
-    public Object resetPass(String userId,@ModelAttribute(SessionAttributeKeys.CurrentUser) UsersModel userDetailModel) {
-        String url = "/users/password/"+userId;
+    public Object resetPass(String userId, @ModelAttribute(SessionAttributeKeys.CurrentUser) UsersModel userDetailModel) {
+        String url = "/users/password/" + userId;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -434,8 +434,8 @@ public class UserController extends BaseUIController {
     }
 
     @RequestMapping("getUser")
-    public Object getUser(Model model, String userId, String mode, HttpSession session,HttpServletRequest request) throws IOException {
-        String url = "/users/admin/"+userId;
+    public Object getUser(Model model, String userId, String mode, HttpSession session, HttpServletRequest request) throws IOException {
+        String url = "/users/admin/" + userId;
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -444,16 +444,16 @@ public class UserController extends BaseUIController {
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop ep = getEnvelop(resultStr);
-            UserDetailModel userDetailModel = toModel(toJson(ep.getObj()),UserDetailModel.class);
+            UserDetailModel userDetailModel = toModel(toJson(ep.getObj()), UserDetailModel.class);
 
             String imageOutStream = "";
-            if (userDetailModel!=null && !StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
-                params.put("object_id",userDetailModel.getId());
-                imageOutStream = HttpClientUtil.doGet(comUrl + "/files",params,username, password);
-                envelop = toModel(imageOutStream,Envelop.class);
-                if (envelop.getDetailModelList().size()>0){
+            if (userDetailModel != null && !StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
+                params.put("object_id", userDetailModel.getId());
+                imageOutStream = HttpClientUtil.doGet(comUrl + "/files", params, username, password);
+                envelop = toModel(imageOutStream, Envelop.class);
+                if (envelop.getDetailModelList().size() > 0) {
                     session.removeAttribute("userImageStream");
-                    session.setAttribute("userImageStream",imageOutStream == null ? "" :envelop.getDetailModelList().get(envelop.getDetailModelList().size()-1));
+                    session.setAttribute("userImageStream", imageOutStream == null ? "" : envelop.getDetailModelList().get(envelop.getDetailModelList().size() - 1));
                 }
             }
             model.addAttribute("allData", resultStr);
@@ -469,7 +469,7 @@ public class UserController extends BaseUIController {
     @RequestMapping("unbundling")
     @ResponseBody
     public Object unbundling(String userId, String type) {
-        String getUserUrl = "/users/binding/"+userId;//解绑 todo 网关中需添加此方法
+        String getUserUrl = "/users/binding/" + userId;//解绑 todo 网关中需添加此方法
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -491,7 +491,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("distributeKey")
     @ResponseBody
-    public Object distributeKey(String loginCode, HttpServletRequest request) throws IOException{
+    public Object distributeKey(String loginCode, HttpServletRequest request) throws IOException {
         String getUserUrl = "/user/key";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -521,8 +521,8 @@ public class UserController extends BaseUIController {
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("existenceType",existenceType);
-        params.put("existenceNm",existenceNm);
+        params.put("existenceType", existenceType);
+        params.put("existenceNm", existenceNm);
 
         try {
             resultStr = HttpClientUtil.doGet(comUrl + getUserUrl, params, username, password);
@@ -535,7 +535,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("showImage")
     @ResponseBody
-    public void showImage(String timestamp,HttpSession session, HttpServletResponse response) throws Exception {
+    public void showImage(String timestamp, HttpSession session, HttpServletResponse response) throws Exception {
 
         response.setContentType("text/html; charset=UTF-8");
         response.setContentType("image/jpeg");
@@ -549,21 +549,21 @@ public class UserController extends BaseUIController {
         } catch (IOException e) {
             LogService.getLogger(UserController.class).error(e.getMessage());
         } finally {
-            if (outputStream != null){
+            if (outputStream != null) {
                 outputStream.close();
-              }
+            }
         }
     }
 
     @RequestMapping("/changePassWord")
     @ResponseBody
-    public Object changePassWord(String userId,String passWord){
+    public Object changePassWord(String userId, String passWord) {
         String getUserUrl = "/users/changePassWord";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("userId",userId);
-        params.put("password",passWord);
+        params.put("userId", userId);
+        params.put("password", passWord);
 
         try {
             resultStr = HttpClientUtil.doPut(comUrl + getUserUrl, params, username, password);
@@ -578,18 +578,18 @@ public class UserController extends BaseUIController {
 
     //查看权限页面初始化
     @RequestMapping("/appFeatureInitial")
-    public Object appFeatureInitial(Model model,String userId){
-        model.addAttribute("contentPage","user/userFeature");
-        model.addAttribute("userId",userId);
+    public Object appFeatureInitial(Model model, String userId) {
+        model.addAttribute("contentPage", "user/userFeature");
+        model.addAttribute("userId", userId);
         //获取用户所属角色
         Envelop envelop = new Envelop();
         String en = "";
         try {
             en = objectMapper.writeValueAsString(envelop);
             String url = "/roles/role_user/userRolesIds";
-            Map<String,Object> params = new HashMap<>();
-            params.put("user_id",userId);
-            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("user_id", userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             model.addAttribute("envelop", envelopStr);
         } catch (Exception ex) {
             LogService.getLogger(UserController.class).error(ex.getMessage());
@@ -616,49 +616,49 @@ public class UserController extends BaseUIController {
     //获取应用-用户角色组关系列表,用于查看权限
     @RequestMapping("/appRoles")
     @ResponseBody
-    public Object getAppRoles(String userId){
+    public Object getAppRoles(String userId) {
         //角色组类型字典：应用角色（type="0"）/用户角色（type="1"）
         //应用分类字典：平台应用（sourceType="1"）/接入应用（sourcetype="0")
         String type = "1";
         String sourceType = "1";
         try {
             String url = "/roles/app_user_roles";
-            Map<String,Object> params = new HashMap<>();
-            params.put("type",type);
-            params.put("source_type",sourceType);
-            params.put("user_id",userId);
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("type", type);
+            params.put("source_type", sourceType);
+            params.put("user_id", userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
-        } catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserController.class).error(ex.getMessage());
             return failed(ERR_SYSTEM_DES);
         }
     }
 
     //获取用户某个应用下的权限
+
     /**
-     *
      * @param roleIds 用户所属角色组ids
      * @return
      */
     @RequestMapping("/userAppFeatures")
     @ResponseBody
-    public Object getUserAppFeatures(String roleIds){
-        if(StringUtils.isEmpty(roleIds)){
+    public Object getUserAppFeatures(String roleIds) {
+        if (StringUtils.isEmpty(roleIds)) {
             return failed("角色组ids不能为空！");
         }
         try {
             String url = "/users/user_features";
-            Map<String,Object> params = new HashMap<>();
-            params.put("roles_ids",roleIds);
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            Map<String, Object> params = new HashMap<>();
+            params.put("roles_ids", roleIds);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
             envelop.getDetailModelList();
-            if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
-                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), AppFeatureModel.class);
+            if (envelop.isSuccessFlg() && envelop.getDetailModelList().size() > 0) {
+                return getEnvelopList(envelop.getDetailModelList(), new ArrayList<>(), AppFeatureModel.class);
             }
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserController.class).error(ex.getMessage());
             return failed(ERR_SYSTEM_DES);
         }
@@ -667,22 +667,22 @@ public class UserController extends BaseUIController {
     //获取所用平台应用下的角色组用于下拉框
     @RequestMapping("/appRolesList")
     @ResponseBody
-    public Object getAppRolesList(){
+    public Object getAppRolesList() {
         String roleType = "1";//用户角色类型字典值
         String appSourceType = "1";//应用类型字典值
         try {
             String url = "/roles/platformAppRolesTree";
-            Map<String,Object> params = new HashMap<>();
-            params.put("type",roleType);
-            params.put("source_type",appSourceType);
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            Map<String, Object> params = new HashMap<>();
+            params.put("type", roleType);
+            params.put("source_type", appSourceType);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
             envelop.getDetailModelList();
-            if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
-                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), PlatformAppRolesTreeModel.class);
+            if (envelop.isSuccessFlg() && envelop.getDetailModelList().size() > 0) {
+                return getEnvelopList(envelop.getDetailModelList(), new ArrayList<>(), PlatformAppRolesTreeModel.class);
             }
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserController.class).error(ex.getMessage());
             return failed(ERR_SYSTEM_DES);
         }
@@ -695,10 +695,10 @@ public class UserController extends BaseUIController {
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("id_card_no",idCardNo);
+        params.put("id_card_no", idCardNo);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + getUserUrl, params, username, password);
-            Envelop envelop = objectMapper.readValue(resultStr,Envelop.class);
+            Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
             return resultStr;
         } catch (Exception e) {
             e.printStackTrace();
@@ -710,15 +710,15 @@ public class UserController extends BaseUIController {
     //查看是否有权限
     @RequestMapping("/isRoleUser")
     @ResponseBody
-    public boolean isRoleUser(String userId){
+    public boolean isRoleUser(String userId) {
         String url = "/roles/role_user/userRolesIds";
         try {
-            Map<String,Object> params = new HashMap<>();
-            params.put("user_id",userId);
-            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
-            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            Map<String, Object> params = new HashMap<>();
+            params.put("user_id", userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
             if (envelop.isSuccessFlg() && null != envelop.getObj() && !"".equals(envelop.getObj())) {
-                return  true;
+                return true;
             }
         } catch (Exception ex) {
             LogService.getLogger(UserController.class).error(ex.getMessage());
@@ -728,6 +728,7 @@ public class UserController extends BaseUIController {
 
     /**
      * 通过系统设置字典获取准确的位置信息
+     *
      * @return
      * @throws Exception
      */
@@ -743,8 +744,8 @@ public class UserController extends BaseUIController {
         params.put("filters", "dictId=" + systemSettingId + ";code=CITY");
         params.put("page", 1);
         params.put("size", 1);
-        HttpResponse httpResponse = HttpUtils.doGet(comUrl + currentCityUrl,  params, null);
-        if(httpResponse.isSuccessFlg()) {
+        HttpResponse httpResponse = HttpUtils.doGet(comUrl + currentCityUrl, params, null);
+        if (httpResponse.isSuccessFlg()) {
             Envelop envelop = objectMapper.readValue(httpResponse.getContent(), Envelop.class);
             if (envelop.isSuccessFlg() && envelop.getDetailModelList().size() > 0) {
                 List<Map<String, Object>> systemDictEntryModelList = envelop.getDetailModelList();
@@ -758,13 +759,13 @@ public class UserController extends BaseUIController {
                         result.setSuccessFlg(true);
                         result.setObj(envelop2.getDetailModelList());
                         return result;
-                    }else{
-                        return  failed(envelop.getErrorMsg());
+                    } else {
+                        return failed(envelop.getErrorMsg());
                     }
-                }else {
+                } else {
                     failed(httpResponse1.getErrorMsg());
                 }
-            }else {
+            } else {
                 return failed(envelop.getErrorMsg());
             }
         }
@@ -784,8 +785,8 @@ public class UserController extends BaseUIController {
         params.put("filters", "dictId=" + systemSettingId + ";code=CITY");
         params.put("page", 1);
         params.put("size", 1);
-        HttpResponse httpResponse = HttpUtils.doGet(comUrl + currentCityUrl,  params, null);
-        if(httpResponse.isSuccessFlg()) {
+        HttpResponse httpResponse = HttpUtils.doGet(comUrl + currentCityUrl, params, null);
+        if (httpResponse.isSuccessFlg()) {
             Envelop envelop = objectMapper.readValue(httpResponse.getContent(), Envelop.class);
             if (envelop.isSuccessFlg() && envelop.getDetailModelList().size() > 0) {
                 List<Map<String, Object>> systemDictEntryModelList = envelop.getDetailModelList();
@@ -798,10 +799,10 @@ public class UserController extends BaseUIController {
                     Envelop envelop2 = objectMapper.readValue(httpResponse1.getContent(), Envelop.class);
                     envelop2.setObj(envelop2.getDetailModelList());
                     return envelop2;
-                }else {
+                } else {
                     return failed(httpResponse1.getErrorMsg());
                 }
-            }else {
+            } else {
                 return failed(envelop.getErrorMsg());
             }
         }
@@ -828,15 +829,15 @@ public class UserController extends BaseUIController {
         params.put("size", rows);
 
         try {
-            String url ="/dictionaries/entries";
+            String url = "/dictionaries/entries";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             result = objectMapper.readValue(resultStr, Envelop.class);
             SystemDictEntryModel systemDictEntryModel = new SystemDictEntryModel();
-            if(null != result.getDetailModelList() && result.getDetailModelList().size()>0){
-                systemDictEntryModel = getEnvelopModel(result.getDetailModelList().get(0),SystemDictEntryModel.class);
+            if (null != result.getDetailModelList() && result.getDetailModelList().size() > 0) {
+                systemDictEntryModel = getEnvelopModel(result.getDetailModelList().get(0), SystemDictEntryModel.class);
             }
             return systemDictEntryModel.getCode();
-        } catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(SystemDictEntryModel.class).error(ex.getMessage());
             return "查询字典项失败！";
         }
@@ -844,6 +845,7 @@ public class UserController extends BaseUIController {
 
     /**
      * 获取城市
+     *
      * @param pid
      * @return
      */
@@ -852,17 +854,17 @@ public class UserController extends BaseUIController {
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("pid",pid);
-        try{
+        params.put("pid", pid);
+        try {
             resultStr = HttpClientUtil.doGet(comUrl + url + pid, params, username, password);
             ObjectMapper mapper = new ObjectMapper();
             Envelop envelop = mapper.readValue(resultStr, Envelop.class);
-            String str="";
-            if(null != envelop && envelop.getDetailModelList().size()>0){
-                for(Object object : envelop.getDetailModelList()){
-                    str = str + ((LinkedHashMap) object).get("id").toString()+",";
+            String str = "";
+            if (null != envelop && envelop.getDetailModelList().size() > 0) {
+                for (Object object : envelop.getDetailModelList()) {
+                    str = str + ((LinkedHashMap) object).get("id").toString() + ",";
                 }
-               str = str.substring(0,str.length()-1)+"";
+                str = str.substring(0, str.length() - 1) + "";
             }
             return str;
         } catch (Exception e) {
@@ -887,12 +889,31 @@ public class UserController extends BaseUIController {
             params.put("size", 999);
             params.put("page", 1);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            envelop = objectMapper.readValue(resultStr,Envelop.class);
+            envelop = objectMapper.readValue(resultStr, Envelop.class);
             envelop.setCurrPage(0);
             return envelop;
         } catch (Exception e) {
             e.printStackTrace();
             return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    /**
+     * 用户-关联机构（某个区域下的机构）
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/AddressDictByPid")
+    @ResponseBody
+    public Envelop AddressDictByPid(Integer cityPid) throws Exception {
+        String url = "/geography_entries/pid/" + cityPid;
+        HttpResponse httpResponse = HttpUtils.doGet(comUrl + url, null);
+        if (httpResponse.isSuccessFlg()) {
+            Envelop envelop = objectMapper.readValue(httpResponse.getContent(), Envelop.class);
+            return envelop;
+        } else {
+            return failed(httpResponse.getErrorMsg());
         }
     }
 
