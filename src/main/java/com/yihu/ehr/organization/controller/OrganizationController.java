@@ -783,7 +783,7 @@ public class OrganizationController extends BaseUIController {
      */
     @RequestMapping("getAllOrgByAdministrativeDivision")
     @ResponseBody
-    public Object getAllOrgByAdministrativeDivision(Integer areaId,String fullName) {
+    public Object getAllOrgByAdministrativeDivision(String areaId,String fullName) {
         String getOrgUrl = "/basic/api/v1.0/org/getAllOrgByAdministrativeDivision";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
