@@ -19,7 +19,7 @@ import java.util.Map;
 @Controller("resource-dict-entry")
 @RequestMapping("/resource/dict/entry")
 public class DictEntryController extends ExtendController<DictEntryService> {
-    @Value("${service-gateway.url}")
+    @Value("${service-gateway.adminInnerUrl}")
     private String comUrl;
     public DictEntryController() {
         this.init(
@@ -35,7 +35,7 @@ public class DictEntryController extends ExtendController<DictEntryService> {
     @RequestMapping("getDictEntryByDictCode")
     @ResponseBody
     public Object getDictEntryByDictCode() {
-        String getOrgUrl = "/resources/dict/code/dict_entries";
+        String getOrgUrl = "/resource/api/v1.0/resources/dict/code/dict_entries";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
         params.put("dict_code","STD_TECH_TITLE");//医务人员职务字典
