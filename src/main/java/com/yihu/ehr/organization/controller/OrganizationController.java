@@ -790,7 +790,7 @@ public class OrganizationController extends BaseUIController {
         params.put("areaId",areaId);
         params.put("fullName",fullName);
         try {
-            resultStr = HttpClientUtil.doDelete(adminInnerUrl + getOrgUrl, params, username, password);
+            resultStr = HttpClientUtil.doGet(adminInnerUrl + getOrgUrl, params, username, password);
             return resultStr;
         } catch (Exception e) {
             e.printStackTrace();
