@@ -774,4 +774,29 @@ public class OrganizationController extends BaseUIController {
         return envelop;
     }
 
+
+    /**
+     * 用户修改-选择机构：根据区域id或机构名称获取机构
+     * @param areaId 区域id
+     * @param fullName 机构名称-模糊搜索  区域id与机构名称不能同时为空
+     * @return
+     */
+    @RequestMapping("getAllOrgByAdministrativeDivision")
+    @ResponseBody
+    public Object getAllOrgByAdministrativeDivision(Integer areaId,String fullName) {
+        String getOrgUrl = "/basic/api/v1.0/org/getAllOrgByAdministrativeDivision";
+        String resultStr = "";
+        Map<String, Object> params = new HashMap<>();
+        params.put("areaId",areaId);
+        params.put("fullName",fullName);
+        try {
+            resultStr = HttpClientUtil.doDelete(adminInnerUrl + getOrgUrl, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
+        }
+
+    }
+
 }
