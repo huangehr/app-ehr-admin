@@ -799,4 +799,28 @@ public class OrganizationController extends BaseUIController {
 
     }
 
+    /**
+     * 根据机构id获取机构，用于编辑用户信息，获取用户所在机构信息
+     * @param orgId
+     * @return
+     */
+    @RequestMapping("/getOrganizationById")
+    @ResponseBody
+    public Object getOrganizationById(String orgId) {
+        Envelop envelopGet = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            String urlGet = "/organizations/getOrgById/" + orgId;
+            params.clear();
+            params.put("org_id", orgId);
+            String envelopGetStr = HttpClientUtil.doGet(comUrl + urlGet, params, username, password);
+            envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            envelopGet.setSuccessFlg(false);
+            envelopGet.setErrorMsg(e.getMessage());
+        }
+        return envelopGet;
+    }
+
 }
