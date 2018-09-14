@@ -15,6 +15,14 @@
         <div id="div_file_list" class="uploader-list"></div>
         <div id="div_file_picker" class="f-mt10"><spring:message code="btn.file.choose"/></div>
     </div>
+    <%--<div  class="u-upload alone f-ib f-tac f-vam u-upload-img">--%>
+        <%--<div class="uploader-list"  id="div_file_list">--%>
+            <%--<img class="f-w88 f-h110" id="personalImg" />--%>
+        <%--</div>--%>
+        <%--<div class="f-mt10 webuploader-pick" style="padding: 10px 0px 0px;" id="uploadImg">--%>
+            <%--<span>修改头像</span>--%>
+            <%--<input type="file" class="f-mt10" accept="image/jpg,image/jpeg,image/png" style="height:30px;margin-top: -20px;width: 80px;opacity: 0;"></div>--%>
+    <%--</div>--%>
     <div class="m-form-group m-form-readonly">
         <label><spring:message code="lbl.loginCode"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
@@ -111,7 +119,7 @@
         <label>选择机构部门:</label>
         <div class="l-text-wrapper m-form-control essential" style="padding-right: 0px;">
             <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" style="width: 238px !important;    height: 30px;line-height: 30px;" id="divBtnShow">
-                <span>选择机构部门</span>
+                <span>选择机构/部门（科室）/职务</span>
             </div>
         </div>
     </div>

@@ -91,7 +91,7 @@
 		<label>选择机构部门:</label>
 		<div class="l-text-wrapper m-form-control essential">
 			<div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10 required" style="width: 238px !important;    height: 30px;line-height: 30px;margin-right: 0px;" id="divBtnShow">
-				<span>选择机构部门</span>
+				<span>选择机构/部门（科室）/职务</span>
 			</div>
 		</div>
 	</div>

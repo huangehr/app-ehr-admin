@@ -21,7 +21,7 @@
         win.ORGDEPTVAL = '';
         win.roleIds = '';
 
-        debugger
+
 
         /* ************************** 变量定义结束 **************************** */
 
@@ -268,7 +268,6 @@
                     return result;
                 }
                 function stripscript(value) {
-                    debugger
                     var pattern = new RegExp("[`~!@#%$^&*+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
                     var rs = "";
                     for (var i = 0; i < value.length; i++) {
@@ -315,8 +314,8 @@
                     console.log('selroles'+roles);
                     addUser.role = roles;
                     var jsonModel = JSON.stringify(win.ORGDEPTVAL);
-                    if (jsonModel.length <= 0) {
-                        $.Notice.error('请选择机构部门');
+                    if (win.ORGDEPTVAL.length <= 0) {
+                        $.Notice.error('请选择机构/部门（科室）/职务');
                         return;
                     }
 //                    addUser.organization=JSON.stringify(win.ORGDEPTVAL);
@@ -374,8 +373,8 @@
                     win.orgDeptDio = $.ligerDialog.open({
                         height: 620,
                         width: 800,
-                        title: '选择机构部门',
-                        url: '${contextRoot}/doctor/selectOrgDept',
+                        title: '选择机构/部门（科室）/职称',
+                        url: '${contextRoot}/user/selectOrgDept',
                         urlParms: {
                             idCardNo: ''
                         },

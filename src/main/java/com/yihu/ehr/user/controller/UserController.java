@@ -8,9 +8,7 @@ import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.dict.controller.SystemDictController;
 import com.yihu.ehr.geography.controller.AddressController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -27,7 +25,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -87,6 +88,22 @@ public class UserController extends BaseUIController {
         model.addAttribute("contentPage", "user/addUserInfoDialog");
         return "emptyView";
     }
+
+    /**
+     * 选择机构部门
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("selectOrgDept")
+    public String selectOrgDept(String idCardNo, String type,String origin, Model model) {
+        model.addAttribute("idCardNo", idCardNo);
+        model.addAttribute("type", type);
+        model.addAttribute("origin", origin);
+        model.addAttribute("contentPage", "user/roles/selectOrgDept");
+        return "emptyView";
+    }
+
 
     @RequestMapping("searchUsers")
     @ResponseBody

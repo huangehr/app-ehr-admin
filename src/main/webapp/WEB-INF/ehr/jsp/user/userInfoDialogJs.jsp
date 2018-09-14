@@ -18,19 +18,17 @@
 
         // 表单校验工具类
         var jValidation = $.jValidation;
-
         var allData = ${allData};
-
+        debugger
         var isinit=true;
 
         var user = allData.obj;
-        debugger
 		var trees;
 
 
         /* ************************** 变量定义结束 **************************** */
         win.orgDeptDio = null;
-        win.ORGDEPTVAL = allData.obj.organization;
+        win.ORGDEPTVAL = allData.obj.detailModelList;
         win.roleIds=allData.obj.role;
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -82,6 +80,7 @@
             $affirmBtn: $('#div_affirm_btn'),
             $toolbar: $('#div_toolbar'),
             $imageShow: $('#div_file_list'),
+            $uploadImg:$("#uploadImg"),
 //			$jryycyc:$("#jryycyc"),//cyctodo
             $divBtnShow: document.getElementById('divBtnShow'),
             $divBtnSetrole:$("#div_btn_setrole"),
@@ -251,7 +250,6 @@
 
                 <%--});--%>
                 this.$form.attrScan();
-                //debugger
                 if(user){
                     this.$form.Fields.fillValues({
                         id: user.id,
@@ -277,10 +275,10 @@
 
                     });
 
-//                    $("#divBtnShow").find("span").attr("data-cd",JSON.parse(user.organization));
-//                    if(user.organizationName){
-//                        $("#divBtnShow").find("span").html(user.organizationName);
-//                    }
+                    $("#divBtnShow").find("span").attr("data-cd",JSON.stringify(user.detailModelList));
+                    if(user.organizationName){
+                        $("#divBtnShow").find("span").html(user.organizationName);
+                    }
                     self.$inp_select_userType.ligerGetComboBoxManager().setValue(user.userType);
                     self.$inp_select_userType.val(user.userTypeName);
 //                    $("#inp_select_userType_val").val(user.userType)
@@ -292,6 +290,7 @@
 
                     var pic = user.imgRemotePath;
                     if (!Util.isStrEmpty(pic)) {
+//                        self.$imageShow.children().attr("src",user.imgRemotePath);
                         self.$imageShow.html('<img src="${contextRoot}/user/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
                     }
                 }
@@ -405,12 +404,11 @@
                 // 选择机构部门
                 self.$divBtnShow.onclick = function () {
                     var wait = $.Notice.waitting("请稍后...");
-                    debugger
                     win.orgDeptDio = win.$.ligerDialog.open({
                         height: 620,
                         width: 780,
-                        title: '选择机构部门',
-                        url: '${contextRoot}/doctor/selectOrgDept',
+                        title: '选择机构/部门（科室）/职称',
+                        url: '${contextRoot}/user/selectOrgDept',
                         urlParms: {
                             idCardNo: allData.obj.id,
                             type: '${mode}',
@@ -462,8 +460,9 @@
                         delete userModel.location;
                         userModel.role = win.roleIds;
                         var jsonModel = JSON.stringify(win.ORGDEPTVAL);
-                        if (jsonModel.length <= 0) {
-                            $.Notice.error('请选择机构部门');
+                        debugger
+                        if (win.ORGDEPTVAL.length <= 0) {
+                            $.Notice.error('选择机构/部门（科室）/职务');
                             return;
                         }
 //                        userModel.organization=JSON.stringify(win.ORGDEPTVAL);
@@ -490,7 +489,6 @@
                 });
 
                 function updateUser(userModel,jsonModel) {
-                    debugger
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/user/updateUserAndInitRoles", {
