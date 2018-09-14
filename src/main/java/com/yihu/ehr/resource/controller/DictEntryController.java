@@ -38,7 +38,7 @@ public class DictEntryController extends ExtendController<DictEntryService> {
         String getOrgUrl = "/resource/api/v1.0/resources/dict/code/dict_entries";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
-        params.put("dict_code","STD_TECH_TITLE");//医务人员职务字典
+        params.put("dict_code","AdministrativeDuties");//医务人员职务字典
         try {
             resultStr = HttpClientUtil.doGet(comUrl + getOrgUrl, params, username, password);
             return resultStr;
