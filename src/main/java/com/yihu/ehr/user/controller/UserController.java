@@ -378,6 +378,11 @@ public class UserController extends BaseUIController {
                 envelop.setErrorMsg("初始化授权失败，请联系管理员进行手动授权操作！");
                 return envelop.toString();
             }
+
+        //获取用户及角色（部分有字典转换）
+            MultiValueMap<String, String> pars = new LinkedMultiValueMap<>();
+            pars.add("userName", userDetailModel.getLoginCode());
+            resultStr = templates.doGet(adminInnerUrl + "/basic/api/v1.0/users/GetUserByLoginCode/" + userDetailModel.getLoginCode());
         } catch (Exception e) {
             e.printStackTrace();
             return failed(ERR_SYSTEM_DES);
