@@ -17,7 +17,7 @@
 
         // 表单校验工具类
         var jValidation = $.jValidation;
-
+        debugger
         var allData = ${allData};
         var doctor = allData.obj;
 
@@ -31,7 +31,7 @@
 
         /* ************************** 变量定义结束 **************************** */
         win.orgDeptDio = null;
-        win.ORGDEPTVAL = '';
+        win.ORGDEPTVAL = allData.obj.organization;;
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             doctorInfo.init();
@@ -122,7 +122,11 @@
                 this.$sex.ligerRadio();
                 $imageShow: $('#div_file_list'),
                         this.$form.attrScan();
-                win.ORGDEPTVAL = allData.detailModelList;
+                if(allData.detailModelList){
+//                    $('#divBtnShow').html("<span data-cd='"+me.cd+"'>"+doctor.orgFullName.join(',')+"</sapn>")
+                }else{
+                    win.ORGDEPTVAL = allData.detailModelList;
+                }
                 this.$form.Fields.fillValues({
                     id: doctor.id,
                     code: doctor.code,
@@ -179,6 +183,7 @@
 
                 //修改的点击事件
                 this.$updateDtn.click(function () {
+                    debugger
                     var jsonModel = win.ORGDEPTVAL;
                     if (jsonModel.length <= 0) {
                         $.Notice.error('请选择机构部门');
