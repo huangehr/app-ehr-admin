@@ -958,18 +958,24 @@ public class UserController extends BaseUIController {
             params.put("userName", userId);
             String resultStr = HttpClientUtil.doGet(adminInnerUrl + "/basic/api/v1.0/users/GetUserByLoginCode/" + userId, params, username, password);
             Envelop ep = getEnvelop(resultStr);
-            UserDetailModel userDetailModel = toModel(toJson(ep.getObj()), UserDetailModel.class);
-            String imageOutStream = "";
-            if (userDetailModel != null && !StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
-                params.put("object_id", userDetailModel.getId());
-                imageOutStream = HttpClientUtil.doGet(comUrl + "/files", params, username, password);
-                envelop = toModel(imageOutStream, Envelop.class);
-                if (envelop.getDetailModelList().size() > 0) {
-                    session.removeAttribute("userImageStream");
-                    session.setAttribute("userImageStream", imageOutStream == null ? "" : envelop.getDetailModelList().get(envelop.getDetailModelList().size() - 1));
+            List list=(List) ep.getObj();
+            if(null!=list&&list.size()>0){
+                Object userObj=list.get(0);
+                UserDetailModel userDetailModel = toModel(toJson(userObj), UserDetailModel.class);
+                ep.setObj(userDetailModel);
+                String imageOutStream = "";
+                if (userDetailModel != null && !StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
+                    params.put("object_id", userDetailModel.getId());
+                    imageOutStream = HttpClientUtil.doGet(comUrl + "/files", params, username, password);
+                    envelop = toModel(imageOutStream, Envelop.class);
+                    if (envelop.getDetailModelList().size() > 0) {
+                        session.removeAttribute("userImageStream");
+                        session.setAttribute("userImageStream", imageOutStream == null ? "" : envelop.getDetailModelList().get(envelop.getDetailModelList().size() - 1));
+                    }
                 }
             }
-            model.addAttribute("allData", resultStr);
+
+            model.addAttribute("allData", ep);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "user/userInfoDialog");
             return "emptyView";
