@@ -939,4 +939,44 @@ public class UserController extends BaseUIController {
         }
     }
 
+    /**
+     * 根据登录账号获取用户信息
+     * @param model
+     * @param userId  登录账号 loginCode
+     * @param mode
+     * @param session
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("getUserModelInfo")
+    public Object getUserModelInfo(Model model, String userId, String mode, HttpSession session, HttpServletRequest request) throws IOException {
+        Envelop envelop = new Envelop();
+        try {
+            //获取用户及角色（部分有字典转换）
+            Map<String, Object> params = new HashMap<>();
+            params.put("userName", userId);
+            String resultStr = HttpClientUtil.doGet(adminInnerUrl + "/basic/api/v1.0/users/GetUserByLoginCode/" + userId, params, username, password);
+            Envelop ep = getEnvelop(resultStr);
+            UserDetailModel userDetailModel = toModel(toJson(ep.getObj()), UserDetailModel.class);
+            String imageOutStream = "";
+            if (userDetailModel != null && !StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
+                params.put("object_id", userDetailModel.getId());
+                imageOutStream = HttpClientUtil.doGet(comUrl + "/files", params, username, password);
+                envelop = toModel(imageOutStream, Envelop.class);
+                if (envelop.getDetailModelList().size() > 0) {
+                    session.removeAttribute("userImageStream");
+                    session.setAttribute("userImageStream", imageOutStream == null ? "" : envelop.getDetailModelList().get(envelop.getDetailModelList().size() - 1));
+                }
+            }
+            model.addAttribute("allData", resultStr);
+            model.addAttribute("mode", mode);
+            model.addAttribute("contentPage", "user/userInfoDialog");
+            return "emptyView";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
 }

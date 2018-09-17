@@ -295,7 +295,10 @@
                                         var newobj={};
                                         newobj.id=id;
                                         newobj.name=name;
-                                        newobj.children=res;
+                                        newobj.children=_.map(res,function (item,index) {
+                                            item.id=item.code
+                                            return item;
+                                        });
                                         obj=newobj;
                                     }
                                     me.fillRightTree(id,type,obj)

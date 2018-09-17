@@ -133,7 +133,7 @@
                                 html += '<a class="label_a" title="查看权限" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "user:feature:open", row.id) + '">查看权限</a>';
                                 </sec:authorize>
                                 <sec:authorize url="/user/updateUser">
-                                html += '<a class="grid_edit" title="编辑" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.id, 'modify') + '"></a>';
+                                html += '<a class="grid_edit" title="编辑" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.loginCode, 'modify') + '"></a>';
                                 </sec:authorize>
                                 <sec:authorize url="/user/deleteUser">
                                 html += '<a class="grid_delete" title="删除" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoDialog:del", row.id, 'delete') + '"></a>';
@@ -156,9 +156,9 @@
                                 isHidden: false,
                                 load: true,
                                 show:false,
-                                url: '${contextRoot}/user/getUser',
+                                url: '${contextRoot}/user/getUserModelInfo',
                                 urlParms: {
-                                    userId: row.id,
+                                    userId: row.loginCode,
                                     mode:mode
                                 },
                                 onLoaded:function() {
@@ -198,7 +198,7 @@
                             isResize: true,
                             isHidden: false,
                             show: false,
-                            url: '${contextRoot}/user/getUser',
+                            url: '${contextRoot}/user/getUserModelInfo',
                             urlParms: {
                                 userId: userId,
                                 mode:mode
