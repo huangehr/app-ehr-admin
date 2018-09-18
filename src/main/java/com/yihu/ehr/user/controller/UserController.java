@@ -958,11 +958,8 @@ public class UserController extends BaseUIController {
             params.put("userName", userId);
             String resultStr = HttpClientUtil.doGet(adminInnerUrl + "/basic/api/v1.0/users/GetUserByLoginCode/" + userId, params, username, password);
             Envelop ep = getEnvelop(resultStr);
-            List list=(List) ep.getObj();
-            if(null!=list&&list.size()>0){
-                Object userObj=list.get(0);
-                UserDetailModel userDetailModel = toModel(toJson(userObj), UserDetailModel.class);
-                ep.setObj(userDetailModel);
+            UserDetailModel userDetailModel = toModel(toJson(ep.getObj()), UserDetailModel.class);
+            if(null!=userDetailModel){
                 String imageOutStream = "";
                 if (userDetailModel != null && !StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
                     params.put("object_id", userDetailModel.getId());
@@ -975,7 +972,7 @@ public class UserController extends BaseUIController {
                 }
             }
 
-            model.addAttribute("allData", ep);
+            model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "user/userInfoDialog");
             return "emptyView";
