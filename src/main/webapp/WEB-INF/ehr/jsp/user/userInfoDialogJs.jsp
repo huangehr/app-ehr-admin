@@ -28,7 +28,9 @@
 
         /* ************************** 变量定义结束 **************************** */
         win.orgDeptDio = null;
-        win.ORGDEPTVAL = allData.obj.detailModelList;
+        win.ORGDEPTVAL = _.map(allData.detailModelList,function (item,index) {
+            return {"orgId":item.orgId,"deptIds":item.deptId,"dutyId":item.dutyName}
+        });
         win.roleIds=allData.obj.role;
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -93,7 +95,7 @@
                 self.bindEvents();
                 //self.$uploader.webupload();
                 self.$uploader.instance = self.$uploader.webupload({
-                    server: "${contextRoot}/user/updateUser",
+                    server: "${contextRoot}/user/updateUserAndInitRoles",
                     pick: {id: '#div_file_picker'},
                     accept: {
                         title: 'Images',
@@ -275,9 +277,13 @@
 
                     });
 
-                    $("#divBtnShow").find("span").attr("data-cd",JSON.stringify(user.detailModelList));
-                    if(user.organizationName){
-                        $("#divBtnShow").find("span").html(user.organizationName);
+                    if(allData.detailModelList.length>0){
+                        $("#divBtnShow").find("span").attr("data-cd",JSON.stringify(win.ORGDEPTVAL));
+                        var orgstr=allData.detailModelList[0].orgName+"/"+allData.detailModelList[0].deptName+"/"+allData.detailModelList[0].dutyNameStr;
+                        if(allData.detailModelList.length>1){
+                            orgstr+="……"
+                        }
+                        $("#divBtnShow").find("span").html(orgstr);
                     }
                     self.$inp_select_userType.ligerGetComboBoxManager().setValue(user.userType);
                     self.$inp_select_userType.val(user.userTypeName);
@@ -476,6 +482,7 @@
                             var image = upload.getFiles().length;
                             if (image) {
                                 upload.options.formData.userModelJsonData = encodeURIComponent(JSON.stringify(userModel));
+                                upload.options.formData.orgModel = jsonModel;
                                 upload.upload();
                                 win.closeUserInfoDialog();
                                 win.reloadMasterUpdateGrid();

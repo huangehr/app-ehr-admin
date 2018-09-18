@@ -81,9 +81,11 @@
                             me.dutyId.push({"orgId":obj.orgId,titleId:obj.dutyId});
                         })
                         $.each(me.orgId.split(','),function (k,obj) {
-                            if(obj){
-                                me.selAddressData('',obj);
-                            }
+                            setTimeout(function () {
+                                if(obj){
+                                    me.selAddressData('',obj);
+                                }
+                            },200)
                         })
                     }
 
@@ -131,9 +133,9 @@
                                                             me.$orgTree.find("#"+item.id+">.l-body .l-checkbox").click();
                                                         }
                                                     }
-                                                },300)
-                                            },300)
-                                        },300)
+                                                },200)
+                                            },200)
+                                        },200)
                                     })
                                 }else{
                                     $.Notice.error('查无此医疗机构');
@@ -376,7 +378,7 @@
                         var isgo=true;
                         var checkData = me.rightTree.getChecked(),
                             checkData_title = me.rightTree_title.getChecked(),
-                            selectName = [],selectorgName = [],
+                            selectName = "",titleName="",selectorgName = [],
                             cd = [];
                         if (checkData.length > 0) {
                             $.each(checkData, function (k, obj) {
@@ -393,7 +395,7 @@
                                             var cLen = $(o).find('.l-checkbox-checked').length;
                                             if (cLen > 0) {
                                                 deptIds.push($(o).attr('id'));
-                                                selectName.push($(o).find('span').text());
+                                                selectName=$(o).find('span').text();
                                             }
                                         });
                                         var $target_t=me.$titleTree.find("#"+id);
@@ -403,7 +405,7 @@
                                                 var cLen = $(o).find('.l-checkbox-checked').length;
                                                 if (cLen > 0) {
                                                     titleIds.push($(o).attr('id'));
-//                                                titleName.push($(o).find('span').text());
+                                                    titleName=$(o).find('span').text();
                                                 }
                                             });
                                         }else{
@@ -416,7 +418,7 @@
                                             deptIds: deptIds.join(','),
                                             dutyId: titleIds.join(',')
                                         });
-                                        selectorgName.push(name);
+                                        selectorgName.push(name+"/"+selectName+"/"+titleName);
                                     }
                                 }
                             });
@@ -424,8 +426,13 @@
                         if(isgo){
                             w.ORGDEPTVAL = cd;
                             me.cd=JSON.stringify(cd);
-                            if(selectName.length>0){
-                                $('#divBtnShow').html("<span data-cd='"+me.cd+"' title='"+selectorgName.join(',')+"'>"+selectName.join(',')+"</sapn>")
+                            if(selectorgName.length>0){
+                                debugger
+                                var spanname=selectorgName[0];
+                                if(selectorgName.length>1){
+                                    spanname+="……"
+                                }
+                                $('#divBtnShow').html("<span data-cd='"+me.cd+"' title='"+selectorgName.join(',')+"'>"+spanname+"</sapn>")
                             }
                             w.orgDeptDio.close();
                         }

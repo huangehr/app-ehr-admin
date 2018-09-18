@@ -69,7 +69,7 @@
                 self.bindEvents();
 //                this.cycToDo()//复制完记得删掉
                 self.$uploader.instance = self.$uploader.webupload({
-                    server: "${contextRoot}/user/updateUser",
+                    server: "${contextRoot}/user/updateUserAndInitRoles",
                     pick: {id: '#div_file_picker'},
                     accept: {
                         title: 'Images',
@@ -332,6 +332,7 @@
                             var image = upload.getFiles().length;
                             if (image) {
                                 upload.options.formData.userModelJsonData = encodeURIComponent(JSON.stringify(addUser));
+                                upload.options.formData.orgModel = jsonModel;
                                 upload.upload();
                             } else {
                                 updateUser(addUser,jsonModel);
