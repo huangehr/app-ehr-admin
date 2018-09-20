@@ -190,6 +190,7 @@
 					this.resourceInfoGrid = $("#div_resource_info_grid").ligerGrid($.LigerGridEx.config({
 						url: '${contextRoot}/deptMember/searchOrgDeptMembers',
 						parms: {
+						    orgId: orgId,
 							searchNm: $('#inp_searchNm').val(),
 							status:$('#inp_status').text(),
 							categoryId: categoryId
@@ -249,7 +250,7 @@
 
 				reloadGrid: function () {
 					var searchNm = $('#inp_searchNm').val();
-					reloadGrid.call(this,{'searchNm':searchNm,'status':status,'categoryId': categoryId});
+					reloadGrid.call(this,{'orgId':orgId, 'searchNm':searchNm,'status':status,'categoryId': categoryId});
 				},
 
 				bindEvents: function () {

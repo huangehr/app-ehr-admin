@@ -82,7 +82,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
      */
     @RequestMapping("searchOrgDeptMembers")
     @ResponseBody
-    public Object searchOrgDeptMembers(String searchNm,String status,String categoryId, int page, int rows) {
+    public Object searchOrgDeptMembers(String orgId, String searchNm,String status,String categoryId, int page, int rows) {
         String url = "/orgDeptMember/list";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -90,13 +90,16 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("status=0;");
+        if (!StringUtils.isEmpty(orgId)) {
+            stringBuffer.append("orgId=" + orgId + ";" );
+        } else {
+            stringBuffer.append("orgId=0;" );
+        }
         if (!StringUtils.isEmpty(searchNm)) {
             stringBuffer.append("userName?" + searchNm + ";" );
         }
         if (!StringUtils.isEmpty(categoryId)) {
             stringBuffer.append("deptId=" + categoryId + ";" );
-        }else{
-            stringBuffer.append("deptId=-0;" );
         }
         /*if (!StringUtils.isEmpty(status)) {
             if(status.equals("有效")){
