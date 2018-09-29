@@ -354,10 +354,13 @@
                         data: {userModelJsonData: userModelJsonData,orgModel:jsonModel},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('新增成功',function () {
-                                    win.parent.closeAddUserInfoDialog();
-                                });
-                                win.parent.closeAddUserInfoDialog(function () {});//只做刷新列表
+                                win.closeAddUserInfoDialog();
+                                win.reloadMasterUpdateGrid();
+                                $.Notice.success('新增成功');
+//                                $.Notice.success('新增成功',function () {
+//                                    win.parent.closeAddUserInfoDialog();
+//                                });
+//                                win.parent.closeAddUserInfoDialog(function () {});//只做刷新列表
                             } else {
                                 $.Notice.error(data.errorMsg);
                             }
