@@ -94,6 +94,7 @@
                             { text: '门诊', id: 'clinic' },
                             { text: '住院', id: 'resident'},
                             { text: '体检', id: 'medicalExam'},
+                            { text: '妇幼', id: 'maternalAndChild'},
                             { text: '通用', id : 'universal'}
                         ],
                         onSelected: function (value ,text){
